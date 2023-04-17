@@ -69,7 +69,7 @@ const TextHover = styled(Text)`
       }
   `};
 
-  @media (max-width: 700px) {
+  @media (max-width: 900px) {
     color: ${Theme.black_C};
     font-weight: 600;
 
@@ -131,9 +131,9 @@ const AppHeader = ({}) => {
         position={`fixed`}
         top={`0`}
         left={`0`}
-        height={width < 700 ? `auto` : `90px`}
+        height={width < 900 ? `auto` : `90px`}
         bgColor={
-          width < 700
+          width < 900
             ? Theme.white_C
             : headerScroll
             ? Theme.black_C
@@ -144,11 +144,11 @@ const AppHeader = ({}) => {
         <RsWrapper>
           <Wrapper
             dr={`row`}
-            height={width < 700 ? `70px` : `90px`}
+            height={width < 900 ? `70px` : `90px`}
             ju={`space-between`}
-            margin={width < 700 ? `0 0 20px` : `0`}
+            margin={width < 900 ? `10px 0 20px` : `0`}
           >
-            {width < 700 ? (
+            {width < 900 ? (
               <>
                 {logos &&
                   logos.length !== 0 &&
@@ -177,7 +177,7 @@ const AppHeader = ({}) => {
             <Wrapper
               dr={`row`}
               width={`auto`}
-              display={width < 700 ? `none` : `flex`}
+              display={width < 900 ? `none` : `flex`}
             >
               <Link href={`/`}>
                 <a>
@@ -237,7 +237,7 @@ const AppHeader = ({}) => {
               </GlobalImage>
             </Wrapper>
 
-            <GlobalImage display={width < 700 ? `flex` : `none`}>
+            <GlobalImage display={width < 900 ? `flex` : `none`}>
               <Image
                 src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/header/icon_global_m.png"
                 alt="image"
@@ -278,7 +278,7 @@ const AppHeader = ({}) => {
             dr={`row`}
             ju={`flex-start`}
             margin={`0 0 20px`}
-            display={width < 700 ? `flex` : `none`}
+            display={width < 900 ? `flex` : `none`}
           >
             <Link href={`/`}>
               <a>

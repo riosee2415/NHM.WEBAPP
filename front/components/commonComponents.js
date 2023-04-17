@@ -196,8 +196,8 @@ export const RsWrapper = styled.article`
   }
   @media (max-width: 700px) {
     width: 100%;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 `;
 
@@ -361,6 +361,11 @@ export const Text = styled.p`
   `};
 `;
 
+export const Title = styled.p`
+  font-size: 36px;
+  font-weight: 700;
+`;
+
 export const Image = styled.img`
   display: ${(props) => props.display};
   width: ${(props) => props.width || `100%`};
@@ -490,7 +495,7 @@ export const TextArea = styled.textarea`
 `;
 
 export const CustomPage = styled(Pagination)`
-  margin: 60px 0 100px;
+  margin: 0 0 100px;
 
   & .ant-pagination-next > button,
   .ant-pagination-item,
