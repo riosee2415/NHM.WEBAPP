@@ -6,7 +6,12 @@ import ClientLayout from "../components/ClientLayout";
 import axios from "axios";
 import wrapper from "../store/configureStore";
 import { END } from "redux-saga";
-import { Image, WholeWrapper, Wrapper } from "../components/commonComponents";
+import {
+  CommonButton,
+  Image,
+  WholeWrapper,
+  Wrapper,
+} from "../components/commonComponents";
 import useWidth from "../hooks/useWidth";
 import Theme from "../components/Theme";
 import styled from "styled-components";
@@ -38,9 +43,7 @@ const Home = ({}) => {
 
       <ClientLayout>
         <WholeWrapper>
-          <Mainslider />
-          <CC02 />
-
+          <Wrapper bgColor={Theme.basicTheme_C} height={`100vh`}></Wrapper>
           <Popup />
         </WholeWrapper>
       </ClientLayout>

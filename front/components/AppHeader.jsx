@@ -17,79 +17,84 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { LOGO_GET_REQUEST } from "../reducers/logo";
 import { useRouter } from "next/router";
+import useWidth from "../hooks/useWidth";
 
-const MobileRow = styled(RowWrapper)`
-  display: none;
-
-  background: transparent;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 10000;
-  transition: 0.5s;
-  padding: 10px 0;
-
-  &.background {
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(3px);
-  }
-
-  @media (max-width: 700px) {
-    display: flex;
-  }
-`;
-
-const SubMenu = styled(Wrapper)`
-  width: 140px;
-  position: absolute;
-  top: 90px;
-  left: 0;
-  background: ${(props) => props.theme.white_C};
-  padding: 30px 0;
-  opacity: 0;
-  visibility: hidden;
-
-  & ${Text} {
-    margin-bottom: 16px;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  & ${Text}:last-child {
-    margin-bottom: 0;
-  }
-`;
-
-const Menu = styled.h2`
-  height: 90px;
-  line-height: 90px;
-  font-size: 18px;
-  font-weight: bold;
-  color: ${Theme.white_C};
-  width: 140px;
-  text-align: center;
+const GlobalImage = styled(Wrapper)`
+  width: auto;
+  height: 29px;
   position: relative;
-  margin: 0;
+  cursor: pointer;
 
-  border-bottom: ${(props) =>
-    props.isActive && `3px solid ${props.theme.white_C}`};
+  & ${Wrapper} {
+    opacity: 0;
+    z-index: -1;
+  }
 
   &:hover {
-    cursor: pointer;
-    border-bottom: 3px solid ${Theme.white_C};
-    transition: 0.4s;
-
-    & ${SubMenu} {
+    & ${Wrapper} {
       opacity: 1;
-      visibility: visible;
+      z-index: 1;
     }
+  }
+`;
+
+const TextHover = styled(Text)`
+  font-size: 17px;
+  position: relative;
+  cursor: pointer;
+  color: ${Theme.white_C};
+
+  &:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: ${Theme.white_C};
+    transition: 0.5s;
+  }
+
+  &:hover {
+    &:before {
+      width: 100%;
+    }
+  }
+
+  ${(props) =>
+    props.active &&
+    `
+      &:before {
+        width: 100%;
+      }
+  `};
+
+  @media (max-width: 700px) {
+    color: ${Theme.black_C};
+    font-weight: 600;
+
+    &:before {
+      height: 2px;
+      background: ${Theme.basicTheme_C};
+    }
+
+    ${(props) =>
+      props.active &&
+      `
+      color: ${Theme.black_C};
+      font-weight: 600;
+
+      &:before {
+        height: 2px;
+        background: ${Theme.basicTheme_C};
+      }
+  `};
   }
 `;
 
 const AppHeader = ({}) => {
   ////////////// - USE STATE- ///////////////
+  const width = useWidth();
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -97,16 +102,9 @@ const AppHeader = ({}) => {
   const [pageY, setPageY] = useState(0);
   // const documentRef = useRef(document);
 
-  const [drawar, setDrawar] = useState(false);
-  const [subMenu, setSubMenu] = useState(``);
-
   const { logos } = useSelector((state) => state.logo);
 
   ///////////// - EVENT HANDLER- ////////////
-
-  const drawarToggle = useCallback(() => {
-    setDrawar(!drawar);
-  });
 
   const handleScroll = useCallback(() => {
     const { pageYOffset } = window;
@@ -133,123 +131,184 @@ const AppHeader = ({}) => {
         position={`fixed`}
         top={`0`}
         left={`0`}
-        zIndex={`99`}
-        bgColor={headerScroll === true && Theme.black_C}
+        height={width < 700 ? `auto` : `90px`}
+        bgColor={
+          width < 700
+            ? Theme.white_C
+            : headerScroll
+            ? Theme.black_C
+            : `transparent`
+        }
+        zIndex={`100`}
       >
-        <RsWrapper dr={`row`} ju={`space-between`}>
-          <ATag href="/" width={`155px`}>
-            {logos && logos.find((data) => data.typeOf === "H") && (
-              <Image
-                width={`155px`}
-                src={logos.find((data) => data.typeOf === "H").imageURL}
-                alt="logo"
-              />
+        <RsWrapper>
+          <Wrapper
+            dr={`row`}
+            height={width < 700 ? `70px` : `90px`}
+            ju={`space-between`}
+            margin={width < 700 ? `0 0 20px` : `0`}
+          >
+            {width < 700 ? (
+              <>
+                {logos &&
+                  logos.length !== 0 &&
+                  logos.find((data) => data.typeOf === "F") && (
+                    <Image
+                      width={`54px`}
+                      src={logos.find((data) => data.typeOf === "F").imageURL}
+                      alt="logo"
+                    />
+                  )}
+              </>
+            ) : (
+              <>
+                {logos &&
+                  logos.length !== 0 &&
+                  logos.find((data) => data.typeOf === "H") && (
+                    <Image
+                      width={`54px`}
+                      src={logos.find((data) => data.typeOf === "H").imageURL}
+                      alt="logo"
+                    />
+                  )}
+              </>
             )}
-          </ATag>
-          <Wrapper dr={`row`} width={`auto`}>
-            <Menu isActive={router.pathname.includes(`/company`)}>
-              회사소개
-              <SubMenu>
-                <Text
-                  fontSize={`16px`}
-                  lineHeight={`1`}
-                  fontWeight={`bold`}
-                  color={Theme.black_C}
-                  isHover
-                >
-                  <Link href={`/company/intro`}>
-                    <a>회사개요</a>
-                  </Link>
-                </Text>
 
-                <Text
-                  fontSize={`16px`}
-                  lineHeight={`1`}
-                  fontWeight={`bold`}
-                  color={Theme.black_C}
-                  isHover
-                >
-                  <Link href={`/company/area`}>
-                    <a>사업영역</a>
-                  </Link>
-                </Text>
+            <Wrapper
+              dr={`row`}
+              width={`auto`}
+              display={width < 700 ? `none` : `flex`}
+            >
+              <Link href={`/`}>
+                <a>
+                  <TextHover active={router.pathname === `/` ? true : false}>
+                    About Us
+                  </TextHover>
+                </a>
+              </Link>
+              <Link href="/rooms">
+                <a>
+                  <TextHover
+                    active={router.pathname === `/rooms` ? true : false}
+                    margin={`0 54px`}
+                  >
+                    Rooms
+                  </TextHover>
+                </a>
+              </Link>
+              <Link href="/update">
+                <a>
+                  <TextHover
+                    active={router.pathname === `/update` ? true : false}
+                  >
+                    Update
+                  </TextHover>
+                </a>
+              </Link>
 
-                <Text
-                  fontSize={`16px`}
-                  lineHeight={`1`}
-                  fontWeight={`bold`}
-                  color={Theme.black_C}
-                  isHover
+              <GlobalImage margin={`0 0 0 54px`}>
+                <Image
+                  src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/header/icon_global.png"
+                  alt="image"
+                  width={`19px`}
+                />
+
+                <Wrapper
+                  width={`58px`}
+                  bgColor={Theme.white_C}
+                  padding={`15px`}
+                  radius={`5px`}
+                  position={`absolute`}
+                  bottom={`-80px`}
+                  right={`0`}
                 >
-                  <Link href={`/company/tree`}>
-                    <a>연혁</a>
-                  </Link>
+                  <Text
+                    color={Theme.darkGrey2_C}
+                    isHover={true}
+                    margin={`0 0 5px`}
+                    isActive={true}
+                  >
+                    ENG
+                  </Text>
+                  <Text color={Theme.darkGrey2_C} isHover={true}>
+                    LAN
+                  </Text>
+                </Wrapper>
+              </GlobalImage>
+            </Wrapper>
+
+            <GlobalImage display={width < 700 ? `flex` : `none`}>
+              <Image
+                src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/header/icon_global_m.png"
+                alt="image"
+                width={`26px`}
+              />
+
+              <Wrapper
+                width={`58px`}
+                bgColor={Theme.white_C}
+                padding={`15px`}
+                radius={`5px`}
+                position={`absolute`}
+                bottom={`-85px`}
+                right={`0`}
+                shadow={`0px 0px 10px rgba(0,0,0,0.2)`}
+              >
+                <Text
+                  fontSize={`14px`}
+                  color={Theme.darkGrey2_C}
+                  isHover={true}
+                  margin={`0 0 5px`}
+                  isActive={true}
+                >
+                  ENG
                 </Text>
                 <Text
-                  fontSize={`16px`}
-                  lineHeight={`1`}
-                  fontWeight={`bold`}
-                  color={Theme.black_C}
-                  isHover
+                  fontSize={`14px`}
+                  color={Theme.darkGrey2_C}
+                  isHover={true}
                 >
-                  <Link href={`/company/vision`}>
-                    <a>비전 및 핵심가치</a>
-                  </Link>
+                  LAN
                 </Text>
-              </SubMenu>
-            </Menu>
-            <Link href={`/finance`}>
+              </Wrapper>
+            </GlobalImage>
+          </Wrapper>
+
+          <Wrapper
+            dr={`row`}
+            ju={`flex-start`}
+            margin={`0 0 20px`}
+            display={width < 700 ? `flex` : `none`}
+          >
+            <Link href={`/`}>
               <a>
-                <Menu isActive={router.pathname === `/finance`}>재무정보</Menu>
+                <TextHover active={router.pathname === `/` ? true : false}>
+                  About Us
+                </TextHover>
               </a>
             </Link>
-            <Link href={`/develop`}>
+            <Link href={`/rooms`}>
               <a>
-                <Menu isActive={router.pathname === `/develop`}>연구개발</Menu>
+                <TextHover
+                  active={router.pathname === `/rooms` ? true : false}
+                  margin={`0 34px`}
+                >
+                  Rooms
+                </TextHover>
               </a>
             </Link>
-            <Link href={`/info`}>
+            <Link href={`/update`}>
               <a>
-                <Menu isActive={router.pathname === `/info`}>사업장 정보</Menu>
+                <TextHover
+                  active={router.pathname === `/update` ? true : false}
+                >
+                  Update
+                </TextHover>
               </a>
             </Link>
           </Wrapper>
-          <Wrapper width={`155px`}></Wrapper>
         </RsWrapper>
       </WholeWrapper>
-
-      {/* mobile */}
-      <MobileRow justify={`center`} className={headerScroll && "background"}>
-        <ColWrapper span={11} al={`flex-start`}>
-          <ATag href="/" width={`155px`}>
-            {logos && logos.find((data) => data.typeOf === "H") && (
-              <Image
-                width={`155px`}
-                src={logos.find((data) => data.typeOf === "H").imageURL}
-                alt="logo"
-              />
-            )}
-          </ATag>
-        </ColWrapper>
-        <ColWrapper
-          span={11}
-          al={`flex-end`}
-          fontSize={`2rem`}
-          color={Theme.white_C}
-        >
-          <AlignRightOutlined onClick={drawarToggle} />
-        </ColWrapper>
-
-        {drawar && (
-          <Drawer
-            placement="right"
-            closable={true}
-            onClose={drawarToggle}
-            visible={drawarToggle}
-            getContainer={false}
-          ></Drawer>
-        )}
-      </MobileRow>
     </>
   );
 };

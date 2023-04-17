@@ -16,7 +16,7 @@ const GlobalStyles = createGlobalStyle`
   ${fontStyle}
 
   body {
-    font-family: "pretendard", sans-serif;
+    font-family: "Poppins", sans-serif;
   }
 
   .whole__admin__wrapper {
