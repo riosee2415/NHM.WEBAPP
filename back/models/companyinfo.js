@@ -12,7 +12,7 @@ module.exports = class CompanyInfo extends Model {
           unique: true, // 고유한 값
         },
         value: {
-          type: DataTypes.STRING(30),
+          type: DataTypes.STRING(1000),
           allowNull: false, // 필수
         },
         sort: {

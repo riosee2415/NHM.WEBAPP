@@ -44,94 +44,83 @@ const AppFooter = () => {
   }, [st_companyError]);
 
   return (
-    <WholeWrapper
-      bgColor={Theme.black_C}
-      color={Theme.white_C}
-      padding={`55px 0`}
-    >
-      <RsWrapper dr={`row`} ju={`space-between`} al={`flex-end`}>
-        <Wrapper width={`auto`} al={`flex-start`}>
-          {companys && (
-            <Wrapper al={`flex-start`}>
-              <Wrapper
-                width={`auto`}
-                dr={`row`}
-                ju={`flex-start`}
-                margin={`0 0 15px`}
-              >
-                {companys[0] && (
-                  <Text
-                    lineHeight={width < 900 && `2`}
-                  >{`${companys[0].name} ${companys[0].value}`}</Text>
-                )}
-                <SpanText
-                  margin={width < 900 ? `0 10px` : `0 16px`}
-                  fontSize={`12px`}
-                >
-                  |
-                </SpanText>
+    <WholeWrapper bgColor={Theme.lightGrey_C} padding={`55px 0`}>
+      <RsWrapper al={`flex-start`}>
+        <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 24px`}>
+          {logos &&
+            logos.length !== 0 &&
+            logos.find((data) => data.typeOf === "F") && (
+              <Image
+                width={`54px`}
+                src={logos.find((data) => data.typeOf === "F").imageURL}
+                alt="logo"
+              />
+            )}
 
-                {companys[1] && (
-                  <Text fontWeight={`300`} lineHeight={width < 900 && `2`}>
-                    {`${companys[1].name} ${companys[1].value}`}
-                  </Text>
-                )}
-                <SpanText
-                  margin={width < 900 ? `0 10px` : `0 16px`}
-                  fontSize={`12px`}
-                >
-                  |
-                </SpanText>
-                {companys[2] && (
-                  <Text
-                    fontWeight={`300`}
-                    lineHeight={width < 900 && `2`}
-                  >{`${companys[2].name} ${companys[2].value}`}</Text>
-                )}
-              </Wrapper>
-              <Wrapper dr={`row`} ju={`flex-start`} color={Theme.subTheme5_C}>
-                {companys[3] && (
-                  <Text
-                    fontWeight={`300`}
-                    lineHeight={width < 900 && `2`}
-                  >{`${companys[3].name} ${companys[3].value}`}</Text>
-                )}
-                <SpanText
-                  margin={width < 900 ? `0 10px` : `0 16px`}
-                  fontSize={`12px`}
-                >
-                  |
-                </SpanText>
-                {companys[4] && (
-                  <Text
-                    fontWeight={`300`}
-                    lineHeight={width < 900 && `2`}
-                  >{`${companys[4].name} ${companys[4].value}`}</Text>
-                )}
-              </Wrapper>
-              <Text
-                fontWeight={`300`}
-                color={Theme.subTheme5_C}
-                margin={`15px 0 50px`}
-              >
-                통신판매업신고번호 제2014-서울강남02724 [사업자정보확인]
-              </Text>
-              <Text fontWeight={`300`} color={Theme.subTheme6_C}>
-                Copyright © SKIN1004. All rights reserved.
-              </Text>
-            </Wrapper>
-          )}
+          <Wrapper dr={`row`} width={`auto`}>
+            <Text
+              isHover={true}
+              color={Theme.darkGrey2_C}
+              margin={`0 40px 0 0`}
+            >
+              Terms of User
+            </Text>
+            <Text isHover={true} color={Theme.darkGrey2_C}>
+              privacy policy
+            </Text>
+          </Wrapper>
         </Wrapper>
 
-        {logos &&
-          logos.length === 0 &&
-          logos.find((data) => data.typeOf === "F") && (
-            <Image
-              width={width < 800 ? `100px` : `170px`}
-              src={logos.find((data) => data.typeOf === "F").imageURL}
-              alt="logo"
-            />
+        <Wrapper al={`flex-start`}>
+          <Text fontSize={`18px`} margin={`0 0 5px`} fontWeight={`600`}>
+            NHM Consulting Coporation
+          </Text>
+
+          {companys[0] && (
+            <Wrapper dr={`row`} width={`auto`}>
+              <Text
+                lineHeight={width < 900 && `2`}
+                fontSize={`14px`}
+                width={`65px`}
+              >
+                {companys[0].name}
+              </Text>
+              <Text color={Theme.darkGrey_C}>{companys[0].value}</Text>
+            </Wrapper>
           )}
+
+          {companys[1] && (
+            <Wrapper dr={`row`} width={`auto`} margin={`5px 0`}>
+              <Text
+                lineHeight={width < 900 && `2`}
+                fontSize={`14px`}
+                width={`65px`}
+              >
+                {companys[1].name}
+              </Text>
+              <Text color={Theme.darkGrey_C}>{companys[1].value}</Text>
+            </Wrapper>
+          )}
+
+          <Wrapper dr={`row`} ju={`space-between`}>
+            {companys[2] && (
+              <Wrapper dr={`row`} width={`auto`}>
+                <Text
+                  lineHeight={width < 900 && `2`}
+                  fontSize={`14px`}
+                  width={`65px`}
+                >
+                  {companys[2].name}
+                </Text>
+                <Text color={Theme.darkGrey_C}>{companys[2].value}</Text>
+              </Wrapper>
+            )}
+
+            <Text fontSize={`14px`} color={Theme.grey2_C}>
+              Copyright © 2023 Koreais. All Rights Reserved.
+            </Text>
+          </Wrapper>
+        </Wrapper>
       </RsWrapper>
     </WholeWrapper>
   );
