@@ -153,6 +153,15 @@ export const Wrapper = styled.div`
   text-align: ${(props) => props.textAlign};
   letter-spacing: ${(props) => props.letterSpacing};
   opacity: ${(props) => props.opacity};
+
+  ${(props) =>
+    props.isEllipsis &&
+    `
+    display : block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+  `}
 `;
 
 export const RsWrapper = styled.article`
@@ -207,8 +216,10 @@ export const CommonButton = styled(Button)`
   margin: ${(props) => props.margin};
   padding: ${(props) => props.padding};
   font-size: ${(props) => props.fontSize};
+  font-weight: ${(props) => props.fontWeight};
   color: ${(props) => props.color || props.theme.basicTheme_C};
   border-radius: ${(props) => props.radius || `7px`};
+  box-shadow: ${(props) => props.shadow};
 
   ${(props) => !props.kindOf && `background : ${props.theme.basicTheme_C};`}
   ${(props) =>
@@ -235,10 +246,13 @@ export const CommonButton = styled(Button)`
   
   ${(props) =>
     props.kindOf === `subTheme` && `background : ${props.theme.subTheme_C};`}
-  ${(props) => props.kindOf === `subTheme` && `color : ${props.theme.white_C};`}
+  ${(props) =>
+    props.kindOf === `subTheme` && `color : ${props.theme.basicTheme_C};`}
   ${(props) =>
     props.kindOf === `subTheme` &&
     `border : 1px solid ${props.theme.subTheme_C};`}
+
+
   ${(props) =>
     props.kindOf === `kakao` && `background : ${props.theme.kakao_C};`}
   ${(props) =>
@@ -270,12 +284,11 @@ export const CommonButton = styled(Button)`
 
 
     ${(props) =>
-      props.kindOf === `grey` && `background : ${props.theme.darkGrey_C};`}
+      props.kindOf === `grey` && `background : ${props.theme.grey_C};`}
     ${(props) =>
-      props.kindOf === `grey` && `color : ${props.theme.lightGrey2_C};`}
+      props.kindOf === `grey` && `color : ${props.theme.darkGrey_C};`}
     ${(props) =>
-      props.kindOf === `grey` &&
-      `border : 1px solid ${props.theme.darkGrey_C};`}
+      props.kindOf === `grey` && `border : 1px solid ${props.theme.grey_C};`}
 
 
     ${(props) =>
@@ -283,10 +296,15 @@ export const CommonButton = styled(Button)`
     ${(props) => props.kindOf === `black` && `color : ${props.theme.black_C};`}
     ${(props) =>
       props.kindOf === `black` && `border : 1px solid ${props.theme.black_C};`}
+
     ${(props) =>
-      props.kindOf === `subTheme` && `color ${props.theme.subTheme_C};`}
+      props.kindOf === `subTheme` && `background : ${props.theme.subTheme3_C};`}
     ${(props) =>
-      props.kindOf === `subTheme` && `background ${props.theme.white_C};`}
+      props.kindOf === `subTheme` && `color : ${props.theme.basicTheme_C};`}
+    ${(props) =>
+      props.kindOf === `subTheme` &&
+      `border : 1px solid ${props.theme.subTheme3_C};`}
+      
     ${(props) =>
       props.kindOf === `kakao` && `background : ${props.theme.kakao_C};`}
     ${(props) =>
@@ -451,7 +469,7 @@ export const TextInput = styled.input`
 
   &:focus {
     outline: none;
-    border: 1px solid ${(props) => props.theme.subTheme_C};
+    border: 1px solid ${(props) => props.theme.basicTheme_C};
   }
 
   &:read-only {
@@ -466,7 +484,7 @@ export const TextInput = styled.input`
   &::placeholder {
     font-size: 14px;
     line-height: 1.6;
-    color: ${(props) => props.theme.lightGrey_C};
+    color: ${(props) => props.theme.grey_C};
   }
 `;
 
@@ -490,7 +508,7 @@ export const TextArea = styled.textarea`
   &::placeholder {
     font-size: 14px;
     line-height: 1.6;
-    color: ${(props) => props.theme.lightGrey_C};
+    color: ${(props) => props.theme.grey_C};
   }
 `;
 

@@ -1,13 +1,10 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
-import useInput from "../hooks/useInput";
 import ClientLayout from "../components/ClientLayout";
 import axios from "axios";
 import wrapper from "../store/configureStore";
 import { END } from "redux-saga";
 import {
-  CommonButton,
   Image,
   RsWrapper,
   Text,
@@ -20,8 +17,6 @@ import Theme from "../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
 import Popup from "../components/popup/popup";
-import Mainslider from "../components/slide/MainSlider";
-import CC02 from "../components/common/CC02";
 import UpdateSlider from "../components/slide/UpdateSlider";
 
 const SquareBox = styled(Wrapper)`
@@ -89,7 +84,7 @@ const Home = ({}) => {
   return (
     <>
       <Head>
-        <title>ALAL</title>
+        <title>KOREAIS</title>
       </Head>
 
       <ClientLayout>

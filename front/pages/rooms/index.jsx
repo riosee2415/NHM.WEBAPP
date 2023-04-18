@@ -71,6 +71,11 @@ const SquareBox = styled(Wrapper)`
     display: block;
     padding-bottom: 100%;
   }
+
+  @media (max-width: 900px) {
+    width: 110px;
+    margin: 0;
+  }
 `;
 
 const RommsBox = styled(Wrapper)`
@@ -100,6 +105,7 @@ const RommsBox = styled(Wrapper)`
   @media (max-width: 900px) {
     width: 100%;
     margin: 0 0 24px;
+    flex-direction: row;
 
     &:nth-child(4n) {
       margin: 0 0 24px;
@@ -124,7 +130,7 @@ const Index = ({}) => {
   return (
     <>
       <Head>
-        <title>ALAL</title>
+        <title>KOREAIS | ROOMS</title>
       </Head>
 
       <ClientLayout>
@@ -321,11 +327,11 @@ const Index = ({}) => {
                 <SquareBox>
                   <Wrapper
                     position={`absolute`}
-                    top={`20px`}
+                    top={width < 900 ? `10px` : `20px`}
                     left={`20px`}
                     bgColor={`rgba(0,0,0,0.4)`}
                     color={Theme.white_C}
-                    fontSize={`16px`}
+                    fontSize={width < 900 ? `10px` : `16px`}
                     radius={`5px`}
                     zIndex={`2`}
                     width={`auto`}
@@ -343,353 +349,73 @@ const Index = ({}) => {
                     width={`100%`}
                   />
                 </SquareBox>
-                <Wrapper al={`flex-start`}>
+                <Wrapper
+                  al={`flex-start`}
+                  width={width < 900 ? `calc(100% - 110px)` : `100%`}
+                  padding={width < 900 ? `0 0 0 10px` : `0`}
+                >
                   <IndexBox onClick={() => setIsIndex(true)}>
-                    <Text fontSize={`15px`}>
+                    <Text fontSize={width < 900 ? `12px` : `15px`}>
                       KI index&nbsp;
                       <SpanText color={Theme.basicTheme_C}>5.0</SpanText>
                     </Text>
                   </IndexBox>
                   {isIndex && (
                     <Wrapper
-                      position={`absolute`}
-                      bottom={`-210px`}
+                      position={width < 900 ? `fixed` : `absolute`}
+                      bottom={width < 900 ? `50%` : `-210px`}
                       left={`0`}
-                      padding={width < 900 ? `40px 15px` : `40px`}
-                      bgColor={Theme.white_C}
-                      shadow={`0px 0px 10px rgba(0,0,0,0.1)`}
+                      width={width < 900 ? `100%` : `404px`}
+                      padding={width < 900 ? `0 20px` : `0`}
                       zIndex={`10`}
-                      radius={`5px`}
-                      width={width < 900 ? `90%` : `404px`}
                     >
                       <Wrapper
-                        al={`flex-end`}
-                        margin={width < 900 ? `0` : `0 -20px 0 0`}
+                        padding={width < 900 ? `40px 30px` : `40px`}
+                        bgColor={Theme.white_C}
+                        shadow={`0px 0px 10px rgba(0,0,0,0.1)`}
+                        radius={`5px`}
                       >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/icon_close.png"
-                          alt="icon"
-                          onClick={() => setIsIndex(false)}
-                          width={`14px`}
-                        />
-                      </Wrapper>
+                        <Wrapper
+                          al={`flex-end`}
+                          margin={
+                            width < 900 ? `-20px -20px 0 0` : `0 -20px 0 0`
+                          }
+                        >
+                          <Image
+                            src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/icon_close.png"
+                            alt="icon"
+                            onClick={() => setIsIndex(false)}
+                            width={`14px`}
+                          />
+                        </Wrapper>
 
-                      <Wrapper fontSize={`16px`} color={Theme.black_C}>
-                        <Text>The Koreais develop KI index.</Text>
-                        <Text>KI index is a foreigner-friendly score</Text>
-                        <Text>considering the infrastructure and</Text>
-                        <Text>characteristics of the area where the</Text>
-                        <Text>property are located, and the higher the</Text>
-                        <Text>score, the better the neighborhood for</Text>
-                        <Text>foreigners to live in</Text>
+                        <Wrapper
+                          fontSize={width < 900 ? `13px` : `16px`}
+                          color={Theme.black_C}
+                        >
+                          <Text>The Koreais develop KI index.</Text>
+                          <Text>KI index is a foreigner-friendly score</Text>
+                          <Text>considering the infrastructure and</Text>
+                          <Text>characteristics of the area where the</Text>
+                          <Text>property are located, and the higher the</Text>
+                          <Text>score, the better the neighborhood for</Text>
+                          <Text>foreigners to live in</Text>
+                        </Wrapper>
                       </Wrapper>
                     </Wrapper>
                   )}
 
-                  <Text fontSize={`20px`} fontWeight={`600`} margin={`0 0 5px`}>
-                    Month 1.3m/20m
-                  </Text>
-                  <Text fontSize={`16px`} color={Theme.darkGrey_C}>
-                    Dondaemun Station One room
-                  </Text>
-                </Wrapper>
-              </RommsBox>
-
-              <RommsBox>
-                <SquareBox>
-                  <Wrapper
-                    position={`absolute`}
-                    top={`20px`}
-                    left={`20px`}
-                    bgColor={`rgba(0,0,0,0.4)`}
-                    color={Theme.white_C}
-                    fontSize={`16px`}
-                    radius={`5px`}
-                    zIndex={`2`}
-                    width={`auto`}
-                    padding={`3px 10px`}
+                  <Text
+                    fontSize={width < 900 ? `16px` : `20px`}
+                    fontWeight={`600`}
+                    margin={width < 900 ? `0` : `0 0 5px`}
                   >
-                    NO.123456
-                  </Wrapper>
-                  <Image
-                    className="thumbnail"
-                    position={`absolute`}
-                    top={`0`}
-                    left={`0`}
-                    src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/img_rooms_gangbukgu.png"
-                    alt="thumbnail"
-                    width={`100%`}
-                  />
-                </SquareBox>
-                <Wrapper al={`flex-start`}>
-                  <IndexBox onClick={() => setIsIndex(true)}>
-                    <Text fontSize={`15px`}>
-                      KI index&nbsp;
-                      <SpanText color={Theme.basicTheme_C}>5.0</SpanText>
-                    </Text>
-                  </IndexBox>
-                  {isIndex && (
-                    <Wrapper
-                      position={`absolute`}
-                      bottom={`-210px`}
-                      left={`0`}
-                      padding={`40px`}
-                      bgColor={Theme.white_C}
-                      shadow={`0px 0px 10px rgba(0,0,0,0.1)`}
-                      zIndex={`10`}
-                      radius={`5px`}
-                      width={`404px`}
-                    >
-                      <Wrapper al={`flex-end`} margin={`0 -20px 0 0`}>
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/icon_close.png"
-                          alt="icon"
-                          onClick={() => setIsIndex(false)}
-                          width={`14px`}
-                        />
-                      </Wrapper>
-
-                      <Wrapper fontSize={`16px`} color={Theme.black_C}>
-                        <Text>The Koreais develop KI index.</Text>
-                        <Text>KI index is a foreigner-friendly score</Text>
-                        <Text>considering the infrastructure and</Text>
-                        <Text>characteristics of the area where the</Text>
-                        <Text>property are located, and the higher the</Text>
-                        <Text>score, the better the neighborhood for</Text>
-                        <Text>foreigners to live in</Text>
-                      </Wrapper>
-                    </Wrapper>
-                  )}
-
-                  <Text fontSize={`20px`} fontWeight={`600`} margin={`0 0 5px`}>
                     Month 1.3m/20m
                   </Text>
-                  <Text fontSize={`16px`} color={Theme.darkGrey_C}>
-                    Dondaemun Station One room
-                  </Text>
-                </Wrapper>
-              </RommsBox>
-
-              <RommsBox>
-                <SquareBox>
-                  <Wrapper
-                    position={`absolute`}
-                    top={`20px`}
-                    left={`20px`}
-                    bgColor={`rgba(0,0,0,0.4)`}
-                    color={Theme.white_C}
-                    fontSize={`16px`}
-                    radius={`5px`}
-                    zIndex={`2`}
-                    width={`auto`}
-                    padding={`3px 10px`}
+                  <Text
+                    fontSize={width < 900 ? `14px` : `16px`}
+                    color={Theme.darkGrey_C}
                   >
-                    NO.123456
-                  </Wrapper>
-                  <Image
-                    className="thumbnail"
-                    position={`absolute`}
-                    top={`0`}
-                    left={`0`}
-                    src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/img_rooms_gangbukgu.png"
-                    alt="thumbnail"
-                    width={`100%`}
-                  />
-                </SquareBox>
-                <Wrapper al={`flex-start`}>
-                  <IndexBox onClick={() => setIsIndex(true)}>
-                    <Text fontSize={`15px`}>
-                      KI index&nbsp;
-                      <SpanText color={Theme.basicTheme_C}>5.0</SpanText>
-                    </Text>
-                  </IndexBox>
-                  {isIndex && (
-                    <Wrapper
-                      position={`absolute`}
-                      bottom={`-210px`}
-                      left={`0`}
-                      padding={`40px`}
-                      bgColor={Theme.white_C}
-                      shadow={`0px 0px 10px rgba(0,0,0,0.1)`}
-                      zIndex={`10`}
-                      radius={`5px`}
-                      width={`404px`}
-                    >
-                      <Wrapper al={`flex-end`} margin={`0 -20px 0 0`}>
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/icon_close.png"
-                          alt="icon"
-                          onClick={() => setIsIndex(false)}
-                          width={`14px`}
-                        />
-                      </Wrapper>
-
-                      <Wrapper fontSize={`16px`} color={Theme.black_C}>
-                        <Text>The Koreais develop KI index.</Text>
-                        <Text>KI index is a foreigner-friendly score</Text>
-                        <Text>considering the infrastructure and</Text>
-                        <Text>characteristics of the area where the</Text>
-                        <Text>property are located, and the higher the</Text>
-                        <Text>score, the better the neighborhood for</Text>
-                        <Text>foreigners to live in</Text>
-                      </Wrapper>
-                    </Wrapper>
-                  )}
-
-                  <Text fontSize={`20px`} fontWeight={`600`} margin={`0 0 5px`}>
-                    Month 1.3m/20m
-                  </Text>
-                  <Text fontSize={`16px`} color={Theme.darkGrey_C}>
-                    Dondaemun Station One room
-                  </Text>
-                </Wrapper>
-              </RommsBox>
-
-              <RommsBox>
-                <SquareBox>
-                  <Wrapper
-                    position={`absolute`}
-                    top={`20px`}
-                    left={`20px`}
-                    bgColor={`rgba(0,0,0,0.4)`}
-                    color={Theme.white_C}
-                    fontSize={`16px`}
-                    radius={`5px`}
-                    zIndex={`2`}
-                    width={`auto`}
-                    padding={`3px 10px`}
-                  >
-                    NO.123456
-                  </Wrapper>
-                  <Image
-                    className="thumbnail"
-                    position={`absolute`}
-                    top={`0`}
-                    left={`0`}
-                    src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/img_rooms_gangbukgu.png"
-                    alt="thumbnail"
-                    width={`100%`}
-                  />
-                </SquareBox>
-                <Wrapper al={`flex-start`}>
-                  <IndexBox onClick={() => setIsIndex(true)}>
-                    <Text fontSize={`15px`}>
-                      KI index&nbsp;
-                      <SpanText color={Theme.basicTheme_C}>5.0</SpanText>
-                    </Text>
-                  </IndexBox>
-                  {isIndex && (
-                    <Wrapper
-                      position={`absolute`}
-                      bottom={`-210px`}
-                      left={`0`}
-                      padding={`40px`}
-                      bgColor={Theme.white_C}
-                      shadow={`0px 0px 10px rgba(0,0,0,0.1)`}
-                      zIndex={`10`}
-                      radius={`5px`}
-                      width={`404px`}
-                    >
-                      <Wrapper al={`flex-end`} margin={`0 -20px 0 0`}>
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/icon_close.png"
-                          alt="icon"
-                          onClick={() => setIsIndex(false)}
-                          width={`14px`}
-                        />
-                      </Wrapper>
-
-                      <Wrapper fontSize={`16px`} color={Theme.black_C}>
-                        <Text>The Koreais develop KI index.</Text>
-                        <Text>KI index is a foreigner-friendly score</Text>
-                        <Text>considering the infrastructure and</Text>
-                        <Text>characteristics of the area where the</Text>
-                        <Text>property are located, and the higher the</Text>
-                        <Text>score, the better the neighborhood for</Text>
-                        <Text>foreigners to live in</Text>
-                      </Wrapper>
-                    </Wrapper>
-                  )}
-
-                  <Text fontSize={`20px`} fontWeight={`600`} margin={`0 0 5px`}>
-                    Month 1.3m/20m
-                  </Text>
-                  <Text fontSize={`16px`} color={Theme.darkGrey_C}>
-                    Dondaemun Station One room
-                  </Text>
-                </Wrapper>
-              </RommsBox>
-
-              <RommsBox>
-                <SquareBox>
-                  <Wrapper
-                    position={`absolute`}
-                    top={`20px`}
-                    left={`20px`}
-                    bgColor={`rgba(0,0,0,0.4)`}
-                    color={Theme.white_C}
-                    fontSize={`16px`}
-                    radius={`5px`}
-                    zIndex={`2`}
-                    width={`auto`}
-                    padding={`3px 10px`}
-                  >
-                    NO.123456
-                  </Wrapper>
-                  <Image
-                    className="thumbnail"
-                    position={`absolute`}
-                    top={`0`}
-                    left={`0`}
-                    src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/img_rooms_gangbukgu.png"
-                    alt="thumbnail"
-                    width={`100%`}
-                  />
-                </SquareBox>
-                <Wrapper al={`flex-start`}>
-                  <IndexBox onClick={() => setIsIndex(true)}>
-                    <Text fontSize={`15px`}>
-                      KI index&nbsp;
-                      <SpanText color={Theme.basicTheme_C}>5.0</SpanText>
-                    </Text>
-                  </IndexBox>
-                  {isIndex && (
-                    <Wrapper
-                      position={`absolute`}
-                      bottom={`-210px`}
-                      left={`0`}
-                      padding={`40px`}
-                      bgColor={Theme.white_C}
-                      shadow={`0px 0px 10px rgba(0,0,0,0.1)`}
-                      zIndex={`10`}
-                      radius={`5px`}
-                      width={`404px`}
-                    >
-                      <Wrapper al={`flex-end`} margin={`0 -20px 0 0`}>
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/icon_close.png"
-                          alt="icon"
-                          onClick={() => setIsIndex(false)}
-                          width={`14px`}
-                        />
-                      </Wrapper>
-
-                      <Wrapper fontSize={`16px`} color={Theme.black_C}>
-                        <Text>The Koreais develop KI index.</Text>
-                        <Text>KI index is a foreigner-friendly score</Text>
-                        <Text>considering the infrastructure and</Text>
-                        <Text>characteristics of the area where the</Text>
-                        <Text>property are located, and the higher the</Text>
-                        <Text>score, the better the neighborhood for</Text>
-                        <Text>foreigners to live in</Text>
-                      </Wrapper>
-                    </Wrapper>
-                  )}
-
-                  <Text fontSize={`20px`} fontWeight={`600`} margin={`0 0 5px`}>
-                    Month 1.3m/20m
-                  </Text>
-                  <Text fontSize={`16px`} color={Theme.darkGrey_C}>
                     Dondaemun Station One room
                   </Text>
                 </Wrapper>

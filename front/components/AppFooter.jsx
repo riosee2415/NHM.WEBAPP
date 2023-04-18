@@ -5,7 +5,6 @@ import {
   Image,
   WholeWrapper,
   RsWrapper,
-  SpanText,
 } from "./commonComponents";
 import Theme from "./Theme";
 import useWidth from "../hooks/useWidth";

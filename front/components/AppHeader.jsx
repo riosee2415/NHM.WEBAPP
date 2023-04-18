@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
-  RowWrapper,
-  ColWrapper,
   Image,
-  ATag,
   WholeWrapper,
   RsWrapper,
   Wrapper,
@@ -11,8 +8,6 @@ import {
 } from "./commonComponents";
 import styled from "styled-components";
 import Theme from "./Theme";
-import { AlignRightOutlined } from "@ant-design/icons";
-import { Drawer } from "antd";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { LOGO_GET_REQUEST } from "../reducers/logo";
