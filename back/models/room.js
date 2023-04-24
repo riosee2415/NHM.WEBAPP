@@ -27,51 +27,51 @@ module.exports = class Room extends Model {
           allowNull: false,
         },
         deposit1: {
-          type: DataTypes.STRING(100), // deposit
+          type: DataTypes.STRING(100), // 6개월 deposit
           allowNull: false,
         },
         deposit2: {
-          type: DataTypes.STRING(100), // deposit
+          type: DataTypes.STRING(100), // 1년 deposit
           allowNull: false,
         },
         deposit3: {
-          type: DataTypes.STRING(100), // deposit
+          type: DataTypes.STRING(100), // 2년 deposit
           allowNull: false,
         },
         monthlyPayment1: {
-          type: DataTypes.STRING(100), // monthlyPay
+          type: DataTypes.STRING(100), // 6개월 monthlyPay
           allowNull: false,
         },
         monthlyPayment2: {
-          type: DataTypes.STRING(100), // monthlyPay
+          type: DataTypes.STRING(100), // 1년 monthlyPay
           allowNull: false,
         },
         monthlyPayment3: {
-          type: DataTypes.STRING(100), // monthlyPay
+          type: DataTypes.STRING(100), // 2년 monthlyPay
           allowNull: false,
         },
         realEstateFee1: {
-          type: DataTypes.STRING(100), // RealEstateFee
+          type: DataTypes.STRING(100), // 6개월 RealEstateFee
           allowNull: false,
         },
         realEstateFee2: {
-          type: DataTypes.STRING(100), // RealEstateFee
+          type: DataTypes.STRING(100), // 1년 RealEstateFee
           allowNull: false,
         },
         realEstateFee3: {
-          type: DataTypes.STRING(100), // RealEstateFee
+          type: DataTypes.STRING(100), // 2년 RealEstateFee
           allowNull: false,
         },
         fee1: {
-          type: DataTypes.STRING(100), // fee
+          type: DataTypes.STRING(100), // 6개월 fee
           allowNull: false,
         },
         fee2: {
-          type: DataTypes.STRING(100), // fee
+          type: DataTypes.STRING(100), // 1년 fee
           allowNull: false,
         },
         fee3: {
-          type: DataTypes.STRING(100), // fee
+          type: DataTypes.STRING(100), // 2년 fee
           allowNull: false,
         },
         moveInDate: {
@@ -94,6 +94,11 @@ module.exports = class Room extends Model {
           type: DataTypes.STRING(100), // 지역
           allowNull: false,
         },
+        onOff: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: 0,
+        },
       },
       {
         modelName: "Room",
@@ -104,5 +109,7 @@ module.exports = class Room extends Model {
       }
     );
   }
-  static associate(db) {}
+  static associate(db) {
+    db.Room.belongsTo(db.RoomType);
+  }
 };

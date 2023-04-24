@@ -24,6 +24,15 @@ const questionhistory = require("./questionhistory");
 const noticeHistory = require("./noticeHistory");
 const galleryImage = require("./galleryImage");
 const adminUserRightHistory = require("./adminUserRightHistory");
+const infra = require("./infra");
+const maintenance = require("./maintenance");
+const room = require("./room");
+const roomBanner = require("./roomBanner");
+const option = require("./option");
+const roomType = require("./roomType");
+const roomOption = require("./roomOption");
+const roomInfra = require("./roomInfra");
+const roomMaintenance = require("./roomMaintenance");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
@@ -61,6 +70,15 @@ db.QuestionHistory = questionhistory;
 db.NoticeHistory = noticeHistory;
 db.GalleryImage = galleryImage;
 db.AdminUserRightHistory = adminUserRightHistory;
+db.Infra = infra;
+db.Maintenance = maintenance;
+db.Room = room;
+db.RoomBanner = roomBanner;
+db.Option = option;
+db.RoomType = roomType;
+db.RoomOption = roomOption;
+db.RoomInfra = roomInfra;
+db.RoomMaintenance = roomMaintenance;
 
 Object.keys(db).forEach((modelName) => {
   db[modelName].init(sequelize);

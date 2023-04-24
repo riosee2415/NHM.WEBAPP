@@ -20,5 +20,7 @@ module.exports = class RoomBanner extends Model {
       }
     );
   }
-  static associate(db) {}
+  static associate(db) {
+    db.RoomBanner.belongsTo(db.Room);
+  }
 };
