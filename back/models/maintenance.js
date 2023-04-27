@@ -14,6 +14,10 @@ module.exports = class Maintenance extends Model {
           type: DataTypes.STRING(1000),
           allowNull: false,
         },
+        isDelete: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+        },
       },
       {
         modelName: "Maintenance",

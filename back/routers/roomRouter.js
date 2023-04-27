@@ -49,7 +49,7 @@ router.post(
 // ROOM TYPE  //////////////////////////////////////
 ////////////////////////////////////////////////////
 
-//매물 타입 이미지 생성
+//매물 지역 타입 이미지 생성
 router.post("/type/create", isAdminCheck, async (req, res, next) => {
   const { title, imagePath } = req.body;
 
@@ -77,6 +77,26 @@ router.post("/type/create", isAdminCheck, async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(400).send("지역을 생성할 수 없습니다.");
+  }
+});
+
+// 매물 지역 타입 이미지 삭제
+router.post("/type/delete", isAdminCheck, async (req, res, next) => {
+  const { typeId } = req.body;
+
+  const updateQuery = `
+    UPDATE  roomType
+       SET  isDelete = TURE
+     WHERE  id = ${typeId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
   }
 });
 
@@ -119,6 +139,26 @@ router.post("/option/create", isAdminCheck, async (req, res, next) => {
   }
 });
 
+// 옵션 아이콘 삭제
+router.post("/option/delete", isAdminCheck, async (req, res, next) => {
+  const { optionId } = req.body;
+
+  const updateQuery = `
+    UPDATE  options
+       SET  isDelete = TURE
+     WHERE  id = ${optionId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
+  }
+});
+
 ////////////////////////////////////////////////////
 // ROOM INFRA  /////////////////////////////////////
 ////////////////////////////////////////////////////
@@ -154,6 +194,26 @@ router.post("/infra/create", isAdminCheck, async (req, res, next) => {
   }
 });
 
+// 옵션 아이콘 삭제
+router.post("/infra/delete", isAdminCheck, async (req, res, next) => {
+  const { infraId } = req.body;
+
+  const updateQuery = `
+    UPDATE  infras
+       SET  isDelete = TURE
+     WHERE  id = ${infraId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
+  }
+});
+
 ////////////////////////////////////////////////////
 // ROOM MAINTENANCE  ///////////////////////////////
 ////////////////////////////////////////////////////
@@ -185,7 +245,27 @@ router.post("/maintenance/create", isAdminCheck, async (req, res, next) => {
     return res.status(200).json({ result: true });
   } catch (error) {
     console.error(error);
-    return res.status(400).send("유지보수를 생성할 수 없습니다.");
+    return res.status(400).send("데이터를 생성할 수 없습니다.");
+  }
+});
+
+// 옵션 아이콘 삭제
+router.post("/maintenance/delete", isAdminCheck, async (req, res, next) => {
+  const { maintenanceId } = req.body;
+
+  const updateQuery = `
+    UPDATE  maintenances
+       SET  isDelete = TURE
+     WHERE  id = ${maintenanceId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
   }
 });
 

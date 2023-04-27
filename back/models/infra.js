@@ -14,6 +14,10 @@ module.exports = class Infra extends Model {
           type: DataTypes.STRING(1000),
           allowNull: false, // 필수
         },
+        isDelete: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+        },
       },
       {
         modelName: "Infra",
