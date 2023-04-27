@@ -100,6 +100,27 @@ router.post("/type/delete", isAdminCheck, async (req, res, next) => {
   }
 });
 
+// 매물 지역 타입 이미지 수정
+router.post("/type/update", isAdminCheck, async (req, res, next) => {
+  const { title, imagePath, typeId } = req.body;
+
+  const updateQuery = `
+    UPDATE  roomType
+       SET  title = "${title}",
+            imagePath = "${imagePath}",
+     WHERE  id = ${typeId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("해당 데이터를 수정항 수 없습니다.");
+  }
+});
+
 ////////////////////////////////////////////////////
 // ROOM BANNER  ////////////////////////////////////
 ////////////////////////////////////////////////////
@@ -159,6 +180,27 @@ router.post("/option/delete", isAdminCheck, async (req, res, next) => {
   }
 });
 
+// 옵션 아이콘 수정
+router.post("/option/update", isAdminCheck, async (req, res, next) => {
+  const { title, imagePath, typeId } = req.body;
+
+  const updateQuery = `
+    UPDATE  options
+       SET  title = "${title}",
+            imagePath = "${imagePath}",
+     WHERE  id = ${typeId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("해당 데이터를 수정항 수 없습니다.");
+  }
+});
+
 ////////////////////////////////////////////////////
 // ROOM INFRA  /////////////////////////////////////
 ////////////////////////////////////////////////////
@@ -194,7 +236,7 @@ router.post("/infra/create", isAdminCheck, async (req, res, next) => {
   }
 });
 
-// 옵션 아이콘 삭제
+// 인프라 아이콘 삭제
 router.post("/infra/delete", isAdminCheck, async (req, res, next) => {
   const { infraId } = req.body;
 
@@ -211,6 +253,27 @@ router.post("/infra/delete", isAdminCheck, async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
+  }
+});
+
+// 인프라 아이콘 수정
+router.post("/infra/update", isAdminCheck, async (req, res, next) => {
+  const { title, imagePath, typeId } = req.body;
+
+  const updateQuery = `
+    UPDATE  infras
+       SET  title = "${title}",
+            imagePath = "${imagePath}",
+     WHERE  id = ${typeId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("해당 데이터를 수정항 수 없습니다.");
   }
 });
 
@@ -249,7 +312,7 @@ router.post("/maintenance/create", isAdminCheck, async (req, res, next) => {
   }
 });
 
-// 옵션 아이콘 삭제
+// 유지보수 아이콘 삭제
 router.post("/maintenance/delete", isAdminCheck, async (req, res, next) => {
   const { maintenanceId } = req.body;
 
@@ -266,6 +329,27 @@ router.post("/maintenance/delete", isAdminCheck, async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
+  }
+});
+
+// 유지보수 아이콘 수정
+router.post("/maintenance/update", isAdminCheck, async (req, res, next) => {
+  const { title, imagePath, typeId } = req.body;
+
+  const updateQuery = `
+    UPDATE  maintenances
+       SET  title = "${title}",
+            imagePath = "${imagePath}",
+     WHERE  id = ${typeId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("해당 데이터를 수정항 수 없습니다.");
   }
 });
 
