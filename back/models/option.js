@@ -10,7 +10,7 @@ module.exports = class Option extends Model {
           type: DataTypes.STRING(100),
           allowNull: false,
         },
-        thumbnailPath: {
+        imagePath: {
           type: DataTypes.STRING(1000),
           allowNull: false,
         },

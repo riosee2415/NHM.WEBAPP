@@ -11,7 +11,7 @@ module.exports = class Room extends Model {
           allowNull: false,
         },
         thumbnail: {
-          type: DataTypes.STRING(100), // 썸네일 1장
+          type: DataTypes.STRING(1000), // 썸네일 1장
           allowNull: false,
         },
         kiIndex: {
@@ -27,51 +27,63 @@ module.exports = class Room extends Model {
           allowNull: false,
         },
         deposit1: {
-          type: DataTypes.STRING(100), // 6개월 deposit
+          type: DataTypes.INTEGER, // 6개월 deposit
           allowNull: false,
         },
         deposit2: {
-          type: DataTypes.STRING(100), // 1년 deposit
+          type: DataTypes.INTEGER, // 1년 deposit
           allowNull: false,
         },
         deposit3: {
-          type: DataTypes.STRING(100), // 2년 deposit
+          type: DataTypes.INTEGER, // 2년 deposit
           allowNull: false,
         },
         monthlyPayment1: {
-          type: DataTypes.STRING(100), // 6개월 monthlyPay
+          type: DataTypes.INTEGER, // 6개월 monthlyPay
           allowNull: false,
         },
         monthlyPayment2: {
-          type: DataTypes.STRING(100), // 1년 monthlyPay
+          type: DataTypes.INTEGER, // 1년 monthlyPay
           allowNull: false,
         },
         monthlyPayment3: {
-          type: DataTypes.STRING(100), // 2년 monthlyPay
+          type: DataTypes.INTEGER, // 2년 monthlyPay
+          allowNull: false,
+        },
+        expense1: {
+          type: DataTypes.INTEGER, // 6개월 management expense
+          allowNull: false,
+        },
+        expense2: {
+          type: DataTypes.INTEGER, // 1년 management expense
+          allowNull: false,
+        },
+        expense3: {
+          type: DataTypes.INTEGER, // 2년 management expense
           allowNull: false,
         },
         realEstateFee1: {
-          type: DataTypes.STRING(100), // 6개월 RealEstateFee
+          type: DataTypes.INTEGER, // 6개월 RealEstateFee
           allowNull: false,
         },
         realEstateFee2: {
-          type: DataTypes.STRING(100), // 1년 RealEstateFee
+          type: DataTypes.INTEGER, // 1년 RealEstateFee
           allowNull: false,
         },
         realEstateFee3: {
-          type: DataTypes.STRING(100), // 2년 RealEstateFee
+          type: DataTypes.INTEGER, // 2년 RealEstateFee
           allowNull: false,
         },
         fee1: {
-          type: DataTypes.STRING(100), // 6개월 fee
+          type: DataTypes.INTEGER, // 6개월 fee
           allowNull: false,
         },
         fee2: {
-          type: DataTypes.STRING(100), // 1년 fee
+          type: DataTypes.INTEGER, // 1년 fee
           allowNull: false,
         },
         fee3: {
-          type: DataTypes.STRING(100), // 2년 fee
+          type: DataTypes.INTEGER, // 2년 fee
           allowNull: false,
         },
         moveInDate: {
