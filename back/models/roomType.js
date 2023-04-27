@@ -17,7 +17,7 @@ module.exports = class RoomType extends Model {
       },
       {
         modelName: "RoomType",
-        tableName: "roomTypes",
+        tableName: "roomType",
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci", // 한글 저장
         sequelize,

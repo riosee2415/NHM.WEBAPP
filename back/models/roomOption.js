@@ -13,7 +13,7 @@ module.exports = class RoomOption extends Model {
       },
       {
         modelName: "RoomOption",
-        tableName: "roomOptions",
+        tableName: "roomOption",
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci",
         sequelize,

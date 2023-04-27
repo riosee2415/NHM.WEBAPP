@@ -13,7 +13,7 @@ module.exports = class RoomInfra extends Model {
       },
       {
         modelName: "RoomInfra",
-        tableName: "roomInfras",
+        tableName: "roomInfra",
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci",
         sequelize,
@@ -22,6 +22,6 @@ module.exports = class RoomInfra extends Model {
   }
   static associate(db) {
     db.RoomInfra.belongsTo(db.Room);
-    db.RoomInfra.belongsTo(db.Infastructure);
+    db.RoomInfra.belongsTo(db.Infra);
   }
 };
