@@ -38,16 +38,16 @@ module.exports = class Room extends Model {
           type: DataTypes.INTEGER, // 2년 deposit
           allowNull: false,
         },
-        monthlyPayment1: {
-          type: DataTypes.INTEGER, // 6개월 monthlyPay
+        rentFee1: {
+          type: DataTypes.INTEGER, // 6개월 rentFee
           allowNull: false,
         },
-        monthlyPayment2: {
-          type: DataTypes.INTEGER, // 1년 monthlyPay
+        rentFee2: {
+          type: DataTypes.INTEGER, // 1년 rentFee
           allowNull: false,
         },
-        monthlyPayment3: {
-          type: DataTypes.INTEGER, // 2년 monthlyPay
+        rentFee3: {
+          type: DataTypes.INTEGER, // 2년 rentFee
           allowNull: false,
         },
         expense1: {
@@ -60,30 +60,6 @@ module.exports = class Room extends Model {
         },
         expense3: {
           type: DataTypes.INTEGER, // 2년 management expense
-          allowNull: false,
-        },
-        realEstateFee1: {
-          type: DataTypes.INTEGER, // 6개월 RealEstateFee
-          allowNull: false,
-        },
-        realEstateFee2: {
-          type: DataTypes.INTEGER, // 1년 RealEstateFee
-          allowNull: false,
-        },
-        realEstateFee3: {
-          type: DataTypes.INTEGER, // 2년 RealEstateFee
-          allowNull: false,
-        },
-        fee1: {
-          type: DataTypes.INTEGER, // 6개월 fee
-          allowNull: false,
-        },
-        fee2: {
-          type: DataTypes.INTEGER, // 1년 fee
-          allowNull: false,
-        },
-        fee3: {
-          type: DataTypes.INTEGER, // 2년 fee
           allowNull: false,
         },
         moveInDate: {
