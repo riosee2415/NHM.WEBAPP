@@ -38,10 +38,10 @@ import {
 } from "@ant-design/icons";
 import {
   ROOM_IMAGE_RESET,
-  ROOM_OPTION_CREATE_REQUEST,
-  ROOM_OPTION_DELETE_REQUEST,
-  ROOM_OPTION_LIST_REQUEST,
-  ROOM_OPTION_UPDATE_REQUEST,
+  ROOM_INFRA_CREATE_REQUEST,
+  ROOM_INFRA_DELETE_REQUEST,
+  ROOM_INFRA_LIST_REQUEST,
+  ROOM_INFRA_UPDATE_REQUEST,
   ROOM_UPLOAD_REQUEST,
 } from "../../../reducers/room";
 
@@ -65,20 +65,20 @@ const ViewStatusIcon = styled(EyeOutlined)`
     props.active ? props.theme.basicTheme_C : props.theme.lightGrey_C};
 `;
 
-const Option = ({}) => {
+const Infra = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
   const {
-    roomOptionList,
+    roomInfraList,
     roomPath,
 
-    st_roomOptionCreateDone,
-    st_roomOptionCreateError,
+    st_roomInfraCreateDone,
+    st_roomInfraCreateError,
 
-    st_roomOptionUpdateDone,
-    st_roomOptionUpdateError,
+    st_roomInfraUpdateDone,
+    st_roomInfraUpdateError,
 
-    st_roomOptionDeleteDone,
-    st_roomOptionDeleteError,
+    st_roomInfraDeleteDone,
+    st_roomInfraDeleteError,
 
     st_roomUploadLoading,
     st_roomUploadDone,
@@ -148,55 +148,55 @@ const Option = ({}) => {
     });
   }, []);
 
-  // ********************** 매물옵션 생성 후처리 *************************
+  // ********************** 매물인프라 생성 후처리 *************************
   useEffect(() => {
-    if (st_roomOptionCreateDone) {
+    if (st_roomInfraCreateDone) {
       dispatch({
-        type: ROOM_OPTION_LIST_REQUEST,
+        type: ROOM_INFRA_LIST_REQUEST,
       });
 
-      return message.success("매물옵션이 생성되었습니다.");
+      return message.success("매물인프라가 생성되었습니다.");
     }
 
-    if (st_roomOptionCreateError) {
-      return message.error(st_roomOptionCreateError);
+    if (st_roomInfraCreateError) {
+      return message.error(st_roomInfraCreateError);
     }
-  }, [st_roomOptionCreateDone, st_roomOptionCreateError]);
+  }, [st_roomInfraCreateDone, st_roomInfraCreateError]);
 
-  // ********************** 매물옵션 수정 후처리 *************************
+  // ********************** 매물인프라 수정 후처리 *************************
   useEffect(() => {
-    if (st_roomOptionUpdateDone) {
+    if (st_roomInfraUpdateDone) {
       dispatch({
-        type: ROOM_OPTION_LIST_REQUEST,
+        type: ROOM_INFRA_LIST_REQUEST,
       });
 
-      return message.success("매물옵션이 수정되었습니다.");
+      return message.success("매물인프라가 수정되었습니다.");
     }
 
-    if (st_roomOptionUpdateError) {
-      return message.error(st_roomOptionUpdateError);
+    if (st_roomInfraUpdateError) {
+      return message.error(st_roomInfraUpdateError);
     }
-  }, [st_roomOptionUpdateDone, st_roomOptionUpdateError]);
+  }, [st_roomInfraUpdateDone, st_roomInfraUpdateError]);
 
-  // ********************** 매물옵션 삭제 후처리 *************************
+  // ********************** 매물인프라 삭제 후처리 *************************
   useEffect(() => {
-    if (st_roomOptionDeleteDone) {
+    if (st_roomInfraDeleteDone) {
       dispatch({
-        type: ROOM_OPTION_LIST_REQUEST,
+        type: ROOM_INFRA_LIST_REQUEST,
       });
 
-      return message.success("매물옵션이 삭제되었습니다.");
+      return message.success("매물인프라가 삭제되었습니다.");
     }
 
-    if (st_roomOptionDeleteError) {
-      return message.error(st_roomOptionDeleteError);
+    if (st_roomInfraDeleteError) {
+      return message.error(st_roomInfraDeleteError);
     }
-  }, [st_roomOptionDeleteDone, st_roomOptionDeleteError]);
+  }, [st_roomInfraDeleteDone, st_roomInfraDeleteError]);
 
-  // ********************** 매물옵션 이미지 후처리 *************************
+  // ********************** 매물인프라 이미지 후처리 *************************
   useEffect(() => {
     if (st_roomUploadDone) {
-      return message.success("매물옵션 이미지가 업로드되었습니다.");
+      return message.success("매물인프라 이미지가 업로드되었습니다.");
     }
 
     if (st_roomUploadError) {
@@ -209,6 +209,8 @@ const Option = ({}) => {
   const beforeSetDataHandler = useCallback(
     (record) => {
       setCurrentData(record);
+
+      console.log(record);
 
       dispatch({
         type: ROOM_IMAGE_RESET,
@@ -226,14 +228,14 @@ const Option = ({}) => {
 
   const createHandler = useCallback(() => {
     dispatch({
-      type: ROOM_OPTION_CREATE_REQUEST,
+      type: ROOM_INFRA_CREATE_REQUEST,
     });
   }, []);
 
   const updateHandler = useCallback(
     (data) => {
       dispatch({
-        type: ROOM_OPTION_UPDATE_REQUEST,
+        type: ROOM_INFRA_UPDATE_REQUEST,
         data: {
           typeId: currentData.id,
           title: data.title,
@@ -246,7 +248,7 @@ const Option = ({}) => {
 
   const deleteHandler = useCallback((data) => {
     dispatch({
-      type: ROOM_OPTION_DELETE_REQUEST,
+      type: ROOM_INFRA_DELETE_REQUEST,
       data: {
         infraId: data.id,
       },
@@ -371,14 +373,14 @@ const Option = ({}) => {
         >
           <Wrapper al="flex-end" margin={`0px 0px 5px 0px`}>
             <Button size="small" type="primary" onClick={createHandler}>
-              매물옵션 생성
+              매물인프라 생성
             </Button>
           </Wrapper>
           <Table
             style={{ width: "100%" }}
             rowKey="num"
             columns={col}
-            dataSource={roomOptionList}
+            dataSource={roomInfraList}
             size="small"
             onRow={(record, index) => {
               return {
@@ -398,7 +400,7 @@ const Option = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  매물옵션 이미지정보
+                  매물인프라 이미지정보
                 </InfoTitle>
               </Wrapper>
 
@@ -421,31 +423,31 @@ const Option = ({}) => {
                   type="primary"
                   onClick={clickImgUpload}
                 >
-                  매물옵션 이미지 업로드
+                  매물인프라 이미지 업로드
                 </Button>
               </Wrapper>
 
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  매물옵션 기본정보
+                  매물인프라 기본정보
                 </InfoTitle>
               </Wrapper>
 
               <Form
                 form={infoForm}
                 style={{ width: `100%` }}
-                labelCol={{ span: 2 }}
-                wrapperCol={{ span: 22 }}
+                labelCol={{ span: 3 }}
+                wrapperCol={{ span: 21 }}
                 onFinish={updateHandler}
               >
                 <Form.Item
-                  label="매물옵션"
+                  label="매물인프라"
                   name="title"
                   rules={[
                     {
                       required: true,
-                      message: "매물옵션은 필수 입력사항 입니다.",
+                      message: "매물인프라은 필수 입력사항 입니다.",
                     },
                   ]}
                 >
@@ -516,7 +518,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     });
 
     context.store.dispatch({
-      type: ROOM_OPTION_LIST_REQUEST,
+      type: ROOM_INFRA_LIST_REQUEST,
     });
 
     // 구현부 종료
@@ -526,4 +528,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default withRouter(Option);
+export default withRouter(Infra);
