@@ -42,6 +42,119 @@ router.post(
 );
 
 ////////////////////////////////////////////////////
+// ROOM TYPE  //////////////////////////////////////
+////////////////////////////////////////////////////
+
+/**
+ * SUBJECT : 지역 목록
+ * PARAMETERS : -
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+router.post("/type/list", async (req, res, next) => {
+  const selectQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY createdAt)   AS num,
+          id,
+          thumbnail,
+          title,
+          imagePath,
+          createdAt,
+          updatedAt,
+          DATE_FORMAT(createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt
+    FROM  roomType
+   WHERE  isDelete = 0 
+   ORDER  BY num DESC
+  `;
+
+  try {
+    const list = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(list[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send("데이터를 조회할 수 없습니다.");
+  }
+});
+
+//매물 지역 타입 이미지 생성
+router.post("/type/create", isAdminCheck, async (req, res, next) => {
+  const insertQuery = `
+    INSERT  INTO  roomType
+    (
+      thumbnail,
+      title,
+      imagePath,
+      createdAt,
+      updatedAt
+    )
+    VALUES
+    (
+      "https://via.placeholder.com/350",
+      "임시 이름",
+      "https://via.placeholder.com/1000x300",
+      NOW(),
+      NOW()
+    )
+  `;
+
+  try {
+    await models.sequelize.query(insertQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send("지역을 생성할 수 없습니다.");
+  }
+});
+
+// 매물 지역 타입 이미지 수정
+router.post("/type/update", isAdminCheck, async (req, res, next) => {
+  const { title, imagePath, thumbnail, typeId } = req.body;
+
+  const updateQuery = `
+    UPDATE  roomType
+       SET  title = "${title}", 
+            thumbnail = "${thumbnail}",
+            imagePath = "${imagePath}",
+            updatedAt = NOW()
+     WHERE  id = ${typeId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("해당 데이터를 수정항 수 없습니다.");
+  }
+});
+
+// 매물 지역 타입 이미지 삭제
+router.post("/type/delete", isAdminCheck, async (req, res, next) => {
+  const { typeId } = req.body;
+
+  const updateQuery = `
+    UPDATE  roomType
+       SET  isDelete = 1,
+            deletedAt = NOW()
+     WHERE  id = ${typeId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
+  }
+});
+
+////////////////////////////////////////////////////
 // ROOM  ///////////////////////////////////////////
 ////////////////////////////////////////////////////
 
@@ -331,6 +444,67 @@ router.post("/detail", async (req, res, next) => {
    ORDER  BY num DESC
   `;
 
+  const infraQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY A.sort)   AS num,
+          A.sort,
+          A.RoomId,
+          A.InfraId,
+          B.title,
+          B.imagePath,
+          B.createdAt,
+          B.updatedAt,
+          DATE_FORMAT(B.createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(B.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt
+    FROM  roomInfra   A
+   INNER
+    JOIN  infras      B
+      ON  A.InfraId = B.id
+   WHERE  B.isDelete = 0 
+     AND  A.RoomId = ${id}
+   ORDER  BY num ASC
+  `;
+
+  const optionQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY A.sort)   AS num,
+          A.sort,
+          A.RoomId,
+          A.OptionId,
+          B.title,
+          B.imagePath,
+          B.createdAt,
+          B.updatedAt,
+          DATE_FORMAT(B.createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(B.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt
+    FROM  roomOption    A
+   INNER
+    JOIN  options       B
+      ON  A.OptionId = B.id
+   WHERE  B.isDelete = 0 
+     AND  A.RoomId = ${id}
+   ORDER  BY num ASC
+  `;
+
+  const maintenanceQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY A.sort)   AS num,
+          A.sort,
+          A.RoomId,
+          A.MaintenanceId,
+          B.id,
+          B.title,
+          B.imagePath,
+          B.createdAt,
+          B.updatedAt,
+          DATE_FORMAT(B.createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(B.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt
+    FROM  roomMaintenances    A
+   INNER
+    JOIN  maintenances        B
+      ON  A.MaintenanceId = B.id
+   WHERE  B.isDelete = 0 
+     AND  A.RoomId = ${id}
+   ORDER  BY num ASC
+  `;
+
   try {
     const room = await models.sequelize.query(selectQuery);
 
@@ -339,10 +513,16 @@ router.post("/detail", async (req, res, next) => {
     }
 
     const bannerData = await models.sequelize.query(bannerQuery);
+    const infraData = await models.sequelize.query(infraQuery);
+    const optionData = await models.sequelize.query(optionQuery);
+    const maintenanceData = await models.sequelize.query(maintenanceQuery);
 
     return res.status(200).json({
       room: room[0][0],
       bannerData: bannerData[0],
+      infraData: infraData[0],
+      optionData: optionData[0],
+      maintenanceData: maintenanceData[0],
     });
   } catch (error) {
     console.error(error);
@@ -455,6 +635,42 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
  * DEVELOPMENT : 신태섭
  * DEV DATE : 2023/05/17
  */
+
+// 배열은 해당 폼에 맞도록 보내주세요.
+// infraIds:
+// [
+//   {
+//     id: 1,
+//     sort: 1,
+//   },
+//   {
+//     id: 2,
+//     sort: 2,
+//   },
+// ];
+// optionIds:
+// [
+//   {
+//     id: 1,
+//     sort: 1,
+//   },
+//   {
+//     id: 2,
+//     sort: 2,
+//   },
+// ];
+// maintenanceIds:
+// [
+//   {
+//     id: 1,
+//     sort: 1,
+//   },
+//   {
+//     id: 2,
+//     sort: 2,
+//   },
+// ];
+
 router.post("/update", isAdminCheck, async (req, res, next) => {
   const {
     RoomTypeId,
@@ -551,6 +767,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
         const infraInsertQuery = `
         INSERT  INTO  roomInfra
         (
+          sort,
           RoomId,
           InfraId,
           createdAt,
@@ -558,8 +775,9 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
         )
         VALUES
         (
+          ${data.sort},
           ${id},
-          ${data},
+          ${data.id},
           NOW(),
           NOW()
         )
@@ -574,6 +792,7 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
         const optionInsertQuery = `
         INSERT  INTO  roomOption
         (
+          sort,
           RoomId,
           OptionId,
           createdAt,
@@ -581,8 +800,9 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
         )
         VALUES
         (
+          ${data.sort},
           ${id},
-          ${data},
+          ${data.id},
           NOW(),
           NOW()
         )
@@ -597,15 +817,17 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
         const maintenanceInsertQuery = `
         INSERT  INTO  roomMaintenances
         (
-          Room,
-          Maintenance,
+          sort,
+          RoomId,
+          MaintenanceId,
           createdAt,
           updatedAt
         )
         VALUES
         (
+          ${data.sort},
           ${id},
-          ${data},
+          ${data.id},
           NOW(),
           NOW()
         )
@@ -778,119 +1000,6 @@ router.post("/banner/delete", isAdminCheck, async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(401).send("배너를 삭제할 수 없습니다.");
-  }
-});
-
-////////////////////////////////////////////////////
-// ROOM TYPE  //////////////////////////////////////
-////////////////////////////////////////////////////
-
-/**
- * SUBJECT : 지역 목록
- * PARAMETERS : -
- * ORDER BY : -
- * STATEMENT : -
- * DEVELOPMENT : 신태섭
- * DEV DATE : 2023/05/17
- */
-router.post("/type/list", async (req, res, next) => {
-  const selectQuery = `
-  SELECT  ROW_NUMBER()  OVER(ORDER  BY createdAt)   AS num,
-          id,
-          thumbnail,
-          title,
-          imagePath,
-          createdAt,
-          updatedAt,
-          DATE_FORMAT(createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
-          DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt
-    FROM  roomType
-   WHERE  isDelete = 0 
-   ORDER  BY num DESC
-  `;
-
-  try {
-    const list = await models.sequelize.query(selectQuery);
-
-    return res.status(200).json(list[0]);
-  } catch (error) {
-    console.error(error);
-    return res.status(400).send("데이터를 조회할 수 없습니다.");
-  }
-});
-
-//매물 지역 타입 이미지 생성
-router.post("/type/create", isAdminCheck, async (req, res, next) => {
-  const insertQuery = `
-    INSERT  INTO  roomType
-    (
-      thumbnail,
-      title,
-      imagePath,
-      createdAt,
-      updatedAt
-    )
-    VALUES
-    (
-      "https://via.placeholder.com/350",
-      "임시 이름",
-      "https://via.placeholder.com/1000x300",
-      NOW(),
-      NOW()
-    )
-  `;
-
-  try {
-    await models.sequelize.query(insertQuery);
-
-    return res.status(200).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(400).send("지역을 생성할 수 없습니다.");
-  }
-});
-
-// 매물 지역 타입 이미지 수정
-router.post("/type/update", isAdminCheck, async (req, res, next) => {
-  const { title, imagePath, thumbnail, typeId } = req.body;
-
-  const updateQuery = `
-    UPDATE  roomType
-       SET  title = "${title}", 
-            thumbnail = "${thumbnail}",
-            imagePath = "${imagePath}",
-            updatedAt = NOW()
-     WHERE  id = ${typeId}
-  `;
-
-  try {
-    await models.sequelize.query(updateQuery);
-
-    return res.status(200).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("해당 데이터를 수정항 수 없습니다.");
-  }
-});
-
-// 매물 지역 타입 이미지 삭제
-router.post("/type/delete", isAdminCheck, async (req, res, next) => {
-  const { typeId } = req.body;
-
-  const updateQuery = `
-    UPDATE  roomType
-       SET  isDelete = 1,
-            deletedAt = NOW()
-     WHERE  id = ${typeId}
-  `;
-
-  try {
-    await models.sequelize.query(updateQuery);
-
-    return res.status(200).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
   }
 });
 
