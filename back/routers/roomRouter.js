@@ -318,10 +318,32 @@ router.post("/detail", async (req, res, next) => {
      AND  A.id = ${id}
   `;
 
+  const bannerQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY createdAt)   AS num,
+          id,
+          imagePath,
+          createdAt,
+          updatedAt,
+          DATE_FORMAT(createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt
+    FROM  roomBanner
+   WHERE  RoomId = ${id}
+   ORDER  BY num DESC
+  `;
+
   try {
     const room = await models.sequelize.query(selectQuery);
 
-    return res.status(200).json(room[0]);
+    if (room[0].length === 0) {
+      return res.status(401).send("존재하지 않는 데이터입니다.");
+    }
+
+    const bannerData = await models.sequelize.query(bannerQuery);
+
+    return res.status(200).json({
+      room: room[0][0],
+      bannerData: bannerData[0],
+    });
   } catch (error) {
     console.error(error);
     return res.status(401).send("룸 목록을 조회할 수 없습니다.");
@@ -425,6 +447,9 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
                 realEstateName,
                 realEstateAddress,
                 region,
+                infraIds,
+                optionIds,
+                maintenanceIds,
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 신태섭
@@ -453,7 +478,22 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
     realEstateName,
     realEstateAddress,
     region,
+    infraIds,
+    optionIds,
+    maintenanceIds,
   } = req.body;
+
+  if (!Array.isArray(infraIds)) {
+    return res.status(401).send("잘못된 요청입니다.");
+  }
+
+  if (!Array.isArray(optionIds)) {
+    return res.status(401).send("잘못된 요청입니다.");
+  }
+
+  if (!Array.isArray(maintenanceIds)) {
+    return res.status(401).send("잘못된 요청입니다.");
+  }
 
   const updateQuery = `
   UPDATE  rooms
@@ -484,6 +524,97 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
   try {
     await models.sequelize.query(updateQuery);
 
+    const infraDeleteQuery = `
+    DELETE
+      FROM  roomInfra
+     WHERE  RoomId = ${id}
+    `;
+
+    const optionDeleteQuery = `
+    DELETE
+      FROM  roomOption
+     WHERE  RoomId = ${id}
+    `;
+
+    const maintenanceDeleteQuery = `
+    DELETE
+      FROM  roomMaintenances
+     WHERE  RoomId = ${id}
+    `;
+
+    await models.sequelize.query(infraDeleteQuery);
+    await models.sequelize.query(optionDeleteQuery);
+    await models.sequelize.query(maintenanceDeleteQuery);
+
+    await Promise.all(
+      infraIds.map(async (data) => {
+        const infraInsertQuery = `
+        INSERT  INTO  roomInfra
+        (
+          RoomId,
+          InfraId,
+          createdAt,
+          updatedAt
+        )
+        VALUES
+        (
+          ${id},
+          ${data},
+          NOW(),
+          NOW()
+        )
+        `;
+
+        await models.sequelize.query(infraInsertQuery);
+      })
+    );
+
+    await Promise.all(
+      optionIds.map(async (data) => {
+        const optionInsertQuery = `
+        INSERT  INTO  roomOption
+        (
+          RoomId,
+          OptionId,
+          createdAt,
+          updatedAt
+        )
+        VALUES
+        (
+          ${id},
+          ${data},
+          NOW(),
+          NOW()
+        )
+        `;
+
+        await models.sequelize.query(optionInsertQuery);
+      })
+    );
+
+    await Promise.all(
+      maintenanceIds.map(async (data) => {
+        const maintenanceInsertQuery = `
+        INSERT  INTO  roomMaintenances
+        (
+          Room,
+          Maintenance,
+          createdAt,
+          updatedAt
+        )
+        VALUES
+        (
+          ${id},
+          ${data},
+          NOW(),
+          NOW()
+        )
+        `;
+
+        await models.sequelize.query(maintenanceInsertQuery);
+      })
+    );
+
     return res.status(200).json({ result: true });
   } catch (error) {
     console.error(error);
@@ -499,6 +630,25 @@ router.post("/update", isAdminCheck, async (req, res, next) => {
  * DEVELOPMENT : 신태섭
  * DEV DATE : 2023/05/17
  */
+router.post("/delete", isAdminCheck, async (req, res, next) => {
+  const { id } = req.body;
+
+  const deleteQuery = `
+  UPDATE  rooms
+     SET  isDelete = 1,
+          deletedAt = NOW()
+   WHERE  id = ${id}
+  `;
+
+  try {
+    await models.sequelize.query(deleteQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("룸 정보를 삭제할 수 없습니다.");
+  }
+});
 
 ////////////////////////////////////////////////////
 // ROOM BANNER  ////////////////////////////////////
@@ -646,6 +796,7 @@ router.post("/banner/delete", isAdminCheck, async (req, res, next) => {
 router.post("/type/list", async (req, res, next) => {
   const selectQuery = `
   SELECT  ROW_NUMBER()  OVER(ORDER  BY createdAt)   AS num,
+          id,
           thumbnail,
           title,
           imagePath,
@@ -867,6 +1018,7 @@ router.post("/option/delete", isAdminCheck, async (req, res, next) => {
 router.post("/infra/list", async (req, res, next) => {
   const selectQuery = `
   SELECT  ROW_NUMBER()  OVER(ORDER  BY createdAt)   AS num,
+          id,
           title,
           imagePath,
           createdAt,
@@ -975,6 +1127,7 @@ router.post("/infra/delete", isAdminCheck, async (req, res, next) => {
 router.post("/maintenance/list", async (req, res, next) => {
   const selectQuery = `
   SELECT  ROW_NUMBER()  OVER(ORDER  BY createdAt)   AS num,
+          id,
           title,
           imagePath,
           createdAt,

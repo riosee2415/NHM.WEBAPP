@@ -5,10 +5,9 @@ module.exports = class RoomMaintenance extends Model {
   static init(sequelize) {
     return super.init(
       {
-        temp: {
-          type: DataTypes.STRING(10),
-          allowNull: true,
-          defaultValue: "-",
+        sort: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
         },
       },
       {
