@@ -87,6 +87,15 @@ module.exports = class Room extends Model {
           allowNull: false,
           defaultValue: 0,
         },
+        isDelete: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
+        deletedAt: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
       },
       {
         modelName: "Room",

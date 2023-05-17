@@ -45,9 +45,591 @@ router.post(
 // ROOM  ///////////////////////////////////////////
 ////////////////////////////////////////////////////
 
+/**
+ * SUBJECT : 룸 목록
+ * PARAMETERS : page
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+router.post("/list", async (req, res, next) => {
+  const { page, RoomTypeId } = req.body;
+
+  const LIMIT = 16;
+
+  const _page = page ? page : 1;
+
+  const __page = _page - 1;
+  const OFFSET = __page * 16;
+
+  const _RoomTypeId = RoomTypeId ? RoomTypeId : false;
+
+  const lengthQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)                       AS num,
+          A.id,
+          A.roomNum,
+          A.thumbnail,
+          A.kiIndex,
+          A.title,
+          A.subTitle,
+          A.deposit1,
+          A.deposit2,
+          A.deposit3,
+          A.rentFee1,
+          A.rentFee2,
+          A.rentFee3,
+          A.expense1,
+          A.expense2,
+          A.expense3,
+          A.deposit1 + A.rentFee1 + A.expense1                           AS 6MonthTotalPrice,
+          FORMAT(A.deposit1 + A.rentFee1 + A.expense1, 0)                AS 6MonthFormatTotalPrice,
+          CONCAT(FORMAT(A.deposit1 + A.rentFee1 + A.expense1, 0), "￦")   AS 6MonthConcatTotalPrice,
+          A.deposit2 + A.rentFee2 + A.rentFee3                           AS 1YearTotalPrice,
+          FORMAT(A.deposit2 + A.rentFee2 + A.rentFee3, 0)                AS 1YearFormatTotalPrice,
+          CONCAT(FORMAT(A.deposit2 + A.rentFee2 + A.rentFee3, 0), "￦")   AS 1YearConcatTotalPrice,
+          A.deposit3 + A.rentFee3 + A.expense3                           AS 2YearTotalPrice,
+          FORMAT(A.deposit3 + A.rentFee3 + A.expense3, 0)                AS 2YearFormatTotalPrice,
+          CONCAT(FORMAT(A.deposit3 + A.rentFee3 + A.expense3, 0), "￦")   AS 2YearConcatTotalPrice,
+          A.moveInDate,
+          DATE_FORMAT(A.moveInDate, "%Y년 %m월 %d일")                     AS viewMoveInDate,
+          DATE_FORMAT(A.moveInDate, "%Y-%m-%d")                         AS viewFrontMoveInDate,
+          A.detail,
+          A.realEstateName,
+          A.realEstateAddress,
+          A.region,
+          A.onOff,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt,
+          B.thumbnail                                 AS roomTypeThumbnail,
+          B.title                                     AS roomTypeTitle,
+          B.imagePath                                 AS roomTypeImagePath
+    FROM  rooms       A
+   INNER
+    JOIN  roomType    B
+      ON  A.RoomTypeId = B.id
+   WHERE  A.isDelete = 0
+          ${_RoomTypeId ? `AND A.RoomTypeId = ${_RoomTypeId}` : ``}
+  `;
+
+  const selectQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)                       AS num,
+          A.id,
+          A.roomNum,
+          A.thumbnail,
+          A.kiIndex,
+          A.title,
+          A.subTitle,
+          A.deposit1,
+          A.deposit2,
+          A.deposit3,
+          A.rentFee1,
+          A.rentFee2,
+          A.rentFee3,
+          A.expense1,
+          A.expense2,
+          A.expense3,
+          A.deposit1 + A.rentFee1 + A.expense1                           AS 6MonthTotalPrice,
+          FORMAT(A.deposit1 + A.rentFee1 + A.expense1, 0)                AS 6MonthFormatTotalPrice,
+          CONCAT(FORMAT(A.deposit1 + A.rentFee1 + A.expense1, 0), "￦")   AS 6MonthConcatTotalPrice,
+          A.deposit2 + A.rentFee2 + A.rentFee3                           AS 1YearTotalPrice,
+          FORMAT(A.deposit2 + A.rentFee2 + A.rentFee3, 0)                AS 1YearFormatTotalPrice,
+          CONCAT(FORMAT(A.deposit2 + A.rentFee2 + A.rentFee3, 0), "￦")   AS 1YearConcatTotalPrice,
+          A.deposit3 + A.rentFee3 + A.expense3                           AS 2YearTotalPrice,
+          FORMAT(A.deposit3 + A.rentFee3 + A.expense3, 0)                AS 2YearFormatTotalPrice,
+          CONCAT(FORMAT(A.deposit3 + A.rentFee3 + A.expense3, 0), "￦")   AS 2YearConcatTotalPrice,
+          A.moveInDate,
+          DATE_FORMAT(A.moveInDate, "%Y년 %m월 %d일")                     AS viewMoveInDate,
+          DATE_FORMAT(A.moveInDate, "%Y-%m-%d")                         AS viewFrontMoveInDate,
+          A.detail,
+          A.realEstateName,
+          A.realEstateAddress,
+          A.region,
+          A.onOff,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt,
+          B.thumbnail                                 AS roomTypeThumbnail,
+          B.title                                     AS roomTypeTitle,
+          B.imagePath                                 AS roomTypeImagePath
+    FROM  rooms       A
+   INNER
+    JOIN  roomType    B
+      ON  A.RoomTypeId = B.id
+   WHERE  A.isDelete = 0
+          ${_RoomTypeId ? `AND A.RoomTypeId = ${_RoomTypeId}` : ``}
+   ORDER  BY num DESC
+   LIMIT  ${LIMIT}
+  OFFSET  ${OFFSET}
+  `;
+
+  try {
+    const lengths = await models.sequelize.query(lengthQuery);
+    const room = await models.sequelize.query(selectQuery);
+
+    const roomLen = lengths[0].length;
+
+    const lastPage =
+      roomLen % LIMIT > 0 ? roomLen / LIMIT + 1 : roomLen / LIMIT;
+
+    return res.status(200).json({
+      rooms: room[0],
+      lastPage: parseInt(lastPage),
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("룸 목록을 조회할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 룸 목록 (관리자 리스트)
+ * PARAMETERS : page
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+router.post("/admin/list", isAdminCheck, async (req, res, next) => {
+  const { RoomTypeId } = req.body;
+
+  const _RoomTypeId = RoomTypeId ? RoomTypeId : false;
+
+  const selectQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)                       AS num,
+          A.id,
+          A.roomNum,
+          A.thumbnail,
+          A.kiIndex,
+          A.title,
+          A.subTitle,
+          A.deposit1,
+          A.deposit2,
+          A.deposit3,
+          A.rentFee1,
+          A.rentFee2,
+          A.rentFee3,
+          A.expense1,
+          A.expense2,
+          A.expense3,
+          A.deposit1 + A.rentFee1 + A.expense1                           AS 6MonthTotalPrice,
+          FORMAT(A.deposit1 + A.rentFee1 + A.expense1, 0)                AS 6MonthFormatTotalPrice,
+          CONCAT(FORMAT(A.deposit1 + A.rentFee1 + A.expense1, 0), "￦")   AS 6MonthConcatTotalPrice,
+          A.deposit2 + A.rentFee2 + A.rentFee3                           AS 1YearTotalPrice,
+          FORMAT(A.deposit2 + A.rentFee2 + A.rentFee3, 0)                AS 1YearFormatTotalPrice,
+          CONCAT(FORMAT(A.deposit2 + A.rentFee2 + A.rentFee3, 0), "￦")   AS 1YearConcatTotalPrice,
+          A.deposit3 + A.rentFee3 + A.expense3                           AS 2YearTotalPrice,
+          FORMAT(A.deposit3 + A.rentFee3 + A.expense3, 0)                AS 2YearFormatTotalPrice,
+          CONCAT(FORMAT(A.deposit3 + A.rentFee3 + A.expense3, 0), "￦")   AS 2YearConcatTotalPrice,
+          A.moveInDate,
+          DATE_FORMAT(A.moveInDate, "%Y년 %m월 %d일")                     AS viewMoveInDate,
+          DATE_FORMAT(A.moveInDate, "%Y-%m-%d")                         AS viewFrontMoveInDate,
+          A.detail,
+          A.realEstateName,
+          A.realEstateAddress,
+          A.region,
+          A.onOff,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt,
+          B.thumbnail                                 AS roomTypeThumbnail,
+          B.title                                     AS roomTypeTitle,
+          B.imagePath                                 AS roomTypeImagePath
+    FROM  rooms       A
+   INNER
+    JOIN  roomType    B
+      ON  A.RoomTypeId = B.id
+   WHERE  A.isDelete = 0
+          ${_RoomTypeId ? `AND A.RoomTypeId = ${_RoomTypeId}` : ``}
+   ORDER  BY num DESC
+  `;
+
+  try {
+    const room = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(room[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("룸 목록을 조회할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 룸 상세정보
+ * PARAMETERS : page
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+router.post("/detail", async (req, res, next) => {
+  const { id } = req.body;
+
+  const selectQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)                       AS num,
+          A.id,
+          A.roomNum,
+          A.thumbnail,
+          A.kiIndex,
+          A.title,
+          A.subTitle,
+          A.deposit1,
+          A.deposit2,
+          A.deposit3,
+          A.rentFee1,
+          A.rentFee2,
+          A.rentFee3,
+          A.expense1,
+          A.expense2,
+          A.expense3,
+          A.deposit1 + A.rentFee1 + A.expense1                           AS 6MonthTotalPrice,
+          FORMAT(A.deposit1 + A.rentFee1 + A.expense1, 0)                AS 6MonthFormatTotalPrice,
+          CONCAT(FORMAT(A.deposit1 + A.rentFee1 + A.expense1, 0), "￦")   AS 6MonthConcatTotalPrice,
+          A.deposit2 + A.rentFee2 + A.rentFee3                           AS 1YearTotalPrice,
+          FORMAT(A.deposit2 + A.rentFee2 + A.rentFee3, 0)                AS 1YearFormatTotalPrice,
+          CONCAT(FORMAT(A.deposit2 + A.rentFee2 + A.rentFee3, 0), "￦")   AS 1YearConcatTotalPrice,
+          A.deposit3 + A.rentFee3 + A.expense3                           AS 2YearTotalPrice,
+          FORMAT(A.deposit3 + A.rentFee3 + A.expense3, 0)                AS 2YearFormatTotalPrice,
+          CONCAT(FORMAT(A.deposit3 + A.rentFee3 + A.expense3, 0), "￦")   AS 2YearConcatTotalPrice,
+          A.moveInDate,
+          DATE_FORMAT(A.moveInDate, "%Y년 %m월 %d일")                     AS viewMoveInDate,
+          DATE_FORMAT(A.moveInDate, "%Y-%m-%d")                         AS viewFrontMoveInDate,
+          A.detail,
+          A.realEstateName,
+          A.realEstateAddress,
+          A.region,
+          A.onOff,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt,
+          B.thumbnail                                 AS roomTypeThumbnail,
+          B.title                                     AS roomTypeTitle,
+          B.imagePath                                 AS roomTypeImagePath
+    FROM  rooms       A
+   INNER
+    JOIN  roomType    B
+      ON  A.RoomTypeId = B.id
+   WHERE  A.isDelete = 0
+     AND  A.id = ${id}
+  `;
+
+  try {
+    const room = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(room[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("룸 목록을 조회할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 룸 생성
+ * PARAMETERS : RoomTypeId
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+router.post("/create", isAdminCheck, async (req, res, next) => {
+  const { RoomTypeId } = req.body;
+
+  const insertQuery = `
+  INSERT  INTO  rooms
+  (
+    roomNum,
+    thumbnail,
+    kiIndex,
+    title,
+    subTitle,
+    deposit1,
+    deposit2,
+    deposit3,
+    rentFee1,
+    rentFee2,
+    rentFee3,
+    expense1,
+    expense2,
+    expense3,
+    moveInDate,
+    detail,
+    realEstateName,
+    realEstateAddress,
+    region,
+    createdAt,
+    updatedAt,
+    RoomTypeId
+  )
+  VALUES
+  (
+    "00000000",
+    "https://via.placeholder.com/1000x300",
+    "5.0",
+    "임시 타이틀",
+    "임시 서브 타이틀",
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    NOW(),
+    "임시 설명",
+    "임시 매물이름",
+    "임시 매물주소",
+    "임시 지역",
+    NOW(),
+    NOW(),
+    ${RoomTypeId}
+  )
+  `;
+
+  try {
+    await models.sequelize.query(insertQuery);
+
+    return res.status(201).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("룸을 생성할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 룸 수정
+ * PARAMETERS : RoomTypeId,
+                id,
+                roomNum,
+                thumbnail,
+                kiIndex,
+                title,
+                subTitle,
+                deposit1,
+                deposit2,
+                deposit3,
+                rentFee1,
+                rentFee2,
+                rentFee3,
+                expense1,
+                expense2,
+                expense3,
+                moveInDate,
+                detail,
+                realEstateName,
+                realEstateAddress,
+                region,
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+router.post("/update", isAdminCheck, async (req, res, next) => {
+  const {
+    RoomTypeId,
+    id,
+    roomNum,
+    thumbnail,
+    kiIndex,
+    title,
+    subTitle,
+    deposit1,
+    deposit2,
+    deposit3,
+    rentFee1,
+    rentFee2,
+    rentFee3,
+    expense1,
+    expense2,
+    expense3,
+    moveInDate,
+    detail,
+    realEstateName,
+    realEstateAddress,
+    region,
+  } = req.body;
+
+  const updateQuery = `
+  UPDATE  rooms
+     SET  roomNum = "${roomNum}",
+          thumbnail = "${thumbnail}",
+          kiIndex = "${kiIndex}",
+          title = "${title}",
+          subTitle = "${subTitle}",
+          deposit1 = ${deposit1}
+          deposit2 = ${deposit2}
+          deposit3 = ${deposit3}
+          rentFee1 = ${rentFee1}
+          rentFee2 = ${rentFee2}
+          rentFee3 = ${rentFee3}
+          expense1 = ${expense1}
+          expense2 = ${expense2}
+          expense3 = ${expense3}
+          moveInDate = "${moveInDate}",
+          detail = "${detail}",
+          realEstateName = "${realEstateName}",
+          realEstateAddress = "${realEstateAddress}",
+          region = "${region}",
+          RoomTypeId = ${RoomTypeId},
+          updatedAt = NOW()
+   WHERE  id = ${id}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("룸 정보를 수정할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 룸 삭제
+ * PARAMETERS : id
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+
 ////////////////////////////////////////////////////
 // ROOM BANNER  ////////////////////////////////////
 ////////////////////////////////////////////////////
+
+/**
+ * SUBJECT : 룸 배너 목록
+ * PARAMETERS : RoomId
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+router.post("/banner/list", async (req, res, next) => {
+  const { RoomId } = req.body;
+
+  const selectQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY createdAt)   AS num,
+          id,
+          imagePath,
+          createdAt,
+          updatedAt,
+          DATE_FORMAT(createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt
+    FROM  roomBanner
+   WHERE  RoomId = ${RoomId}
+   ORDER  BY num DESC
+  `;
+
+  try {
+    const list = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(list[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("배너 목록을 조회할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 룸 배너 생성
+ * PARAMETERS : RoomId
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+router.post("/banner/create", isAdminCheck, async (req, res, next) => {
+  const { RoomId } = req.body;
+
+  const insertQuery = `
+  INSERT  INTO  roomBanner
+  (
+    imagePath,
+    createdAt,
+    updatedAt,
+    RoomId
+  )
+  VALUES
+  (
+    "https://via.placeholder.com/1000x300",
+    NOW(),
+    NOW(),
+    ${RoomId}
+  )
+  `;
+
+  try {
+    await models.sequelize.query(insertQuery);
+
+    return res.status(201).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("배너를 생성할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 룸 배너 수정
+ * PARAMETERS : bannerId, imagePath
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+router.post("/banner/update", isAdminCheck, async (req, res, next) => {
+  const { bannerId, imagePath } = req.body;
+
+  const updateQuery = `
+  UPDATE  roomBanner
+     SET  imagePath = "${imagePath}",
+          updatedAt = NOW()
+   WHERE  id = ${bannerId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(201).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("배너를 수정할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 룸 배너 삭제
+ * PARAMETERS : bannerId
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+router.post("/banner/delete", isAdminCheck, async (req, res, next) => {
+  const { bannerId } = req.body;
+
+  const deleteQuery = `
+  DELETE
+    FROM  roomBanner
+   WHERE  id = ${bannerId}
+  `;
+
+  try {
+    await models.sequelize.query(deleteQuery);
+
+    return res.status(201).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("배너를 삭제할 수 없습니다.");
+  }
+});
 
 ////////////////////////////////////////////////////
 // ROOM TYPE  //////////////////////////////////////
@@ -117,26 +699,6 @@ router.post("/type/create", isAdminCheck, async (req, res, next) => {
   }
 });
 
-// 매물 지역 타입 이미지 삭제
-router.post("/type/delete", isAdminCheck, async (req, res, next) => {
-  const { typeId } = req.body;
-
-  const updateQuery = `
-    UPDATE  roomType
-       SET  isDelete = TURE
-     WHERE  id = ${typeId}
-  `;
-
-  try {
-    await models.sequelize.query(updateQuery);
-
-    return res.status(200).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
-  }
-});
-
 // 매물 지역 타입 이미지 수정
 router.post("/type/update", isAdminCheck, async (req, res, next) => {
   const { title, imagePath, thumbnail, typeId } = req.body;
@@ -145,7 +707,8 @@ router.post("/type/update", isAdminCheck, async (req, res, next) => {
     UPDATE  roomType
        SET  title = "${title}", 
             thumbnail = "${thumbnail}",
-            imagePath = "${imagePath}"
+            imagePath = "${imagePath}",
+            updatedAt = NOW()
      WHERE  id = ${typeId}
   `;
 
@@ -156,6 +719,27 @@ router.post("/type/update", isAdminCheck, async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(401).send("해당 데이터를 수정항 수 없습니다.");
+  }
+});
+
+// 매물 지역 타입 이미지 삭제
+router.post("/type/delete", isAdminCheck, async (req, res, next) => {
+  const { typeId } = req.body;
+
+  const updateQuery = `
+    UPDATE  roomType
+       SET  isDelete = 1,
+            deletedAt = NOW()
+     WHERE  id = ${typeId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
   }
 });
 
@@ -204,16 +788,14 @@ router.post("/option/create", isAdminCheck, async (req, res, next) => {
       title,
       imagePath,
       createdAt,
-      updatedAt,
-      isDelete
+      updatedAt
     )
     VALUES
     (
       "임시 옵션",
       "https://via.placeholder.com/300x300",
       NOW(),
-      NOW(),
-      0
+      NOW()
     )
   `;
 
@@ -227,26 +809,6 @@ router.post("/option/create", isAdminCheck, async (req, res, next) => {
   }
 });
 
-// 옵션 아이콘 삭제
-router.post("/option/delete", isAdminCheck, async (req, res, next) => {
-  const { optionId } = req.body;
-
-  const updateQuery = `
-    UPDATE  options
-       SET  isDelete = 1
-     WHERE  id = ${optionId}
-  `;
-
-  try {
-    await models.sequelize.query(updateQuery);
-
-    return res.status(200).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
-  }
-});
-
 // 옵션 아이콘 수정
 router.post("/option/update", isAdminCheck, async (req, res, next) => {
   const { title, imagePath, typeId } = req.body;
@@ -254,7 +816,8 @@ router.post("/option/update", isAdminCheck, async (req, res, next) => {
   const updateQuery = `
     UPDATE  options
        SET  title = "${title}",
-            imagePath = "${imagePath}"
+            imagePath = "${imagePath}",
+            updatedAt = NOW()
      WHERE  id = ${typeId}
   `;
 
@@ -265,6 +828,27 @@ router.post("/option/update", isAdminCheck, async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(401).send("해당 데이터를 수정항 수 없습니다.");
+  }
+});
+
+// 옵션 아이콘 삭제
+router.post("/option/delete", isAdminCheck, async (req, res, next) => {
+  const { optionId } = req.body;
+
+  const updateQuery = `
+    UPDATE  options
+       SET  isDelete = 1,
+            deletedAt = NOW()
+     WHERE  id = ${optionId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
   }
 });
 
@@ -333,26 +917,6 @@ router.post("/infra/create", isAdminCheck, async (req, res, next) => {
   }
 });
 
-// 인프라 아이콘 삭제
-router.post("/infra/delete", isAdminCheck, async (req, res, next) => {
-  const { infraId } = req.body;
-
-  const updateQuery = `
-    UPDATE  infras
-       SET  isDelete = TURE
-     WHERE  id = ${infraId}
-  `;
-
-  try {
-    await models.sequelize.query(updateQuery);
-
-    return res.status(200).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
-  }
-});
-
 // 인프라 아이콘 수정
 router.post("/infra/update", isAdminCheck, async (req, res, next) => {
   const { title, imagePath, typeId } = req.body;
@@ -360,7 +924,8 @@ router.post("/infra/update", isAdminCheck, async (req, res, next) => {
   const updateQuery = `
     UPDATE  infras
        SET  title = "${title}",
-            imagePath = "${imagePath}"
+            imagePath = "${imagePath}",
+            updatedAt = NOW()
      WHERE  id = ${typeId}
   `;
 
@@ -371,6 +936,27 @@ router.post("/infra/update", isAdminCheck, async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(401).send("해당 데이터를 수정항 수 없습니다.");
+  }
+});
+
+// 인프라 아이콘 삭제
+router.post("/infra/delete", isAdminCheck, async (req, res, next) => {
+  const { infraId } = req.body;
+
+  const updateQuery = `
+    UPDATE  infras
+       SET  isDelete = 1,
+            deletedAt = NOW()
+     WHERE  id = ${infraId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
   }
 });
 
@@ -439,26 +1025,6 @@ router.post("/maintenance/create", isAdminCheck, async (req, res, next) => {
   }
 });
 
-// 유지보수 아이콘 삭제
-router.post("/maintenance/delete", isAdminCheck, async (req, res, next) => {
-  const { maintenanceId } = req.body;
-
-  const updateQuery = `
-    UPDATE  maintenances
-       SET  isDelete = TURE
-     WHERE  id = ${maintenanceId}
-  `;
-
-  try {
-    await models.sequelize.query(updateQuery);
-
-    return res.status(200).json({ result: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
-  }
-});
-
 // 유지보수 아이콘 수정
 router.post("/maintenance/update", isAdminCheck, async (req, res, next) => {
   const { title, imagePath, typeId } = req.body;
@@ -466,7 +1032,8 @@ router.post("/maintenance/update", isAdminCheck, async (req, res, next) => {
   const updateQuery = `
     UPDATE  maintenances
        SET  title = "${title}",
-            imagePath = "${imagePath}"
+            imagePath = "${imagePath}",
+            updatedAt = NOW()
      WHERE  id = ${typeId}
   `;
 
@@ -477,6 +1044,27 @@ router.post("/maintenance/update", isAdminCheck, async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(401).send("해당 데이터를 수정항 수 없습니다.");
+  }
+});
+
+// 유지보수 아이콘 삭제
+router.post("/maintenance/delete", isAdminCheck, async (req, res, next) => {
+  const { maintenanceId } = req.body;
+
+  const updateQuery = `
+    UPDATE  maintenances
+       SET  isDelete = 1,
+            deletedAt = NOW()
+     WHERE  id = ${maintenanceId}
+  `;
+
+  try {
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).send("해당 데이터를 삭제할 수 없습니다.");
   }
 });
 
