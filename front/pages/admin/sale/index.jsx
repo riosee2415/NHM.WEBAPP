@@ -45,7 +45,7 @@ const InfoTitle = styled.div`
 const ViewStatusIcon = styled(EyeOutlined)`
   font-size: 18px;
   color: ${(props) =>
-    props.active ? props.theme.subTheme5_C : props.theme.lightGrey_C};
+    props.active ? props.theme.basicTheme_C : props.theme.lightGrey_C};
 `;
 
 const Index = ({}) => {
@@ -187,7 +187,7 @@ const Index = ({}) => {
         ju={`flex-start`}
         al={`center`}
         padding={`0px 15px`}
-        color={Theme.grey_C}
+        color={Theme.grey2_C}
         // shadow={`2px 2px 6px  ${Theme.adminTheme_2}`}
       >
         <HomeText

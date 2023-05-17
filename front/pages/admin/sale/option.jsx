@@ -2,7 +2,16 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import AdminLayout from "../../../components/AdminLayout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Form, Input, Popconfirm, Popover, Table, message } from "antd";
+import {
+  Button,
+  Form,
+  Image,
+  Input,
+  Popconfirm,
+  Popover,
+  Table,
+  message,
+} from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
 import { END } from "redux-saga";
@@ -27,6 +36,14 @@ import {
   HomeOutlined,
   RightOutlined,
 } from "@ant-design/icons";
+import {
+  ROOM_IMAGE_RESET,
+  ROOM_OPTION_CREATE_REQUEST,
+  ROOM_OPTION_DELETE_REQUEST,
+  ROOM_OPTION_LIST_REQUEST,
+  ROOM_OPTION_UPDATE_REQUEST,
+  ROOM_UPLOAD_REQUEST,
+} from "../../../reducers/room";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -45,11 +62,28 @@ const InfoTitle = styled.div`
 const ViewStatusIcon = styled(EyeOutlined)`
   font-size: 18px;
   color: ${(props) =>
-    props.active ? props.theme.subTheme5_C : props.theme.lightGrey_C};
+    props.active ? props.theme.basicTheme_C : props.theme.lightGrey_C};
 `;
 
 const Option = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
+  const {
+    roomOptionList,
+    roomPath,
+
+    st_roomOptionCreateDone,
+    st_roomOptionCreateError,
+
+    st_roomOptionUpdateDone,
+    st_roomOptionUpdateError,
+
+    st_roomOptionDeleteDone,
+    st_roomOptionDeleteError,
+
+    st_roomUploadLoading,
+    st_roomUploadDone,
+    st_roomUploadError,
+  } = useSelector((state) => state.room);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -59,6 +93,8 @@ const Option = ({}) => {
   const [level2, setLevel2] = useState("");
   const [sameDepth, setSameDepth] = useState([]);
   const [currentData, setCurrentData] = useState(null);
+
+  const imgRef = useRef();
 
   const [infoForm] = Form.useForm();
 
@@ -112,17 +148,74 @@ const Option = ({}) => {
     });
   }, []);
 
+  // ********************** 매물옵션 생성 후처리 *************************
+  useEffect(() => {
+    if (st_roomOptionCreateDone) {
+      dispatch({
+        type: ROOM_OPTION_LIST_REQUEST,
+      });
+
+      return message.success("매물옵션이 생성되었습니다.");
+    }
+
+    if (st_roomOptionCreateError) {
+      return message.error(st_roomOptionCreateError);
+    }
+  }, [st_roomOptionCreateDone, st_roomOptionCreateError]);
+
+  // ********************** 매물옵션 수정 후처리 *************************
+  useEffect(() => {
+    if (st_roomOptionUpdateDone) {
+      dispatch({
+        type: ROOM_OPTION_LIST_REQUEST,
+      });
+
+      return message.success("매물옵션이 수정되었습니다.");
+    }
+
+    if (st_roomOptionUpdateError) {
+      return message.error(st_roomOptionUpdateError);
+    }
+  }, [st_roomOptionUpdateDone, st_roomOptionUpdateError]);
+
+  // ********************** 매물옵션 삭제 후처리 *************************
+  useEffect(() => {
+    if (st_roomOptionDeleteDone) {
+      dispatch({
+        type: ROOM_OPTION_LIST_REQUEST,
+      });
+
+      return message.success("매물옵션이 삭제되었습니다.");
+    }
+
+    if (st_roomOptionDeleteError) {
+      return message.error(st_roomOptionDeleteError);
+    }
+  }, [st_roomOptionDeleteDone, st_roomOptionDeleteError]);
+
+  // ********************** 매물옵션 이미지 후처리 *************************
+  useEffect(() => {
+    if (st_roomUploadDone) {
+      return message.success("매물옵션 이미지가 업로드되었습니다.");
+    }
+
+    if (st_roomUploadError) {
+      return message.error(st_roomUploadError);
+    }
+  }, [st_roomUploadDone, st_roomUploadError]);
+
   ////// HANDLER //////
 
   const beforeSetDataHandler = useCallback(
     (record) => {
       setCurrentData(record);
 
+      dispatch({
+        type: ROOM_IMAGE_RESET,
+      });
+
       infoForm.setFieldsValue({
         title: record.title,
-        typeId: record.NoticeTypeId,
-        content: record.content,
-        hit: record.hit,
         createdAt: record.viewCreatedAt,
         updatedAt: record.viewUpdatedAt,
         updator: record.updator,
@@ -130,6 +223,56 @@ const Option = ({}) => {
     },
     [currentData, infoForm]
   );
+
+  const createHandler = useCallback(() => {
+    dispatch({
+      type: ROOM_OPTION_CREATE_REQUEST,
+    });
+  }, []);
+
+  const updateHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: ROOM_OPTION_UPDATE_REQUEST,
+        data: {
+          typeId: currentData.id,
+          title: data.title,
+          imagePath: roomPath ? roomPath : currentData.imagePath,
+        },
+      });
+    },
+    [currentData, roomPath]
+  );
+
+  const deleteHandler = useCallback((data) => {
+    dispatch({
+      type: ROOM_OPTION_DELETE_REQUEST,
+      data: {
+        optionId: data.id,
+      },
+    });
+  }, []);
+
+  const clickImgUpload = useCallback(() => {
+    imgRef.current.click();
+  }, [imgRef.current]);
+
+  const onChangeImg = useCallback((e) => {
+    const formData = new FormData();
+
+    [].forEach.call(e.target.files, (file) => {
+      formData.append("image", file);
+    });
+
+    if (e.target.files.length < 1) {
+      return;
+    }
+
+    dispatch({
+      type: ROOM_UPLOAD_REQUEST,
+      data: formData,
+    });
+  });
 
   ////// DATAVIEW //////
 
@@ -141,10 +284,13 @@ const Option = ({}) => {
       dataIndex: "num",
     },
     {
-      title: "이미지 명칭",
+      title: "옵션명",
       dataIndex: "title",
     },
-
+    {
+      title: "옵션 이미지",
+      render: (data) => <Image width={`100px`} src={data.imagePath} />,
+    },
     {
       title: "생성일",
       dataIndex: "viewCreatedAt",
@@ -167,7 +313,7 @@ const Option = ({}) => {
       render: (data) => (
         <Popconfirm
           title="정말 삭제하시겠습니까?"
-          onConfirm={() => {}}
+          onConfirm={() => deleteHandler(data)}
           okText="삭제"
           cancelText="취소"
         >
@@ -187,7 +333,7 @@ const Option = ({}) => {
         ju={`flex-start`}
         al={`center`}
         padding={`0px 15px`}
-        color={Theme.grey_C}
+        color={Theme.grey2_C}
         // shadow={`2px 2px 6px  ${Theme.adminTheme_2}`}
       >
         <HomeText
@@ -210,24 +356,11 @@ const Option = ({}) => {
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
-          <GuideLi>지점지역을 추가 / 삭제 등 관리를 할 수 있습니다.</GuideLi>
+          <GuideLi>매물 옵션을 추가 / 삭제 등 관리를 할 수 있습니다.</GuideLi>
           <GuideLi isImpo={true}>
-            삭제처리 된 지점지역은 복구가 불가능합니다.
+            삭제처리 된 매물 옵션은 복구가 불가능합니다.
           </GuideLi>
         </GuideUl>
-      </Wrapper>
-
-      {/* TAB */}
-      <Wrapper padding={`10px`} dr={`row`} ju="flex-start">
-        <Button type={"default"} size="small" style={{ marginRight: "5px" }}>
-          미완료
-        </Button>
-        <Button type={"default"} size="small" style={{ marginRight: "5px" }}>
-          완료
-        </Button>
-        <Button type={"default"} size="small" style={{ marginRight: "5px" }}>
-          전체
-        </Button>
       </Wrapper>
 
       <Wrapper dr="row" padding="0px 20px" al="flex-start" ju={`space-between`}>
@@ -237,15 +370,15 @@ const Option = ({}) => {
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
           <Wrapper al="flex-end" margin={`0px 0px 5px 0px`}>
-            <Button size="small" type="primary">
-              공지사항 생성
+            <Button size="small" type="primary" onClick={createHandler}>
+              매물옵션 생성
             </Button>
           </Wrapper>
           <Table
             style={{ width: "100%" }}
             rowKey="num"
             columns={col}
-            dataSource={[]}
+            dataSource={roomOptionList}
             size="small"
             onRow={(record, index) => {
               return {
@@ -265,7 +398,37 @@ const Option = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  공지사항 기본정보
+                  매물옵션 이미지정보
+                </InfoTitle>
+              </Wrapper>
+
+              <Wrapper width={`300px`}>
+                <Image
+                  width={`100%`}
+                  src={roomPath ? roomPath : currentData.imagePath}
+                />
+                <input
+                  hidden
+                  type={`file`}
+                  ref={imgRef}
+                  accept={`.jpg, .png`}
+                  onChange={onChangeImg}
+                />
+                <Button
+                  loading={st_roomUploadLoading}
+                  style={{ width: `100%`, margin: `5px 0 0` }}
+                  size="small"
+                  type="primary"
+                  onClick={clickImgUpload}
+                >
+                  매물옵션 이미지 업로드
+                </Button>
+              </Wrapper>
+
+              <Wrapper margin={`0px 0px 5px 0px`}>
+                <InfoTitle>
+                  <CheckOutlined />
+                  매물옵션 기본정보
                 </InfoTitle>
               </Wrapper>
 
@@ -274,33 +437,19 @@ const Option = ({}) => {
                 style={{ width: `100%` }}
                 labelCol={{ span: 2 }}
                 wrapperCol={{ span: 22 }}
+                onFinish={updateHandler}
               >
                 <Form.Item
-                  label="제목"
+                  label="매물옵션"
                   name="title"
                   rules={[
-                    { required: true, message: "제목은 필수 입력사항 입니다." },
+                    {
+                      required: true,
+                      message: "매물옵션은 필수 입력사항 입니다.",
+                    },
                   ]}
                 >
                   <Input size="small" />
-                </Form.Item>
-
-                <Form.Item
-                  label="내용"
-                  name="content"
-                  rules={[
-                    { required: true, message: "내용은 필수 입력사항 입니다." },
-                  ]}
-                >
-                  <Input.TextArea rows={10} />
-                </Form.Item>
-
-                <Form.Item label="조회수" name="hit">
-                  <Input
-                    size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
-                    readOnly
-                  />
                 </Form.Item>
 
                 <Form.Item label="작성일" name="createdAt">
@@ -312,14 +461,6 @@ const Option = ({}) => {
                 </Form.Item>
 
                 <Form.Item label="수정일" name="updatedAt">
-                  <Input
-                    size="small"
-                    style={{ background: Theme.lightGrey_C, border: "none" }}
-                    readOnly
-                  />
-                </Form.Item>
-
-                <Form.Item label="최근작업자" name="updator">
                   <Input
                     size="small"
                     style={{ background: Theme.lightGrey_C, border: "none" }}
@@ -372,6 +513,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: ROOM_OPTION_LIST_REQUEST,
     });
 
     // 구현부 종료

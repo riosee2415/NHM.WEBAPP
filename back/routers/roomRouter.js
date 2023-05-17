@@ -170,6 +170,7 @@ router.post("/type/update", isAdminCheck, async (req, res, next) => {
 router.post("/option/list", async (req, res, next) => {
   const selectQuery = `
   SELECT  ROW_NUMBER()  OVER(ORDER  BY createdAt)   AS num,
+          id,
           title,
           imagePath,
           createdAt,
@@ -199,14 +200,16 @@ router.post("/option/create", isAdminCheck, async (req, res, next) => {
       title,
       imagePath,
       createdAt,
-      updatedAt
+      updatedAt,
+      isDelete
     )
     VALUES
     (
       "임시 옵션",
       "https://via.placeholder.com/300x300",
       NOW(),
-      NOW()
+      NOW(),
+      0
     )
   `;
 
@@ -226,7 +229,7 @@ router.post("/option/delete", isAdminCheck, async (req, res, next) => {
 
   const updateQuery = `
     UPDATE  options
-       SET  isDelete = TURE
+       SET  isDelete = 1
      WHERE  id = ${optionId}
   `;
 
@@ -247,7 +250,7 @@ router.post("/option/update", isAdminCheck, async (req, res, next) => {
   const updateQuery = `
     UPDATE  options
        SET  title = "${title}",
-            imagePath = "${imagePath}",
+            imagePath = "${imagePath}"
      WHERE  id = ${typeId}
   `;
 

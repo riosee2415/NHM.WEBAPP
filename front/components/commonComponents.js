@@ -613,7 +613,7 @@ export const GuideUl = styled.ul`
 export const GuideLi = styled.li`
   width: 100%;
   margin-bottom: 2px;
-  color: ${(props) => (props.isImpo ? props.theme.red_C : props.theme.grey_C)};
+  color: ${(props) => (props.isImpo ? props.theme.red_C : props.theme.grey2_C)};
   list-style: none;
 `;
 
@@ -637,7 +637,7 @@ export const OtherMenu = styled.div`
   width: 100%;
   border-bottom: 1px solid ${(props) => props.theme.lightGrey_C};
   font-size: 13px;
-  color: ${(props) => props.theme.grey_C};
+  color: ${(props) => props.theme.grey2_C};
   margin-bottom: 4px;
 
   cursor: pointer;
