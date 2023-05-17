@@ -65,20 +65,20 @@ const ViewStatusIcon = styled(EyeOutlined)`
     props.active ? props.theme.basicTheme_C : props.theme.lightGrey_C};
 `;
 
-const Infra = ({}) => {
+const Maintenance = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
   const {
-    roomInfraList,
+    roomMaintList,
     roomPath,
 
-    st_roomInfraCreateDone,
-    st_roomInfraCreateError,
+    st_roomMaintCreateDone,
+    st_roomMaintCreateError,
 
-    st_roomInfraUpdateDone,
-    st_roomInfraUpdateError,
+    st_roomMaintUpdateDone,
+    st_roomMaintUpdateError,
 
-    st_roomInfraDeleteDone,
-    st_roomInfraDeleteError,
+    st_roomMaintDeleteDone,
+    st_roomMaintDeleteError,
 
     st_roomUploadLoading,
     st_roomUploadDone,
@@ -148,55 +148,55 @@ const Infra = ({}) => {
     });
   }, []);
 
-  // ********************** 매물인프라 생성 후처리 *************************
+  // ********************** 매물 유지보수 생성 후처리 *************************
   useEffect(() => {
-    if (st_roomInfraCreateDone) {
+    if (st_roomMaintCreateDone) {
       dispatch({
         type: ROOM_MAINT_LIST_REQUEST,
       });
 
-      return message.success("매물인프라가 생성되었습니다.");
+      return message.success("매물 유지보수가 생성되었습니다.");
     }
 
-    if (st_roomInfraCreateError) {
-      return message.error(st_roomInfraCreateError);
+    if (st_roomMaintCreateError) {
+      return message.error(st_roomMaintCreateError);
     }
-  }, [st_roomInfraCreateDone, st_roomInfraCreateError]);
+  }, [st_roomMaintCreateDone, st_roomMaintCreateError]);
 
-  // ********************** 매물인프라 수정 후처리 *************************
+  // ********************** 매물 유지보수 수정 후처리 *************************
   useEffect(() => {
-    if (st_roomInfraUpdateDone) {
+    if (st_roomMaintUpdateDone) {
       dispatch({
         type: ROOM_MAINT_LIST_REQUEST,
       });
 
-      return message.success("매물인프라가 수정되었습니다.");
+      return message.success("매물 유지보수가 수정되었습니다.");
     }
 
-    if (st_roomInfraUpdateError) {
-      return message.error(st_roomInfraUpdateError);
+    if (st_roomMaintUpdateError) {
+      return message.error(st_roomMaintUpdateError);
     }
-  }, [st_roomInfraUpdateDone, st_roomInfraUpdateError]);
+  }, [st_roomMaintUpdateDone, st_roomMaintUpdateError]);
 
-  // ********************** 매물인프라 삭제 후처리 *************************
+  // ********************** 매물 유지보수 삭제 후처리 *************************
   useEffect(() => {
-    if (st_roomInfraDeleteDone) {
+    if (st_roomMaintDeleteDone) {
       dispatch({
         type: ROOM_MAINT_LIST_REQUEST,
       });
 
-      return message.success("매물인프라가 삭제되었습니다.");
+      return message.success("매물 유지보수가 삭제되었습니다.");
     }
 
-    if (st_roomInfraDeleteError) {
-      return message.error(st_roomInfraDeleteError);
+    if (st_roomMaintDeleteError) {
+      return message.error(st_roomMaintDeleteError);
     }
-  }, [st_roomInfraDeleteDone, st_roomInfraDeleteError]);
+  }, [st_roomMaintDeleteDone, st_roomMaintDeleteError]);
 
-  // ********************** 매물인프라 이미지 후처리 *************************
+  // ********************** 매물 유지보수 이미지 후처리 *************************
   useEffect(() => {
     if (st_roomUploadDone) {
-      return message.success("매물인프라 이미지가 업로드되었습니다.");
+      return message.success("매물 유지보수 이미지가 업로드되었습니다.");
     }
 
     if (st_roomUploadError) {
@@ -209,8 +209,6 @@ const Infra = ({}) => {
   const beforeSetDataHandler = useCallback(
     (record) => {
       setCurrentData(record);
-
-      console.log(record);
 
       dispatch({
         type: ROOM_IMAGE_RESET,
@@ -250,7 +248,7 @@ const Infra = ({}) => {
     dispatch({
       type: ROOM_MAINT_DELETE_REQUEST,
       data: {
-        infraId: data.id,
+        maintenanceId: data.id,
       },
     });
   }, []);
@@ -286,11 +284,11 @@ const Infra = ({}) => {
       dataIndex: "num",
     },
     {
-      title: "옵션명",
+      title: "유지보수명",
       dataIndex: "title",
     },
     {
-      title: "옵션 이미지",
+      title: "유지보수 이미지",
       render: (data) => <Image width={`100px`} src={data.imagePath} />,
     },
     {
@@ -358,9 +356,11 @@ const Infra = ({}) => {
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
-          <GuideLi>매물 옵션을 추가 / 삭제 등 관리를 할 수 있습니다.</GuideLi>
+          <GuideLi>
+            매물 유지보수를 추가 / 삭제 등 관리를 할 수 있습니다.
+          </GuideLi>
           <GuideLi isImpo={true}>
-            삭제처리 된 매물 옵션은 복구가 불가능합니다.
+            삭제처리 된 매물 유지보수는 복구가 불가능합니다.
           </GuideLi>
         </GuideUl>
       </Wrapper>
@@ -373,14 +373,14 @@ const Infra = ({}) => {
         >
           <Wrapper al="flex-end" margin={`0px 0px 5px 0px`}>
             <Button size="small" type="primary" onClick={createHandler}>
-              매물인프라 생성
+              매물 유지보수 생성
             </Button>
           </Wrapper>
           <Table
             style={{ width: "100%" }}
             rowKey="num"
             columns={col}
-            dataSource={roomInfraList}
+            dataSource={roomMaintList}
             size="small"
             onRow={(record, index) => {
               return {
@@ -400,7 +400,7 @@ const Infra = ({}) => {
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  매물인프라 이미지정보
+                  매물 유지보수 이미지정보
                 </InfoTitle>
               </Wrapper>
 
@@ -423,14 +423,14 @@ const Infra = ({}) => {
                   type="primary"
                   onClick={clickImgUpload}
                 >
-                  매물인프라 이미지 업로드
+                  매물 유지보수 이미지 업로드
                 </Button>
               </Wrapper>
 
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
-                  매물인프라 기본정보
+                  매물 유지보수 기본정보
                 </InfoTitle>
               </Wrapper>
 
@@ -442,7 +442,7 @@ const Infra = ({}) => {
                 onFinish={updateHandler}
               >
                 <Form.Item
-                  label="매물인프라"
+                  label="매물 유지보수"
                   name="title"
                   rules={[
                     {
@@ -528,4 +528,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default withRouter(Infra);
+export default withRouter(Maintenance);

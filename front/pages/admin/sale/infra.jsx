@@ -210,8 +210,6 @@ const Infra = ({}) => {
     (record) => {
       setCurrentData(record);
 
-      console.log(record);
-
       dispatch({
         type: ROOM_IMAGE_RESET,
       });
@@ -286,11 +284,11 @@ const Infra = ({}) => {
       dataIndex: "num",
     },
     {
-      title: "옵션명",
+      title: "인프라명",
       dataIndex: "title",
     },
     {
-      title: "옵션 이미지",
+      title: "인프라 이미지",
       render: (data) => <Image width={`100px`} src={data.imagePath} />,
     },
     {
