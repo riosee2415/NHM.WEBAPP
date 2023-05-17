@@ -6,6 +6,10 @@ module.exports = class RoomType extends Model {
   static init(sequelize) {
     return super.init(
       {
+        thumbnail: {
+          type: DataTypes.STRING(1000),
+          allowNull: false,
+        },
         title: {
           type: DataTypes.STRING(200),
           allowNull: false,

@@ -64,6 +64,7 @@ router.post(
 router.post("/type/list", async (req, res, next) => {
   const selectQuery = `
   SELECT  ROW_NUMBER()  OVER(ORDER  BY createdAt)   AS num,
+          thumbnail,
           title,
           imagePath,
           createdAt,
@@ -90,6 +91,7 @@ router.post("/type/create", isAdminCheck, async (req, res, next) => {
   const insertQuery = `
     INSERT  INTO  roomType
     (
+      thumbnail,
       title,
       imagePath,
       createdAt,
@@ -97,6 +99,7 @@ router.post("/type/create", isAdminCheck, async (req, res, next) => {
     )
     VALUES
     (
+      "https://via.placeholder.com/350",
       "임시 이름",
       "https://via.placeholder.com/1000x300",
       NOW(),
@@ -136,12 +139,13 @@ router.post("/type/delete", isAdminCheck, async (req, res, next) => {
 
 // 매물 지역 타입 이미지 수정
 router.post("/type/update", isAdminCheck, async (req, res, next) => {
-  const { title, imagePath, typeId } = req.body;
+  const { title, imagePath, thumbnail, typeId } = req.body;
 
   const updateQuery = `
     UPDATE  roomType
-       SET  title = "${title}",
-            imagePath = "${imagePath}",
+       SET  title = "${title}", 
+            thumbnail = "${thumbnail}",
+            imagePath = "${imagePath}"
      WHERE  id = ${typeId}
   `;
 
@@ -356,7 +360,7 @@ router.post("/infra/update", isAdminCheck, async (req, res, next) => {
   const updateQuery = `
     UPDATE  infras
        SET  title = "${title}",
-            imagePath = "${imagePath}",
+            imagePath = "${imagePath}"
      WHERE  id = ${typeId}
   `;
 
@@ -462,7 +466,7 @@ router.post("/maintenance/update", isAdminCheck, async (req, res, next) => {
   const updateQuery = `
     UPDATE  maintenances
        SET  title = "${title}",
-            imagePath = "${imagePath}",
+            imagePath = "${imagePath}"
      WHERE  id = ${typeId}
   `;
 
