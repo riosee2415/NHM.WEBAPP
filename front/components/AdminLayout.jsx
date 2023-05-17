@@ -153,6 +153,11 @@ export const items = {
       link: "/admin/sale/option",
       useYn: true,
     },
+    {
+      name: "매물인프라관리",
+      link: "/admin/sale/infra",
+      useYn: true,
+    },
   ],
 };
 
