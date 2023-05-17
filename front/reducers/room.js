@@ -5,6 +5,7 @@ export const initailState = {
   roomTypeList: [],
   roomOptionList: [],
   roomInfraList: [],
+  roomMaintList: [],
   roomPath: null,
 
   //
@@ -78,6 +79,23 @@ export const initailState = {
   st_roomInfraDeleteLoading: false, // roomInfra 삭제하기
   st_roomInfraDeleteDone: false,
   st_roomInfraDeleteError: null,
+  //
+  //
+  st_roomMaintListLoading: false, // roomMaint 가져오기
+  st_roomMaintListDone: false,
+  st_roomMaintListError: null,
+  //
+  st_roomMaintCreateLoading: false, // roomMaint 생성하기
+  st_roomMaintCreateDone: false,
+  st_roomMaintCreateError: null,
+  //
+  st_roomMaintUpdateLoading: false, // roomMaint 수정하기
+  st_roomMaintUpdateDone: false,
+  st_roomMaintUpdateError: null,
+  //
+  st_roomMaintDeleteLoading: false, // roomMaint 삭제하기
+  st_roomMaintDeleteDone: false,
+  st_roomMaintDeleteError: null,
 };
 
 export const ROOM_LIST_REQUEST = "ROOM_LIST_REQUEST";
@@ -150,6 +168,23 @@ export const ROOM_INFRA_UPDATE_FAILURE = "ROOM_INFRA_UPDATE_FAILURE";
 export const ROOM_INFRA_DELETE_REQUEST = "ROOM_INFRA_DELETE_REQUEST";
 export const ROOM_INFRA_DELETE_SUCCESS = "ROOM_INFRA_DELETE_SUCCESS";
 export const ROOM_INFRA_DELETE_FAILURE = "ROOM_INFRA_DELETE_FAILURE";
+//
+//
+export const ROOM_MAINT_LIST_REQUEST = "ROOM_MAINT_LIST_REQUEST";
+export const ROOM_MAINT_LIST_SUCCESS = "ROOM_MAINT_LIST_SUCCESS";
+export const ROOM_MAINT_LIST_FAILURE = "ROOM_MAINT_LIST_FAILURE";
+
+export const ROOM_MAINT_CREATE_REQUEST = "ROOM_MAINT_CREATE_REQUEST";
+export const ROOM_MAINT_CREATE_SUCCESS = "ROOM_MAINT_CREATE_SUCCESS";
+export const ROOM_MAINT_CREATE_FAILURE = "ROOM_MAINT_CREATE_FAILURE";
+
+export const ROOM_MAINT_UPDATE_REQUEST = "ROOM_MAINT_UPDATE_REQUEST";
+export const ROOM_MAINT_UPDATE_SUCCESS = "ROOM_MAINT_UPDATE_SUCCESS";
+export const ROOM_MAINT_UPDATE_FAILURE = "ROOM_MAINT_UPDATE_FAILURE";
+
+export const ROOM_MAINT_DELETE_REQUEST = "ROOM_MAINT_DELETE_REQUEST";
+export const ROOM_MAINT_DELETE_SUCCESS = "ROOM_MAINT_DELETE_SUCCESS";
+export const ROOM_MAINT_DELETE_FAILURE = "ROOM_MAINT_DELETE_FAILURE";
 
 export const ROOM_IMAGE_RESET = "ROOM_IMAGE_RESET";
 
@@ -519,6 +554,93 @@ const reducer = (state = initailState, action) =>
         draft.st_roomInfraDeleteLoading = false;
         draft.st_roomInfraDeleteDone = false;
         draft.st_roomInfraDeleteError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+      //////////////////////////////////////////////
+      //////////////////////////////////////////////
+
+      case ROOM_MAINT_LIST_REQUEST: {
+        draft.st_roomMaintListLoading = true;
+        draft.st_roomMaintListDone = false;
+        draft.st_roomMaintListError = null;
+        break;
+      }
+      case ROOM_MAINT_LIST_SUCCESS: {
+        draft.st_roomMaintListLoading = false;
+        draft.st_roomMaintListDone = true;
+        draft.st_roomMaintListError = null;
+        draft.roomMaintList = action.data;
+        break;
+      }
+      case ROOM_MAINT_LIST_FAILURE: {
+        draft.st_roomMaintListLoading = false;
+        draft.st_roomMaintListDone = false;
+        draft.st_roomMaintListError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case ROOM_MAINT_CREATE_REQUEST: {
+        draft.st_roomMaintCreateLoading = true;
+        draft.st_roomMaintCreateDone = false;
+        draft.st_roomMaintCreateError = null;
+        break;
+      }
+      case ROOM_MAINT_CREATE_SUCCESS: {
+        draft.st_roomMaintCreateLoading = false;
+        draft.st_roomMaintCreateDone = true;
+        draft.st_roomMaintCreateError = null;
+        break;
+      }
+      case ROOM_MAINT_CREATE_FAILURE: {
+        draft.st_roomMaintCreateLoading = false;
+        draft.st_roomMaintCreateDone = false;
+        draft.st_roomMaintCreateError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case ROOM_MAINT_UPDATE_REQUEST: {
+        draft.st_roomMaintUpdateLoading = true;
+        draft.st_roomMaintUpdateDone = false;
+        draft.st_roomMaintUpdateError = null;
+        break;
+      }
+      case ROOM_MAINT_UPDATE_SUCCESS: {
+        draft.st_roomMaintUpdateLoading = false;
+        draft.st_roomMaintUpdateDone = true;
+        draft.st_roomMaintUpdateError = null;
+        break;
+      }
+      case ROOM_MAINT_UPDATE_FAILURE: {
+        draft.st_roomMaintUpdateLoading = false;
+        draft.st_roomMaintUpdateDone = false;
+        draft.st_roomMaintUpdateError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case ROOM_MAINT_DELETE_REQUEST: {
+        draft.st_roomMaintDeleteLoading = true;
+        draft.st_roomMaintDeleteDone = false;
+        draft.st_roomMaintDeleteError = null;
+        break;
+      }
+      case ROOM_MAINT_DELETE_SUCCESS: {
+        draft.st_roomMaintDeleteLoading = false;
+        draft.st_roomMaintDeleteDone = true;
+        draft.st_roomMaintDeleteError = null;
+        break;
+      }
+      case ROOM_MAINT_DELETE_FAILURE: {
+        draft.st_roomMaintDeleteLoading = false;
+        draft.st_roomMaintDeleteDone = false;
+        draft.st_roomMaintDeleteError = action.error;
         break;
       }
 
