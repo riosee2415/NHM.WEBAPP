@@ -312,13 +312,13 @@ function* roomOptionList(action) {
     const result = yield call(roomOptionListAPI, action.data);
 
     yield put({
-      type: ROOM_TYPE_LIST_SUCCESS,
+      type: ROOM_OPTION_LIST_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: ROOM_TYPE_LIST_FAILURE,
+      type: ROOM_OPTION_LIST_FAILURE,
       error: err.response.data,
     });
   }
@@ -339,13 +339,13 @@ function* roomOptionCreate(action) {
     const result = yield call(roomOptionCreateAPI, action.data);
 
     yield put({
-      type: ROOM_TYPE_CREATE_SUCCESS,
+      type: ROOM_OPTION_CREATE_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: ROOM_TYPE_CREATE_FAILURE,
+      type: ROOM_OPTION_CREATE_FAILURE,
       error: err.response.data,
     });
   }
@@ -366,13 +366,13 @@ function* roomOptionUpdate(action) {
     const result = yield call(roomOptionUpdateAPI, action.data);
 
     yield put({
-      type: ROOM_TYPE_UPDATE_SUCCESS,
+      type: ROOM_OPTION_UPDATE_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: ROOM_TYPE_UPDATE_FAILURE,
+      type: ROOM_OPTION_UPDATE_FAILURE,
       error: err.response.data,
     });
   }
@@ -393,13 +393,13 @@ function* roomOptionDelete(action) {
     const result = yield call(roomOptionDeleteAPI, action.data);
 
     yield put({
-      type: ROOM_TYPE_DELETE_SUCCESS,
+      type: ROOM_OPTION_DELETE_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: ROOM_TYPE_DELETE_FAILURE,
+      type: ROOM_OPTION_DELETE_FAILURE,
       error: err.response.data,
     });
   }
