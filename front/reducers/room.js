@@ -4,6 +4,7 @@ export const initailState = {
   roomList: [],
   roomTypeList: [],
   roomOptionList: [],
+  roomInfraList: [],
   roomPath: null,
 
   //
@@ -60,6 +61,23 @@ export const initailState = {
   st_roomOptionDeleteLoading: false, // roomOption 삭제하기
   st_roomOptionDeleteDone: false,
   st_roomOptionDeleteError: null,
+  //
+  //
+  st_roomInfraListLoading: false, // roomInfra 가져오기
+  st_roomInfraListDone: false,
+  st_roomInfraListError: null,
+  //
+  st_roomInfraCreateLoading: false, // roomInfra 생성하기
+  st_roomInfraCreateDone: false,
+  st_roomInfraCreateError: null,
+  //
+  st_roomInfraUpdateLoading: false, // roomInfra 수정하기
+  st_roomInfraUpdateDone: false,
+  st_roomInfraUpdateError: null,
+  //
+  st_roomInfraDeleteLoading: false, // roomInfra 삭제하기
+  st_roomInfraDeleteDone: false,
+  st_roomInfraDeleteError: null,
 };
 
 export const ROOM_LIST_REQUEST = "ROOM_LIST_REQUEST";
@@ -115,6 +133,23 @@ export const ROOM_OPTION_UPDATE_FAILURE = "ROOM_OPTION_UPDATE_FAILURE";
 export const ROOM_OPTION_DELETE_REQUEST = "ROOM_OPTION_DELETE_REQUEST";
 export const ROOM_OPTION_DELETE_SUCCESS = "ROOM_OPTION_DELETE_SUCCESS";
 export const ROOM_OPTION_DELETE_FAILURE = "ROOM_OPTION_DELETE_FAILURE";
+//
+//
+export const ROOM_INFRA_LIST_REQUEST = "ROOM_INFRA_LIST_REQUEST";
+export const ROOM_INFRA_LIST_SUCCESS = "ROOM_INFRA_LIST_SUCCESS";
+export const ROOM_INFRA_LIST_FAILURE = "ROOM_INFRA_LIST_FAILURE";
+
+export const ROOM_INFRA_CREATE_REQUEST = "ROOM_INFRA_CREATE_REQUEST";
+export const ROOM_INFRA_CREATE_SUCCESS = "ROOM_INFRA_CREATE_SUCCESS";
+export const ROOM_INFRA_CREATE_FAILURE = "ROOM_INFRA_CREATE_FAILURE";
+
+export const ROOM_INFRA_UPDATE_REQUEST = "ROOM_INFRA_UPDATE_REQUEST";
+export const ROOM_INFRA_UPDATE_SUCCESS = "ROOM_INFRA_UPDATE_SUCCESS";
+export const ROOM_INFRA_UPDATE_FAILURE = "ROOM_INFRA_UPDATE_FAILURE";
+
+export const ROOM_INFRA_DELETE_REQUEST = "ROOM_INFRA_DELETE_REQUEST";
+export const ROOM_INFRA_DELETE_SUCCESS = "ROOM_INFRA_DELETE_SUCCESS";
+export const ROOM_INFRA_DELETE_FAILURE = "ROOM_INFRA_DELETE_FAILURE";
 
 export const ROOM_IMAGE_RESET = "ROOM_IMAGE_RESET";
 
@@ -397,6 +432,93 @@ const reducer = (state = initailState, action) =>
         draft.st_roomOptionDeleteLoading = false;
         draft.st_roomOptionDeleteDone = false;
         draft.st_roomOptionDeleteError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+      //////////////////////////////////////////////
+      //////////////////////////////////////////////
+
+      case ROOM_INFRA_LIST_REQUEST: {
+        draft.st_roomInfraListLoading = true;
+        draft.st_roomInfraListDone = false;
+        draft.st_roomInfraListError = null;
+        break;
+      }
+      case ROOM_INFRA_LIST_SUCCESS: {
+        draft.st_roomInfraListLoading = false;
+        draft.st_roomInfraListDone = true;
+        draft.st_roomInfraListError = null;
+        draft.roomInfraList = action.data;
+        break;
+      }
+      case ROOM_INFRA_LIST_FAILURE: {
+        draft.st_roomInfraListLoading = false;
+        draft.st_roomInfraListDone = false;
+        draft.st_roomInfraListError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case ROOM_INFRA_CREATE_REQUEST: {
+        draft.st_roomInfraCreateLoading = true;
+        draft.st_roomInfraCreateDone = false;
+        draft.st_roomInfraCreateError = null;
+        break;
+      }
+      case ROOM_INFRA_CREATE_SUCCESS: {
+        draft.st_roomInfraCreateLoading = false;
+        draft.st_roomInfraCreateDone = true;
+        draft.st_roomInfraCreateError = null;
+        break;
+      }
+      case ROOM_INFRA_CREATE_FAILURE: {
+        draft.st_roomInfraCreateLoading = false;
+        draft.st_roomInfraCreateDone = false;
+        draft.st_roomInfraCreateError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case ROOM_INFRA_UPDATE_REQUEST: {
+        draft.st_roomInfraUpdateLoading = true;
+        draft.st_roomInfraUpdateDone = false;
+        draft.st_roomInfraUpdateError = null;
+        break;
+      }
+      case ROOM_INFRA_UPDATE_SUCCESS: {
+        draft.st_roomInfraUpdateLoading = false;
+        draft.st_roomInfraUpdateDone = true;
+        draft.st_roomInfraUpdateError = null;
+        break;
+      }
+      case ROOM_INFRA_UPDATE_FAILURE: {
+        draft.st_roomInfraUpdateLoading = false;
+        draft.st_roomInfraUpdateDone = false;
+        draft.st_roomInfraUpdateError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case ROOM_INFRA_DELETE_REQUEST: {
+        draft.st_roomInfraDeleteLoading = true;
+        draft.st_roomInfraDeleteDone = false;
+        draft.st_roomInfraDeleteError = null;
+        break;
+      }
+      case ROOM_INFRA_DELETE_SUCCESS: {
+        draft.st_roomInfraDeleteLoading = false;
+        draft.st_roomInfraDeleteDone = true;
+        draft.st_roomInfraDeleteError = null;
+        break;
+      }
+      case ROOM_INFRA_DELETE_FAILURE: {
+        draft.st_roomInfraDeleteLoading = false;
+        draft.st_roomInfraDeleteDone = false;
+        draft.st_roomInfraDeleteError = action.error;
         break;
       }
 

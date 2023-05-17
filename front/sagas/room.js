@@ -54,6 +54,23 @@ import {
   ROOM_OPTION_DELETE_REQUEST,
   ROOM_OPTION_DELETE_SUCCESS,
   ROOM_OPTION_DELETE_FAILURE,
+  //
+  //
+  ROOM_INFRA_LIST_REQUEST,
+  ROOM_INFRA_LIST_SUCCESS,
+  ROOM_INFRA_LIST_FAILURE,
+  //
+  ROOM_INFRA_CREATE_REQUEST,
+  ROOM_INFRA_CREATE_SUCCESS,
+  ROOM_INFRA_CREATE_FAILURE,
+  //
+  ROOM_INFRA_UPDATE_REQUEST,
+  ROOM_INFRA_UPDATE_SUCCESS,
+  ROOM_INFRA_UPDATE_FAILURE,
+  //
+  ROOM_INFRA_DELETE_REQUEST,
+  ROOM_INFRA_DELETE_SUCCESS,
+  ROOM_INFRA_DELETE_FAILURE,
 } from "../reducers/room";
 
 // ******************************************************************************************************************
@@ -408,6 +425,114 @@ function* roomOptionDelete(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomInfraListAPI(data) {
+  return await axios.post(`/api/room/infra/list`, data);
+}
+
+function* roomInfraList(action) {
+  try {
+    const result = yield call(roomInfraListAPI, action.data);
+
+    yield put({
+      type: ROOM_INFRA_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_INFRA_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomInfraCreateAPI(data) {
+  return await axios.post(`/api/room/infra/create`, data);
+}
+
+function* roomInfraCreate(action) {
+  try {
+    const result = yield call(roomInfraCreateAPI, action.data);
+
+    yield put({
+      type: ROOM_INFRA_CREATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_INFRA_CREATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomInfraUpdateAPI(data) {
+  return await axios.post(`/api/room/infra/update`, data);
+}
+
+function* roomInfraUpdate(action) {
+  try {
+    const result = yield call(roomInfraUpdateAPI, action.data);
+
+    yield put({
+      type: ROOM_INFRA_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_INFRA_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomInfraDeleteAPI(data) {
+  return await axios.post(`/api/room/infra/delete`, data);
+}
+
+function* roomInfraDelete(action) {
+  try {
+    const result = yield call(roomInfraDeleteAPI, action.data);
+
+    yield put({
+      type: ROOM_INFRA_DELETE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_INFRA_DELETE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 function* watchRoomList() {
   yield takeLatest(ROOM_LIST_REQUEST, roomList);
@@ -424,6 +549,7 @@ function* watchRoomDelete() {
 function* watchRoomUpload() {
   yield takeLatest(ROOM_UPLOAD_REQUEST, roomImg);
 }
+
 function* watchRoomTypeList() {
   yield takeLatest(ROOM_TYPE_LIST_REQUEST, roomTypeList);
 }
@@ -436,6 +562,7 @@ function* watchRoomTypeUpdate() {
 function* watchRoomTypeDelete() {
   yield takeLatest(ROOM_TYPE_DELETE_REQUEST, roomTypeDelete);
 }
+
 function* watchRoomOptionList() {
   yield takeLatest(ROOM_OPTION_LIST_REQUEST, roomOptionList);
 }
@@ -449,6 +576,19 @@ function* watchRoomOptionDelete() {
   yield takeLatest(ROOM_OPTION_DELETE_REQUEST, roomOptionDelete);
 }
 
+function* watchRoomInfraList() {
+  yield takeLatest(ROOM_INFRA_LIST_REQUEST, roomInfraList);
+}
+function* watchRoomInfraCreate() {
+  yield takeLatest(ROOM_INFRA_CREATE_REQUEST, roomInfraCreate);
+}
+function* watchRoomInfraUpdate() {
+  yield takeLatest(ROOM_INFRA_UPDATE_REQUEST, roomInfraUpdate);
+}
+function* watchRoomInfraDelete() {
+  yield takeLatest(ROOM_INFRA_DELETE_REQUEST, roomInfraDelete);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* roomSaga() {
   yield all([
@@ -457,14 +597,21 @@ export default function* roomSaga() {
     fork(watchRoomUpdate),
     fork(watchRoomDelete),
     fork(watchRoomUpload),
+
     fork(watchRoomTypeList),
     fork(watchRoomTypeCreate),
     fork(watchRoomTypeUpdate),
     fork(watchRoomTypeDelete),
+
     fork(watchRoomOptionList),
     fork(watchRoomOptionCreate),
     fork(watchRoomOptionUpdate),
     fork(watchRoomOptionDelete),
+
+    fork(watchRoomInfraList),
+    fork(watchRoomInfraCreate),
+    fork(watchRoomInfraUpdate),
+    fork(watchRoomInfraDelete),
     //
   ]);
 }
