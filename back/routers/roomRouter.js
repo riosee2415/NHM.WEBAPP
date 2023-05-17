@@ -204,7 +204,7 @@ router.post("/option/create", isAdminCheck, async (req, res, next) => {
     VALUES
     (
       "임시 옵션",
-      "https://via.placeholder.com/1000x300",
+      "https://via.placeholder.com/300x300",
       NOW(),
       NOW()
     )
@@ -310,7 +310,7 @@ router.post("/infra/create", isAdminCheck, async (req, res, next) => {
     VALUES
     (
       "임시 인프라",
-      "https://via.placeholder.com/1000x300",
+      "https://via.placeholder.com/300x300",
       NOW(),
       NOW()
     )
@@ -416,7 +416,7 @@ router.post("/maintenance/create", isAdminCheck, async (req, res, next) => {
     VALUES
     (
       "임시 유지보수 비용 아이콘",
-      "https://via.placeholder.com/1000x300",
+      "https://via.placeholder.com/300x300",
       NOW(),
       NOW()
     )
