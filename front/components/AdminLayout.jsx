@@ -148,6 +148,11 @@ export const items = {
       link: "/admin/sale",
       useYn: true,
     },
+    {
+      name: "매물옵션관리",
+      link: "/admin/sale/option",
+      useYn: true,
+    },
   ],
 };
 
