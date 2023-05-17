@@ -20,6 +20,40 @@ import {
   ROOM_UPLOAD_REQUEST,
   ROOM_UPLOAD_SUCCESS,
   ROOM_UPLOAD_FAILURE,
+  //
+  //
+  ROOM_TYPE_LIST_REQUEST,
+  ROOM_TYPE_LIST_SUCCESS,
+  ROOM_TYPE_LIST_FAILURE,
+  //
+  ROOM_TYPE_CREATE_REQUEST,
+  ROOM_TYPE_CREATE_SUCCESS,
+  ROOM_TYPE_CREATE_FAILURE,
+  //
+  ROOM_TYPE_UPDATE_REQUEST,
+  ROOM_TYPE_UPDATE_SUCCESS,
+  ROOM_TYPE_UPDATE_FAILURE,
+  //
+  ROOM_TYPE_DELETE_REQUEST,
+  ROOM_TYPE_DELETE_SUCCESS,
+  ROOM_TYPE_DELETE_FAILURE,
+  //
+  //
+  ROOM_OPTION_LIST_REQUEST,
+  ROOM_OPTION_LIST_SUCCESS,
+  ROOM_OPTION_LIST_FAILURE,
+  //
+  ROOM_OPTION_CREATE_REQUEST,
+  ROOM_OPTION_CREATE_SUCCESS,
+  ROOM_OPTION_CREATE_FAILURE,
+  //
+  ROOM_OPTION_UPDATE_REQUEST,
+  ROOM_OPTION_UPDATE_SUCCESS,
+  ROOM_OPTION_UPDATE_FAILURE,
+  //
+  ROOM_OPTION_DELETE_REQUEST,
+  ROOM_OPTION_DELETE_SUCCESS,
+  ROOM_OPTION_DELETE_FAILURE,
 } from "../reducers/room";
 
 // ******************************************************************************************************************
@@ -158,6 +192,222 @@ function* roomImg(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomTypeListAPI(data) {
+  return await axios.post(`/api/room/type/list`, data);
+}
+
+function* roomTypeList(action) {
+  try {
+    const result = yield call(roomTypeListAPI, action.data);
+
+    yield put({
+      type: ROOM_TYPE_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_TYPE_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomTypeCreateAPI(data) {
+  return await axios.post(`/api/room/type/create`, data);
+}
+
+function* roomTypeCreate(action) {
+  try {
+    const result = yield call(roomTypeCreateAPI, action.data);
+
+    yield put({
+      type: ROOM_TYPE_CREATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_TYPE_CREATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomTypeUpdateAPI(data) {
+  return await axios.post(`/api/room/type/update`, data);
+}
+
+function* roomTypeUpdate(action) {
+  try {
+    const result = yield call(roomTypeUpdateAPI, action.data);
+
+    yield put({
+      type: ROOM_TYPE_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_TYPE_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomTypeDeleteAPI(data) {
+  return await axios.post(`/api/room/type/delete`, data);
+}
+
+function* roomTypeDelete(action) {
+  try {
+    const result = yield call(roomTypeDeleteAPI, action.data);
+
+    yield put({
+      type: ROOM_TYPE_DELETE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_TYPE_DELETE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomOptionListAPI(data) {
+  return await axios.post(`/api/room/option/list`, data);
+}
+
+function* roomOptionList(action) {
+  try {
+    const result = yield call(roomOptionListAPI, action.data);
+
+    yield put({
+      type: ROOM_TYPE_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_TYPE_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomOptionCreateAPI(data) {
+  return await axios.post(`/api/room/option/create`, data);
+}
+
+function* roomOptionCreate(action) {
+  try {
+    const result = yield call(roomOptionCreateAPI, action.data);
+
+    yield put({
+      type: ROOM_TYPE_CREATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_TYPE_CREATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomOptionUpdateAPI(data) {
+  return await axios.post(`/api/room/option/update`, data);
+}
+
+function* roomOptionUpdate(action) {
+  try {
+    const result = yield call(roomOptionUpdateAPI, action.data);
+
+    yield put({
+      type: ROOM_TYPE_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_TYPE_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomOptionDeleteAPI(data) {
+  return await axios.post(`/api/room/option/delete`, data);
+}
+
+function* roomOptionDelete(action) {
+  try {
+    const result = yield call(roomOptionDeleteAPI, action.data);
+
+    yield put({
+      type: ROOM_TYPE_DELETE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_TYPE_DELETE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 function* watchRoomList() {
   yield takeLatest(ROOM_LIST_REQUEST, roomList);
@@ -174,6 +424,30 @@ function* watchRoomDelete() {
 function* watchRoomUpload() {
   yield takeLatest(ROOM_UPLOAD_REQUEST, roomImg);
 }
+function* watchRoomTypeList() {
+  yield takeLatest(ROOM_TYPE_LIST_REQUEST, roomTypeList);
+}
+function* watchRoomTypeCreate() {
+  yield takeLatest(ROOM_TYPE_CREATE_REQUEST, roomTypeCreate);
+}
+function* watchRoomTypeUpdate() {
+  yield takeLatest(ROOM_TYPE_UPDATE_REQUEST, roomTypeUpdate);
+}
+function* watchRoomTypeDelete() {
+  yield takeLatest(ROOM_TYPE_DELETE_REQUEST, roomTypeDelete);
+}
+function* watchRoomOptionList() {
+  yield takeLatest(ROOM_OPTION_LIST_REQUEST, roomOptionList);
+}
+function* watchRoomOptionCreate() {
+  yield takeLatest(ROOM_OPTION_CREATE_REQUEST, roomOptionCreate);
+}
+function* watchRoomOptionUpdate() {
+  yield takeLatest(ROOM_OPTION_UPDATE_REQUEST, roomOptionUpdate);
+}
+function* watchRoomOptionDelete() {
+  yield takeLatest(ROOM_OPTION_DELETE_REQUEST, roomOptionDelete);
+}
 
 //////////////////////////////////////////////////////////////
 export default function* roomSaga() {
@@ -183,7 +457,14 @@ export default function* roomSaga() {
     fork(watchRoomUpdate),
     fork(watchRoomDelete),
     fork(watchRoomUpload),
-
+    fork(watchRoomTypeList),
+    fork(watchRoomTypeCreate),
+    fork(watchRoomTypeUpdate),
+    fork(watchRoomTypeDelete),
+    fork(watchRoomOptionList),
+    fork(watchRoomOptionCreate),
+    fork(watchRoomOptionUpdate),
+    fork(watchRoomOptionDelete),
     //
   ]);
 }
