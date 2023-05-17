@@ -158,6 +158,11 @@ export const items = {
       link: "/admin/sale/infra",
       useYn: true,
     },
+    {
+      name: "매물유지보수관리",
+      link: "/admin/sale/maintenance",
+      useYn: true,
+    },
   ],
 };
 
