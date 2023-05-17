@@ -142,7 +142,13 @@ export const items = {
       useYn: true,
     },
   ],
-  서버관리: [],
+  매물관리: [
+    {
+      name: "매물관리",
+      link: "/admin/sale",
+      useYn: true,
+    },
+  ],
 };
 
 const AdminLayout = ({ children }) => {
@@ -272,14 +278,14 @@ const AdminLayout = ({ children }) => {
             menus={items["고객지원관리"]}
           />
           <AdminMenuBox
+            right={me && me.menuRight8}
+            title={`매물관리`}
+            menus={items["매물관리"]}
+          />
+          <AdminMenuBox
             right={me && me.menuRight7}
             title={`기록관리`}
             menus={items["기록관리"]}
-          />
-          <AdminMenuBox
-            right={me && me.menuRight8}
-            title={`서버관리`}
-            menus={items["서버관리"]}
           />
         </Wrapper>
       ) : (
