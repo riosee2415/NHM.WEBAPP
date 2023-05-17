@@ -53,10 +53,40 @@ router.post(
 // ROOM TYPE  //////////////////////////////////////
 ////////////////////////////////////////////////////
 
+/**
+ * SUBJECT : 지역 목록
+ * PARAMETERS : -
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+router.post("/type/list", async (req, res, next) => {
+  const selectQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY createdAt)   AS num,
+          title,
+          imagePath,
+          createdAt,
+          updatedAt,
+          DATE_FORMAT(createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt
+    FROM  roomType
+   WHERE  isDelete = 0 
+   ORDER  BY num DESC
+  `;
+
+  try {
+    const list = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(list[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send("데이터를 조회할 수 없습니다.");
+  }
+});
+
 //매물 지역 타입 이미지 생성
 router.post("/type/create", isAdminCheck, async (req, res, next) => {
-  const { title, imagePath } = req.body;
-
   const insertQuery = `
     INSERT  INTO  roomType
     (
@@ -67,8 +97,8 @@ router.post("/type/create", isAdminCheck, async (req, res, next) => {
     )
     VALUES
     (
-      "${title}",
-      "${imagePath}",
+      "임시 이름",
+      "https://via.placeholder.com/1000x300",
       NOW(),
       NOW()
     )
@@ -129,10 +159,40 @@ router.post("/type/update", isAdminCheck, async (req, res, next) => {
 // ROOM OPTION  ////////////////////////////////////
 ////////////////////////////////////////////////////
 
+/**
+ * SUBJECT : 옵션 목록
+ * PARAMETERS : -
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+router.post("/option/list", async (req, res, next) => {
+  const selectQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY createdAt)   AS num,
+          title,
+          imagePath,
+          createdAt,
+          updatedAt,
+          DATE_FORMAT(createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt
+    FROM  options
+   WHERE  isDelete = 0 
+   ORDER  BY num DESC
+  `;
+
+  try {
+    const list = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(list[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send("옵션을 조회할 수 없습니다.");
+  }
+});
+
 //옵션 아이콘 생성
 router.post("/option/create", isAdminCheck, async (req, res, next) => {
-  const { title, imagePath } = req.body;
-
   const insertQuery = `
     INSERT  INTO  options
     (
@@ -143,8 +203,8 @@ router.post("/option/create", isAdminCheck, async (req, res, next) => {
     )
     VALUES
     (
-      "${title}",
-      "${imagePath}",
+      "임시 옵션",
+      "https://via.placeholder.com/1000x300",
       NOW(),
       NOW()
     )
@@ -205,10 +265,40 @@ router.post("/option/update", isAdminCheck, async (req, res, next) => {
 // ROOM INFRA  /////////////////////////////////////
 ////////////////////////////////////////////////////
 
+/**
+ * SUBJECT : 인프라 목록
+ * PARAMETERS : -
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+router.post("/infra/list", async (req, res, next) => {
+  const selectQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY createdAt)   AS num,
+          title,
+          imagePath,
+          createdAt,
+          updatedAt,
+          DATE_FORMAT(createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt
+    FROM  infras
+   WHERE  isDelete = 0 
+   ORDER  BY num DESC
+  `;
+
+  try {
+    const list = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(list[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send("인프라를 조회할 수 없습니다.");
+  }
+});
+
 //인프라 아이콘 생성
 router.post("/infra/create", isAdminCheck, async (req, res, next) => {
-  const { title, imagePath } = req.body;
-
   const insertQuery = `
     INSERT  INTO  infras
     (
@@ -219,8 +309,8 @@ router.post("/infra/create", isAdminCheck, async (req, res, next) => {
     )
     VALUES
     (
-      "${title}",
-      "${imagePath}",
+      "임시 인프라",
+      "https://via.placeholder.com/1000x300",
       NOW(),
       NOW()
     )
@@ -281,10 +371,40 @@ router.post("/infra/update", isAdminCheck, async (req, res, next) => {
 // ROOM MAINTENANCE  ///////////////////////////////
 ////////////////////////////////////////////////////
 
+/**
+ * SUBJECT : 인프라 목록
+ * PARAMETERS : -
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/17
+ */
+router.post("/maintenance/list", async (req, res, next) => {
+  const selectQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY createdAt)   AS num,
+          title,
+          imagePath,
+          createdAt,
+          updatedAt,
+          DATE_FORMAT(createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt
+    FROM  maintenances
+   WHERE  isDelete = 0 
+   ORDER  BY num DESC
+  `;
+
+  try {
+    const list = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(list[0]);
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send("데이터를 조회할 수 없습니다.");
+  }
+});
+
 //유지보수 비용 아이콘 생성
 router.post("/maintenance/create", isAdminCheck, async (req, res, next) => {
-  const { title, imagePath } = req.body;
-
   const insertQuery = `
     INSERT  INTO  maintenances
     (
@@ -295,8 +415,8 @@ router.post("/maintenance/create", isAdminCheck, async (req, res, next) => {
     )
     VALUES
     (
-      "${title}",
-      "${imagePath}",
+      "임시 유지보수 비용 아이콘",
+      "https://via.placeholder.com/1000x300",
       NOW(),
       NOW()
     )
