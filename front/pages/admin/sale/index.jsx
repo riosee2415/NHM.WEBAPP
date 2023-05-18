@@ -347,7 +347,7 @@ const Index = ({}) => {
         return message.error("옵션을 하나 이상 등록해주세요.");
       }
       if (!data.maintenanceIds || data.maintenanceIds.length === 0) {
-        return message.error("유지아이콘을 하나 이상 등록해주세요.");
+        return message.error("유지보수를 하나 이상 등록해주세요.");
       }
 
       dispatch({
@@ -1017,17 +1017,17 @@ const Index = ({}) => {
                       >
                         <InfoTitle width={`50%`}>
                           <CheckOutlined />
-                          유지아이콘 기본정보
+                          유지보수 기본정보
                         </InfoTitle>
 
                         <Button size="small" type="primary" onClick={add}>
-                          유지아이콘 생성
+                          유지보수 생성
                         </Button>
                       </Wrapper>
                       <Wrapper width={`auto`} dr={`row`} overflowX={`scroll`}>
                         {fields.length === 0 ? (
                           <Wrapper height={`300px`}>
-                            <Empty description="등록된 유지아이콘이 없습니다." />
+                            <Empty description="등록된 유지보수가 없습니다." />
                           </Wrapper>
                         ) : (
                           fields.map((field, idx) => {
