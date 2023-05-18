@@ -20,10 +20,13 @@ import Theme from "../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
 import SubBanner from "../../components/SubBanner";
-import { DatePicker, Modal } from "antd";
+import { DatePicker, message, Modal } from "antd";
 import RoomsSlider from "../../components/slide/RoomsSlider";
 import { useDispatch, useSelector } from "react-redux";
-import { ROOM_DETAIL_REQUEST } from "../../reducers/room";
+import {
+  ROOM_DETAIL_REQUEST,
+  ROOM_NOW_CREATE_REQUEST,
+} from "../../reducers/room";
 import { useRouter } from "next/router";
 import useInput from "../../hooks/useInput";
 import { useCallback } from "react";
@@ -113,18 +116,8 @@ const Id = ({}) => {
   const [monthData, setMonthData] = useState(0); // 0:6month , 1:1year, 2:2yaer
 
   // bookNow
-  const [deposit, setDeposit] = useState(
-    String(roomDetail && roomDetail.deposit1).replace(
-      /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-      ","
-    )
-  ); // deposit
-  const [rentFee, setRentFee] = useState(
-    String(roomDetail && roomDetail.rentFee1).replace(
-      /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-      ","
-    )
-  ); // rentFee
+  const [deposit, setDeposit] = useState(""); // deposit
+  const [rentFee, setRentFee] = useState(""); // rentFee
   const messangerInput = useInput(``);
   const emailInput = useInput(``);
   const otherInput = useInput(``);
@@ -137,6 +130,14 @@ const Id = ({}) => {
   const router = useRouter();
   const dispatch = useDispatch();
   ////// USEEFFECT //////
+
+  // 데이터 세팅
+  useEffect(() => {
+    if (roomDetail) {
+      setDeposit(roomDetail && roomDetail.deposit1);
+      setRentFee(roomDetail && roomDetail.rentFee1);
+    }
+  }, [roomDetail]);
 
   useEffect(() => {
     messangerInput.setValue("");
@@ -151,7 +152,52 @@ const Id = ({}) => {
   ////// HANDLER //////
 
   // booknow 생성
-  const bookNowHandler = useCallback(() => {}, [
+  const bookNowHandler = useCallback(() => {
+    if (!nameInput.value) {
+      return message.error("Please write your name");
+    }
+
+    if (!mobileInput.value) {
+      return message.error("Please write your phone number");
+    }
+
+    if (!movingDate) {
+      return message.error("Please select a moving date");
+    }
+
+    if (!contactPeriod) {
+      return message.error("Please select a contract period");
+    }
+
+    if (!messangerInput.value) {
+      return message.error("Please write your Messenger type & ID");
+    }
+
+    if (!emailInput.value) {
+      return message.error("Please write your email");
+    }
+
+    if (!otherInput.value) {
+      return message.error("Please write your Other preferences");
+    }
+
+    dispatch({
+      type: ROOM_NOW_CREATE_REQUEST,
+      data: {
+        name: nameInput.value,
+        mobile: mobileInput.value,
+        deposit,
+        rentfee: rentFee,
+        region: roomDetail && roomDetail.region,
+        movingdate: movingDate.format("YYYY-MM-DD"),
+        contractPeriod: contactPeriod.format("YYYY-MM-DD"),
+        messengerTypeOrId: messangerInput.value,
+        email: emailInput.value,
+        otherPreferences: otherInput.value,
+        RooomId: router.query.id,
+      },
+    });
+  }, [
     deposit,
     rentFee,
     messangerInput,
@@ -161,50 +207,31 @@ const Id = ({}) => {
     mobileInput,
     movingDate,
     contactPeriod,
+    roomDetail,
+    router.query.id,
   ]);
+
+  // bookNow mobile
+  const bookNowMobileHandler = useCallback(() => {
+    if (bookModal) {
+      bookNowHandler();
+    } else {
+      setBookModal(true);
+    }
+  }, [bookModal]);
 
   const monthHandler = useCallback(
     (data) => {
       setMonthData(data);
       if (data === 0) {
-        setDeposit(
-          String(roomDetail && roomDetail.deposit1).replace(
-            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-            ","
-          )
-        );
-        setRentFee(
-          String(roomDetail && roomDetail.rentFee1).replace(
-            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-            ","
-          )
-        );
+        setDeposit(roomDetail && roomDetail.deposit1);
+        setRentFee(roomDetail && roomDetail.rentFee1);
       } else if (data === 1) {
-        setDeposit(
-          String(roomDetail && roomDetail.deposit2).replace(
-            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-            ","
-          )
-        );
-        setRentFee(
-          String(roomDetail && roomDetail.rentFee2).replace(
-            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-            ","
-          )
-        );
+        setDeposit(roomDetail && roomDetail.deposit2);
+        setRentFee(roomDetail && roomDetail.rentFee2);
       } else {
-        setDeposit(
-          String(roomDetail && roomDetail.deposit3).replace(
-            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-            ","
-          )
-        );
-        setRentFee(
-          String(roomDetail && roomDetail.rentFee3).replace(
-            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-            ","
-          )
-        );
+        setDeposit(roomDetail && roomDetail.deposit3);
+        setRentFee(roomDetail && roomDetail.rentFee3);
       }
     },
     [monthData, roomDetail]
@@ -939,6 +966,7 @@ const Id = ({}) => {
                   fontSize={`22px`}
                   fontWeight={`700`}
                   margin={`10px 0 0`}
+                  onClick={bookNowHandler}
                 >
                   Book Now
                 </CommonButton>
@@ -1232,7 +1260,7 @@ const Id = ({}) => {
                 fontSize={width < 900 ? `20px` : `22px`}
                 fontWeight={`700`}
                 margin={`10px 0 0`}
-                onClick={() => setBookModal(true)}
+                onClick={bookNowMobileHandler}
                 shadow={`0px 0px 10px rgba(0,0,0,0.1)`}
               >
                 Book Now
