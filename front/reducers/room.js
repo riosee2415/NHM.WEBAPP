@@ -18,6 +18,8 @@ export const initailState = {
   optionData: [],
   maintenanceData: [],
 
+  roomNowList: [], // room now Admin
+
   //
   st_roomListLoading: false, // room 가져오기
   st_roomListDone: false,
@@ -119,6 +121,21 @@ export const initailState = {
   st_roomTypeImageLoading: false,
   st_roomTypeImageDone: false,
   st_roomTypeImageError: null,
+  //
+  //
+  st_roomNowListLoading: false, // roomNow 가져오기
+  st_roomNowListDone: false,
+  st_roomNowListError: null,
+  //
+  st_roomNowCreateLoading: false, // roomNow 생성하기
+  st_roomNowCreateDone: false,
+  st_roomNowCreateError: null,
+  //
+  st_roomNowUpdateLoading: false, // roomNow 수정하기
+  st_roomNowUpdateDone: false,
+  st_roomNowUpdateError: null,
+
+  //
 };
 
 export const ROOM_LIST_REQUEST = "ROOM_LIST_REQUEST";
@@ -221,6 +238,20 @@ export const ROOM_TYPE_THUMBNAIL_FAILURE = "ROOM_TYPE_THUMBNAIL_FAILURE";
 export const ROOM_TYPE_IMAGE_REQUEST = "ROOM_TYPE_IMAGE_REQUEST";
 export const ROOM_TYPE_IMAGE_SUCCESS = "ROOM_TYPE_IMAGE_SUCCESS";
 export const ROOM_TYPE_IMAGE_FAILURE = "ROOM_TYPE_IMAGE_FAILURE";
+//
+//
+export const ROOM_NOW_LIST_REQUEST = "ROOM_NOW_LIST_REQUEST";
+export const ROOM_NOW_LIST_SUCCESS = "ROOM_NOW_LIST_SUCCESS";
+export const ROOM_NOW_LIST_FAILURE = "ROOM_NOW_LIST_FAILURE";
+
+export const ROOM_NOW_CREATE_REQUEST = "ROOM_NOW_CREATE_REQUEST";
+export const ROOM_NOW_CREATE_SUCCESS = "ROOM_NOW_CREATE_SUCCESS";
+export const ROOM_NOW_CREATE_FAILURE = "ROOM_NOW_CREATE_FAILURE";
+
+export const ROOM_NOW_UPDATE_REQUEST = "ROOM_NOW_UPDATE_REQUEST";
+export const ROOM_NOW_UPDATE_SUCCESS = "ROOM_NOW_UPDATE_SUCCESS";
+export const ROOM_NOW_UPDATE_FAILURE = "ROOM_NOW_UPDATE_FAILURE";
+//
 
 export const ROOM_IMAGE_RESET = "ROOM_IMAGE_RESET";
 
@@ -750,6 +781,68 @@ const reducer = (state = initailState, action) =>
         draft.st_roomTypeImageLoading = false;
         draft.st_roomTypeImageDone = false;
         draft.st_roomTypeImageError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case ROOM_NOW_LIST_REQUEST: {
+        draft.st_roomNowListLoading = true;
+        draft.st_roomNowListDone = false;
+        draft.st_roomNowListError = null;
+        break;
+      }
+      case ROOM_NOW_LIST_SUCCESS: {
+        draft.st_roomNowListLoading = false;
+        draft.st_roomNowListDone = true;
+        draft.st_roomNowListError = null;
+        draft.roomNowList = action.data;
+        break;
+      }
+      case ROOM_NOW_LIST_FAILURE: {
+        draft.st_roomNowListLoading = false;
+        draft.st_roomNowListDone = false;
+        draft.st_roomNowListError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case ROOM_NOW_CREATE_REQUEST: {
+        draft.st_roomNowCreateLoading = true;
+        draft.st_roomNowCreateDone = false;
+        draft.st_roomNowCreateError = null;
+        break;
+      }
+      case ROOM_NOW_CREATE_SUCCESS: {
+        draft.st_roomNowCreateLoading = false;
+        draft.st_roomNowCreateDone = true;
+        draft.st_roomNowCreateError = null;
+        break;
+      }
+      case ROOM_NOW_CREATE_FAILURE: {
+        draft.st_roomNowCreateLoading = false;
+        draft.st_roomNowCreateDone = false;
+        draft.st_roomNowCreateError = action.error;
+        break;
+      }
+      //////////////////////////////////////////////
+
+      case ROOM_NOW_UPDATE_REQUEST: {
+        draft.st_roomNowUpdateLoading = true;
+        draft.st_roomNowUpdateDone = false;
+        draft.st_roomNowUpdateError = null;
+        break;
+      }
+      case ROOM_NOW_UPDATE_SUCCESS: {
+        draft.st_roomNowUpdateLoading = false;
+        draft.st_roomNowUpdateDone = true;
+        draft.st_roomNowUpdateError = null;
+        break;
+      }
+      case ROOM_NOW_UPDATE_FAILURE: {
+        draft.st_roomNowUpdateLoading = false;
+        draft.st_roomNowUpdateDone = false;
+        draft.st_roomNowUpdateError = action.error;
         break;
       }
 

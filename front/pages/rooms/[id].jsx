@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import ClientLayout from "../../components/ClientLayout";
 import axios from "axios";
@@ -20,15 +20,18 @@ import Theme from "../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
 import SubBanner from "../../components/SubBanner";
-import { Modal } from "antd";
+import { DatePicker, Modal } from "antd";
 import RoomsSlider from "../../components/slide/RoomsSlider";
 import { useDispatch, useSelector } from "react-redux";
 import { ROOM_DETAIL_REQUEST } from "../../reducers/room";
 import { useRouter } from "next/router";
+import useInput from "../../hooks/useInput";
+import { useCallback } from "react";
 
 const LocalWrapper = styled(Wrapper)`
   width: 110px;
   margin: 0 13px 40px 0;
+  overflow: hidden;
 `;
 
 const RoundWrapper = styled(Wrapper)`
@@ -103,20 +106,109 @@ const Id = ({}) => {
   const { roomDetail, bannerData, infraData, optionData, maintenanceData } =
     useSelector((state) => state.room);
 
-  console.log(roomDetail, bannerData, infraData, optionData, maintenanceData);
-
   ////// HOOKS //////
   const width = useWidth();
 
   const [bookModal, setBookModal] = useState(false); // 모바일 Book Now
   const [monthData, setMonthData] = useState(0); // 0:6month , 1:1year, 2:2yaer
 
+  // bookNow
+  const [deposit, setDeposit] = useState(
+    String(roomDetail && roomDetail.deposit1).replace(
+      /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+      ","
+    )
+  ); // deposit
+  const [rentFee, setRentFee] = useState(
+    String(roomDetail && roomDetail.rentFee1).replace(
+      /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+      ","
+    )
+  ); // rentFee
+  const messangerInput = useInput(``);
+  const emailInput = useInput(``);
+  const otherInput = useInput(``);
+  const nameInput = useInput(``);
+  const mobileInput = useInput(``);
+  const [movingDate, setMovingDate] = useState("");
+  const [contactPeriod, setContactPeriod] = useState("");
+
   ////// REDUX //////
   const router = useRouter();
   const dispatch = useDispatch();
   ////// USEEFFECT //////
+
+  useEffect(() => {
+    messangerInput.setValue("");
+    emailInput.setValue("");
+    otherInput.setValue("");
+    nameInput.setValue("");
+    mobileInput.setValue("");
+    setMovingDate("");
+    setContactPeriod("");
+  }, []);
   ////// TOGGLE //////
   ////// HANDLER //////
+
+  // booknow 생성
+  const bookNowHandler = useCallback(() => {}, [
+    deposit,
+    rentFee,
+    messangerInput,
+    emailInput,
+    otherInput,
+    nameInput,
+    mobileInput,
+    movingDate,
+    contactPeriod,
+  ]);
+
+  const monthHandler = useCallback(
+    (data) => {
+      setMonthData(data);
+      if (data === 0) {
+        setDeposit(
+          String(roomDetail && roomDetail.deposit1).replace(
+            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+            ","
+          )
+        );
+        setRentFee(
+          String(roomDetail && roomDetail.rentFee1).replace(
+            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+            ","
+          )
+        );
+      } else if (data === 1) {
+        setDeposit(
+          String(roomDetail && roomDetail.deposit2).replace(
+            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+            ","
+          )
+        );
+        setRentFee(
+          String(roomDetail && roomDetail.rentFee2).replace(
+            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+            ","
+          )
+        );
+      } else {
+        setDeposit(
+          String(roomDetail && roomDetail.deposit3).replace(
+            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+            ","
+          )
+        );
+        setRentFee(
+          String(roomDetail && roomDetail.rentFee3).replace(
+            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+            ","
+          )
+        );
+      }
+    },
+    [monthData, roomDetail]
+  );
   ////// DATAVIEW //////
 
   return (
@@ -216,20 +308,20 @@ const Id = ({}) => {
                   borderBottom={`2px solid ${Theme.basicTheme_C}`}
                 >
                   <Tab
-                    onClick={() => setMonthData(0)}
+                    onClick={() => monthHandler(0)}
                     isActive={monthData === 0}
                   >
                     6Months
                   </Tab>
                   <Tab
-                    onClick={() => setMonthData(1)}
+                    onClick={() => monthHandler(1)}
                     isActive={monthData === 1}
                     margin={width < 900 ? `0 10px` : `0 16px`}
                   >
                     1year
                   </Tab>
                   <Tab
-                    onClick={() => setMonthData(2)}
+                    onClick={() => monthHandler(2)}
                     isActive={monthData === 2}
                   >
                     2year
@@ -277,7 +369,7 @@ const Id = ({}) => {
                     fontSize={width < 900 ? `14px` : `16px`}
                     fontWeight={`600`}
                   >
-                    Monthly Payment
+                    Rent fee
                   </Text>
 
                   <Text fontSize={`16px`}>
@@ -350,7 +442,21 @@ const Id = ({}) => {
                     </Text>
 
                     <Text fontSize={`24px`} fontWeight={`600`}>
-                      500,000₩/{" "}
+                      {monthData === 0
+                        ? String(roomDetail && roomDetail.deposit1).replace(
+                            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                            ","
+                          )
+                        : monthData === 1
+                        ? String(roomDetail && roomDetail.deposit2).replace(
+                            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                            ","
+                          )
+                        : String(roomDetail && roomDetail.deposit3).replace(
+                            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                            ","
+                          )}
+                      ₩/{" "}
                       {monthData === 0
                         ? roomDetail && roomDetail.monthConcatTotalPrice
                         : monthData === 1
@@ -396,7 +502,9 @@ const Id = ({}) => {
                       width={`20px`}
                       margin={`0 5px 0 0`}
                     />
-                    <Text fontSize={`16px`}>27 March 2023</Text>
+                    <Text fontSize={`16px`}>
+                      {roomDetail && roomDetail.viewFrontMoveInDate}
+                    </Text>
                   </Wrapper>
                 </Wrapper>
 
@@ -414,203 +522,24 @@ const Id = ({}) => {
                   </Text>
 
                   <Wrapper dr={`row`} ju={`flex-start`}>
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
+                    {optionData.map((data) => {
+                      return (
+                        <RoundWrapper key={data.id}>
+                          <Wrapper
+                            border={`1px solid ${Theme.grey2_C}`}
+                            radius={`100%`}
+                            width={width < 900 ? `52px` : `110px`}
+                            height={width < 900 ? `52px` : `110px`}
+                            padding={width < 900 ? `14px` : `30px`}
+                            margin={`0 0 5px`}
+                          >
+                            <Image src={data.imagePath} alt="icon" />
+                          </Wrapper>
 
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
+                          <Text fontSize={`14px`}>{data.title}</Text>
+                        </RoundWrapper>
+                      );
+                    })}
                   </Wrapper>
                 </Wrapper>
 
@@ -628,203 +557,24 @@ const Id = ({}) => {
                   </Text>
 
                   <Wrapper dr={`row`} ju={`flex-start`}>
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
+                    {maintenanceData.map((data) => {
+                      return (
+                        <RoundWrapper key={data.id}>
+                          <Wrapper
+                            border={`1px solid ${Theme.grey2_C}`}
+                            radius={`100%`}
+                            width={width < 900 ? `52px` : `110px`}
+                            height={width < 900 ? `52px` : `110px`}
+                            padding={width < 900 ? `14px` : `30px`}
+                            margin={`0 0 5px`}
+                          >
+                            <Image src={data.imagePath} alt="icon" />
+                          </Wrapper>
 
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
-
-                    <RoundWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={width < 900 ? `52px` : `110px`}
-                        height={width < 900 ? `52px` : `110px`}
-                        padding={width < 900 ? `14px` : `30px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </RoundWrapper>
+                          <Text fontSize={`14px`}>{data.title}</Text>
+                        </RoundWrapper>
+                      );
+                    })}
                   </Wrapper>
                 </Wrapper>
 
@@ -843,16 +593,7 @@ const Id = ({}) => {
                   </Text>
 
                   <Text fontSize={width < 900 ? `14px` : `16px`}>
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                    diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                    aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                    justo duo dolores et ea rebum. Stet clita kasd gubergren, no
-                    sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem
-                    ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                    nonumy eirmod tempor invidunt ut labore et dolore magna
-                    aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                    justo duo dolores et ea rebum. Stet clita kasd gubergren, no
-                    sea takimata sanctus est Lorem ipsum dolor sit amet
+                    {roomDetail && roomDetail.detail}
                   </Text>
                 </Wrapper>
 
@@ -871,192 +612,24 @@ const Id = ({}) => {
                   </Text>
 
                   <Wrapper dr={`row`} ju={`flex-start`}>
-                    <LocalWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={`110px`}
-                        height={`110px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
+                    {infraData.map((data) => {
+                      return (
+                        <LocalWrapper key={data.id}>
+                          <Wrapper
+                            border={`1px solid ${Theme.grey2_C}`}
+                            radius={`100%`}
+                            width={`110px`}
+                            height={`110px`}
+                            margin={`0 0 5px`}
+                            overflow={`hidden`}
+                          >
+                            <Image src={data.imagePath} alt="icon" />
+                          </Wrapper>
 
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </LocalWrapper>
-
-                    <LocalWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={`110px`}
-                        height={`110px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </LocalWrapper>
-
-                    <LocalWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={`110px`}
-                        height={`110px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </LocalWrapper>
-
-                    <LocalWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={`110px`}
-                        height={`110px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </LocalWrapper>
-
-                    <LocalWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={`110px`}
-                        height={`110px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </LocalWrapper>
-
-                    <LocalWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={`110px`}
-                        height={`110px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </LocalWrapper>
-
-                    <LocalWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={`110px`}
-                        height={`110px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </LocalWrapper>
-
-                    <LocalWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={`110px`}
-                        height={`110px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </LocalWrapper>
-
-                    <LocalWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={`110px`}
-                        height={`110px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </LocalWrapper>
-
-                    <LocalWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={`110px`}
-                        height={`110px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </LocalWrapper>
-
-                    <LocalWrapper>
-                      <Wrapper
-                        border={`1px solid ${Theme.grey2_C}`}
-                        radius={`100%`}
-                        width={`110px`}
-                        height={`110px`}
-                        margin={`0 0 5px`}
-                      >
-                        <Image
-                          src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms-option/electricity.png"
-                          alt="icon"
-                        />
-                      </Wrapper>
-
-                      <Text fontSize={`14px`}>Sink</Text>
-                    </LocalWrapper>
+                          <Text fontSize={`14px`}>{data.title}</Text>
+                        </LocalWrapper>
+                      );
+                    })}
                   </Wrapper>
                 </Wrapper>
 
@@ -1090,7 +663,7 @@ const Id = ({}) => {
                       al={`flex-start`}
                       color={Theme.darkGrey2_C}
                     >
-                      Hotel
+                      {roomDetail && roomDetail.realEstateName}
                     </Wrapper>
                   </Wrapper>
 
@@ -1115,7 +688,7 @@ const Id = ({}) => {
                       al={`flex-start`}
                       color={Theme.darkGrey2_C}
                     >
-                      91, Seokgye-ro, Nowon-gu, Seoul, Republic of Korea
+                      {roomDetail && roomDetail.realEstateAddress}
                     </Wrapper>
                   </Wrapper>
                   <Text></Text>
@@ -1144,6 +717,7 @@ const Id = ({}) => {
                     radius={`5px`}
                     placeholder="Name"
                     margin={`0 0 16px`}
+                    {...nameInput}
                   />
                   <Text
                     fontSize={`16px`}
@@ -1159,6 +733,7 @@ const Id = ({}) => {
                     radius={`5px`}
                     placeholder="Phone Number"
                     margin={`0 0 16px`}
+                    {...mobileInput}
                   />
                   <Text
                     fontSize={`16px`}
@@ -1174,7 +749,7 @@ const Id = ({}) => {
                       height={`40px`}
                       radius={`5px`}
                       placeholder="Deposit"
-                      type="number"
+                      value={deposit}
                     />
 
                     <Wrapper
@@ -1193,7 +768,7 @@ const Id = ({}) => {
                     color={Theme.darkGrey_C}
                     margin={`0 0 5px`}
                   >
-                    Monthly payment
+                    Rent fee
                   </Text>
 
                   <Wrapper position={`relative`} margin={`0 0 16px`}>
@@ -1201,8 +776,8 @@ const Id = ({}) => {
                       width={`100%`}
                       height={`40px`}
                       radius={`5px`}
-                      placeholder="Monthly payment"
-                      type="number"
+                      placeholder="Rent fee"
+                      value={rentFee}
                     />
 
                     <Wrapper
@@ -1230,6 +805,7 @@ const Id = ({}) => {
                     radius={`5px`}
                     placeholder="Region"
                     margin={`0 0 16px`}
+                    value={roomDetail && roomDetail.region}
                   />
                   <Text
                     fontSize={`16px`}
@@ -1244,12 +820,15 @@ const Id = ({}) => {
                     margin={`0 0 16px`}
                     cursor={`pointer`}
                   >
-                    <TextInput
-                      width={`100%`}
-                      height={`40px`}
-                      radius={`5px`}
-                      placeholder="Monthly payment"
-                      type="number"
+                    <DatePicker
+                      style={{
+                        width: `100%`,
+                        height: `40px`,
+                        borderRadius: `5px`,
+                      }}
+                      placeholder="Moving date"
+                      value={movingDate}
+                      onChange={(data) => setMovingDate(data)}
                     />
 
                     <Wrapper
@@ -1258,7 +837,6 @@ const Id = ({}) => {
                       top={`1px`}
                       right={`10px`}
                       height={`38px`}
-                      bgColor={Theme.white_C}
                     >
                       <Image
                         src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/icon_Move-in+date.png"
@@ -1279,12 +857,15 @@ const Id = ({}) => {
                     margin={`0 0 16px`}
                     cursor={`pointer`}
                   >
-                    <TextInput
-                      width={`100%`}
-                      height={`40px`}
-                      radius={`5px`}
+                    <DatePicker
+                      style={{
+                        width: `100%`,
+                        height: `40px`,
+                        borderRadius: `5px`,
+                      }}
                       placeholder="Contract Period"
-                      type="number"
+                      value={contactPeriod}
+                      onChange={(data) => setContactPeriod(data)}
                     />
 
                     <Wrapper
@@ -1315,6 +896,7 @@ const Id = ({}) => {
                     radius={`5px`}
                     placeholder="Messenger type & ID"
                     margin={`0 0 16px`}
+                    {...messangerInput}
                   />
                   <Text
                     fontSize={`16px`}
@@ -1330,6 +912,7 @@ const Id = ({}) => {
                     radius={`5px`}
                     placeholder="Email"
                     margin={`0 0 16px`}
+                    {...emailInput}
                   />
                   <Text
                     fontSize={`16px`}
@@ -1345,6 +928,7 @@ const Id = ({}) => {
                     radius={`5px`}
                     placeholder="Other preferences"
                     margin={`0 0 16px`}
+                    {...otherInput}
                   />
                 </Wrapper>
 
@@ -1414,6 +998,7 @@ const Id = ({}) => {
                       radius={`5px`}
                       placeholder="Name"
                       margin={`0 0 16px`}
+                      {...nameInput}
                     />
                     <Text
                       fontSize={`16px`}
@@ -1429,6 +1014,7 @@ const Id = ({}) => {
                       radius={`5px`}
                       placeholder="Phone Number"
                       margin={`0 0 16px`}
+                      {...mobileInput}
                     />
                     <Text
                       fontSize={`16px`}
@@ -1444,7 +1030,7 @@ const Id = ({}) => {
                         height={`40px`}
                         radius={`5px`}
                         placeholder="Deposit"
-                        type="number"
+                        value={deposit}
                       />
 
                       <Wrapper
@@ -1463,7 +1049,7 @@ const Id = ({}) => {
                       color={Theme.darkGrey_C}
                       margin={`0 0 5px`}
                     >
-                      Monthly payment
+                      Rent fee
                     </Text>
 
                     <Wrapper position={`relative`} margin={`0 0 16px`}>
@@ -1471,8 +1057,8 @@ const Id = ({}) => {
                         width={`100%`}
                         height={`40px`}
                         radius={`5px`}
-                        placeholder="Monthly payment"
-                        type="number"
+                        placeholder="Rent fee"
+                        value={rentFee}
                       />
 
                       <Wrapper
@@ -1500,6 +1086,7 @@ const Id = ({}) => {
                       radius={`5px`}
                       placeholder="Region"
                       margin={`0 0 16px`}
+                      value={roomDetail && roomDetail.region}
                     />
                     <Text
                       fontSize={`16px`}
@@ -1514,12 +1101,15 @@ const Id = ({}) => {
                       margin={`0 0 16px`}
                       cursor={`pointer`}
                     >
-                      <TextInput
-                        width={`100%`}
-                        height={`40px`}
-                        radius={`5px`}
-                        placeholder="Monthly payment"
-                        type="number"
+                      <DatePicker
+                        style={{
+                          width: `100%`,
+                          height: `40px`,
+                          borderRadius: `5px`,
+                        }}
+                        placeholder="Moving date"
+                        value={movingDate}
+                        onChange={(data) => setMovingDate(data)}
                       />
 
                       <Wrapper
@@ -1549,12 +1139,15 @@ const Id = ({}) => {
                       margin={`0 0 16px`}
                       cursor={`pointer`}
                     >
-                      <TextInput
-                        width={`100%`}
-                        height={`40px`}
-                        radius={`5px`}
+                      <DatePicker
+                        style={{
+                          width: `100%`,
+                          height: `40px`,
+                          borderRadius: `5px`,
+                        }}
                         placeholder="Contract Period"
-                        type="number"
+                        value={contactPeriod}
+                        onChange={(data) => setContactPeriod(data)}
                       />
 
                       <Wrapper
@@ -1585,6 +1178,7 @@ const Id = ({}) => {
                       radius={`5px`}
                       placeholder="Messenger type & ID"
                       margin={`0 0 16px`}
+                      {...messangerInput}
                     />
                     <Text
                       fontSize={`16px`}
@@ -1600,6 +1194,7 @@ const Id = ({}) => {
                       radius={`5px`}
                       placeholder="Email"
                       margin={`0 0 16px`}
+                      {...emailInput}
                     />
                     <Text
                       fontSize={`16px`}
@@ -1615,6 +1210,7 @@ const Id = ({}) => {
                       radius={`5px`}
                       placeholder="Other preferences"
                       margin={`0 0 16px`}
+                      {...otherInput}
                     />
                   </Wrapper>
                 </RsWrapper>
