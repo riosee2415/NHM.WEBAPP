@@ -134,6 +134,10 @@ const Type = ({}) => {
           createdAt: data.viewCreatedAt,
           updatedAt: data.viewUpdatedAt,
         });
+
+        dispatch({
+          type: ROOM,
+        });
       }
     },
     [currentData]
@@ -269,14 +273,15 @@ const Type = ({}) => {
                   <CheckOutlined />
                   썸네일 수정
                 </InfoTitle>
-                <Image />
+                <Image width={`350px`} />
                 <input
                   ref={thumbnailRef}
                   type="file"
                   hidden
                   accept=".jpg, .png"
+                  onChange={thumbnailUploadHandler}
                 />
-                <Button></Button>
+                <Button onClick={thumbnailRefClickHandler}></Button>
               </Wrapper>
 
               <Wrapper margin={`0px 0px 5px 0px`}>
@@ -284,9 +289,15 @@ const Type = ({}) => {
                   <CheckOutlined />
                   이미지 수정
                 </InfoTitle>
-                <Image />
-                <input ref={imageRef} type="file" hidden accept=".jpg, .png" />
-                <Button></Button>
+                <Image width={`350px`} />
+                <input
+                  ref={imageRef}
+                  type="file"
+                  hidden
+                  accept=".jpg, .png"
+                  onChange={imageUploadHandler}
+                />
+                <Button onClick={imageRefClickHandler}></Button>
               </Wrapper>
 
               <Wrapper margin={`0px 0px 5px 0px`}>

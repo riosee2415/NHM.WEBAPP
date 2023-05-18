@@ -33,6 +33,7 @@ const roomType = require("./roomType");
 const roomOption = require("./roomOption");
 const roomInfra = require("./roomInfra");
 const roomMaintenance = require("./roomMaintenance");
+const roomNow = require("./roomNow");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
@@ -79,6 +80,7 @@ db.RoomType = roomType;
 db.RoomOption = roomOption;
 db.RoomInfra = roomInfra;
 db.RoomMaintenance = roomMaintenance;
+db.RoomNow = roomNow;
 
 Object.keys(db).forEach((modelName) => {
   db[modelName].init(sequelize);
