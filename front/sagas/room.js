@@ -101,6 +101,19 @@ import {
   ROOM_TYPE_IMAGE_REQUEST,
   ROOM_TYPE_IMAGE_SUCCESS,
   ROOM_TYPE_IMAGE_FAILURE,
+  //
+  //
+  ROOM_NOW_LIST_REQUEST,
+  ROOM_NOW_LIST_SUCCESS,
+  ROOM_NOW_LIST_FAILURE,
+  //
+  ROOM_NOW_CREATE_REQUEST,
+  ROOM_NOW_CREATE_SUCCESS,
+  ROOM_NOW_CREATE_FAILURE,
+  //,
+  ROOM_NOW_UPDATE_REQUEST,
+  ROOM_NOW_UPDATE_SUCCESS,
+  ROOM_NOW_UPDATE_FAILURE,
 } from "../reducers/room";
 
 // ******************************************************************************************************************
@@ -752,6 +765,87 @@ function* roomTypeImage(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomNowListAPI(data) {
+  return await axios.post(`/api/room/roomNow/list`, data);
+}
+
+function* roomNowList(action) {
+  try {
+    const result = yield call(roomNowListAPI, action.data);
+
+    yield put({
+      type: ROOM_NOW_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_NOW_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomNowCreateAPI(data) {
+  return await axios.post(`/api/room/roomNow/create`, data);
+}
+
+function* roomNowCreate(action) {
+  try {
+    const result = yield call(roomNowCreateAPI, action.data);
+
+    yield put({
+      type: ROOM_NOW_CREATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_NOW_CREATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomNowUpdateAPI(data) {
+  return await axios.post(`/api/room/roomNow/update`, data);
+}
+
+function* roomNowUpdate(action) {
+  try {
+    const result = yield call(roomNowUpdateAPI, action.data);
+
+    yield put({
+      type: ROOM_NOW_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_NOW_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 function* watchRoomList() {
   yield takeLatest(ROOM_LIST_REQUEST, roomList);
@@ -833,6 +927,16 @@ function* watchRoomTypeImage() {
   yield takeLatest(ROOM_TYPE_IMAGE_REQUEST, roomTypeImage);
 }
 
+function* watchRoomNowList() {
+  yield takeLatest(ROOM_NOW_LIST_REQUEST, roomNowList);
+}
+function* watchRoomNowCreate() {
+  yield takeLatest(ROOM_NOW_CREATE_REQUEST, roomNowCreate);
+}
+function* watchRoomNowUpdate() {
+  yield takeLatest(ROOM_NOW_UPDATE_REQUEST, roomNowUpdate);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* roomSaga() {
   yield all([
@@ -866,6 +970,10 @@ export default function* roomSaga() {
 
     fork(watchRoomTypeThumbnail),
     fork(watchRoomTypeImage),
+
+    fork(watchRoomNowList),
+    fork(watchRoomNowCreate),
+    fork(watchRoomNowUpdate),
     //
   ]);
 }
