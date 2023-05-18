@@ -27,6 +27,7 @@ import {
   HomeOutlined,
   RightOutlined,
 } from "@ant-design/icons";
+import { ROOM_LIST_REQUEST } from "../../../reducers/room";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -50,6 +51,11 @@ const ViewStatusIcon = styled(EyeOutlined)`
 
 const Index = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
+  const { roomList } = useSelector((state) => state.room);
+
+  /////////////////////////////////////////////////////////////////////////
+
+  ////// HOOKS //////
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -61,29 +67,6 @@ const Index = ({}) => {
   const [currentData, setCurrentData] = useState(null);
 
   const [infoForm] = Form.useForm();
-
-  const moveLinkHandler = useCallback((link) => {
-    router.push(link);
-  }, []);
-
-  const content = (
-    <PopWrapper>
-      {sameDepth.map((data) => {
-        if (data.name === level2) return;
-        if (!data.useYn) return;
-
-        return (
-          <OtherMenu key={data.link} onClick={() => moveLinkHandler(data.link)}>
-            {data.name}
-          </OtherMenu>
-        );
-      })}
-    </PopWrapper>
-  );
-
-  /////////////////////////////////////////////////////////////////////////
-
-  ////// HOOKS //////
 
   ////// USEEFFECT //////
 
@@ -114,6 +97,10 @@ const Index = ({}) => {
 
   ////// HANDLER //////
 
+  const moveLinkHandler = useCallback((link) => {
+    router.push(link);
+  }, []);
+
   const beforeSetDataHandler = useCallback(
     (record) => {
       setCurrentData(record);
@@ -141,7 +128,11 @@ const Index = ({}) => {
       dataIndex: "num",
     },
     {
-      title: "이미지 명칭",
+      title: "매물번호",
+      dataIndex: "roomNum",
+    },
+    {
+      title: "제목",
       dataIndex: "title",
     },
 
@@ -176,6 +167,21 @@ const Index = ({}) => {
       ),
     },
   ];
+
+  const content = (
+    <PopWrapper>
+      {sameDepth.map((data) => {
+        if (data.name === level2) return;
+        if (!data.useYn) return;
+
+        return (
+          <OtherMenu key={data.link} onClick={() => moveLinkHandler(data.link)}>
+            {data.name}
+          </OtherMenu>
+        );
+      })}
+    </PopWrapper>
+  );
 
   return (
     <AdminLayout>
@@ -217,19 +223,6 @@ const Index = ({}) => {
         </GuideUl>
       </Wrapper>
 
-      {/* TAB */}
-      <Wrapper padding={`10px`} dr={`row`} ju="flex-start">
-        <Button type={"default"} size="small" style={{ marginRight: "5px" }}>
-          미완료
-        </Button>
-        <Button type={"default"} size="small" style={{ marginRight: "5px" }}>
-          완료
-        </Button>
-        <Button type={"default"} size="small" style={{ marginRight: "5px" }}>
-          전체
-        </Button>
-      </Wrapper>
-
       <Wrapper dr="row" padding="0px 20px" al="flex-start" ju={`space-between`}>
         <Wrapper
           width={`calc(50% - 10px)`}
@@ -245,7 +238,7 @@ const Index = ({}) => {
             style={{ width: "100%" }}
             rowKey="num"
             columns={col}
-            dataSource={[]}
+            dataSource={roomList}
             size="small"
             onRow={(record, index) => {
               return {
@@ -372,6 +365,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: ROOM_LIST_REQUEST,
     });
 
     // 구현부 종료

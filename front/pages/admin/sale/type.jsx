@@ -25,6 +25,7 @@ import {
   GuideUl,
   GuideLi,
   ModalBtn,
+  DelBtn,
 } from "../../../components/commonComponents";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import Theme from "../../../components/Theme";
@@ -318,18 +319,18 @@ const Type = ({}) => {
     [roomTypeThumbnail, roomTypeImage, currentData]
   );
 
-  const roomTypeDeleteHandler = useCallback(() => {
-    if (!currentData) {
+  const roomTypeDeleteHandler = useCallback((data) => {
+    if (!data) {
       return message.error("잠시 후 다시 시도해주세요.");
     }
 
     dispatch({
       type: ROOM_TYPE_DELETE_REQUEST,
       data: {
-        typeId: currentData.id,
+        typeId: data.id,
       },
     });
-  }, [currentData]);
+  }, []);
 
   ////// DATAVIEW //////
 
@@ -364,6 +365,19 @@ const Type = ({}) => {
             }
           />
         </>
+      ),
+    },
+    {
+      title: "삭제",
+      render: (data) => (
+        <Popconfirm
+          title="정말 삭제하시겠습니까?"
+          onConfirm={() => roomTypeDeleteHandler(data)}
+          okText="삭제"
+          cancelText="취소"
+        >
+          <DelBtn />
+        </Popconfirm>
       ),
     },
   ];
@@ -537,21 +551,6 @@ const Type = ({}) => {
                 </Form.Item>
 
                 <Wrapper dr={`row`} ju="flex-end">
-                  <Popconfirm
-                    title="정말 삭제하시겠습니까?"
-                    okText="삭제"
-                    cancelText="취소"
-                    onConfirm={roomTypeDeleteHandler}
-                  >
-                    <Button
-                      type="danger"
-                      size="small"
-                      loading={st_roomTypeDeleteLoading}
-                    >
-                      삭제하기
-                    </Button>
-                  </Popconfirm>
-
                   <ModalBtn
                     type="primary"
                     size="small"
