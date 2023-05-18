@@ -1333,6 +1333,7 @@ router.post("/maintenance/delete", isAdminCheck, async (req, res, next) => {
 ////////////////////////////////////////////////////
 // ROOM NOW ////////////////////////////////////////
 ////////////////////////////////////////////////////
+
 /**
  * SUBJECT : 매물구매 리스트
  * PARAMETERS : isComplete
@@ -1341,7 +1342,8 @@ router.post("/maintenance/delete", isAdminCheck, async (req, res, next) => {
  * DEVELOPMENT : 홍민기
  * DEV DATE : 2023/05/18
  */
-router.post("/roomNow/list", async (req, res, next) => {
+
+router.post("/roomNow/list", isAdminCheck, async (req, res, next) => {
   const { isComplete } = req.body;
 
   const _isComplete = isComplete ? parseInt(isComplete) : 3;
@@ -1386,13 +1388,24 @@ router.post("/roomNow/list", async (req, res, next) => {
 });
 
 /**
- * SUBJECT : 매물구매 리스트
- * PARAMETERS : isComplete
- * ORDER BY : createdAt DESC
+ * SUBJECT : 매물구매 생성
+ * PARAMETERS : name
+                mobile
+                deposit
+                rentfee
+                region
+                movingdate
+                contractPeriod
+                messengerTypeOrId
+                email
+                otherPreferences
+                RooomId
+ * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 홍민기
  * DEV DATE : 2023/05/18
  */
+
 router.post("/roomNow/create", async (req, res, next) => {
   const {
     name,
@@ -1405,7 +1418,7 @@ router.post("/roomNow/create", async (req, res, next) => {
     messengerTypeOrId,
     email,
     otherPreferences,
-    RooomId,
+    RoomId,
   } = req.body;
 
   const isnertQuery = `
@@ -1420,7 +1433,7 @@ router.post("/roomNow/create", async (req, res, next) => {
     messengerTypeOrId,
     email,
     otherPreferences,
-    RooomId,
+    RoomId,
     createdAt,
     updatedAt
   )
@@ -1436,7 +1449,7 @@ router.post("/roomNow/create", async (req, res, next) => {
     ${messengerTypeOrId},
     ${email},
     ${otherPreferences},
-    ${RooomId},
+    ${RoomId},
     NOW(),
     NOW()
   )
@@ -1448,6 +1461,34 @@ router.post("/roomNow/create", async (req, res, next) => {
   } catch (e) {
     console.error(e);
     return res.status(401).send("매물 구매를 할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 매물구매 리스트
+ * PARAMETERS : isComplete
+ * ORDER BY : createdAt DESC
+ * STATEMENT : -
+ * DEVELOPMENT : 홍민기
+ * DEV DATE : 2023/05/18
+ */
+
+router.post("/roomNow/isComplete", isAdminCheck, async (req, res, next) => {
+  const { id, isComplete } = req.body;
+
+  const selectQuery = `
+  UPDATE  roomNow
+     SET  isComplete = ${isComplete}
+   WHERE  id = ${id}
+
+  `;
+  try {
+    const result = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(result[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(401).send("매물 구매 리스트를 불러올 수 없습니다.");
   }
 });
 
