@@ -1460,14 +1460,14 @@ router.post("/roomNow/create", async (req, res, next) => {
     return res.status(200).json({ result: true });
   } catch (e) {
     console.error(e);
-    return res.status(401).send("매물 구매를 할 수 없습니다.");
+    return res.status(400).send("매물 구매를 할 수 없습니다.");
   }
 });
 
 /**
- * SUBJECT : 매물구매 리스트
- * PARAMETERS : isComplete
- * ORDER BY : createdAt DESC
+ * SUBJECT : 매물구매 확인
+ * PARAMETERS : id, isComplete
+ * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 홍민기
  * DEV DATE : 2023/05/18
@@ -1476,19 +1476,36 @@ router.post("/roomNow/create", async (req, res, next) => {
 router.post("/roomNow/isComplete", isAdminCheck, async (req, res, next) => {
   const { id, isComplete } = req.body;
 
-  const selectQuery = `
+  const findQuery = `
+  SELECT  id,
+          isComplete
+    FROM  roomNow
+   WHERE  id = ${id}
+  `;
+
+  const updateQuery = `
   UPDATE  roomNow
      SET  isComplete = ${isComplete}
    WHERE  id = ${id}
 
   `;
   try {
-    const result = await models.sequelize.query(selectQuery);
+    const find = await models.sequelize.query(findQuery);
 
-    return res.status(200).json(result[0]);
+    if (find[0].length === 0) {
+      return res.status(401).send("확인처리할 매물이 없습니다.");
+    }
+
+    if (find[0][0].isComplete) {
+      return res.status(401).send("이미 확인된 매물입니다.");
+    }
+
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
   } catch (e) {
     console.error(e);
-    return res.status(401).send("매물 구매 리스트를 불러올 수 없습니다.");
+    return res.status(401).send("매물을 확인처리할 수 없습니다.");
   }
 });
 
