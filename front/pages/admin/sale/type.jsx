@@ -400,9 +400,9 @@ const Type = ({}) => {
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
-          <GuideLi>화면 가이드안내 문구를 입력하세요.</GuideLi>
+          <GuideLi>매물지역을 관리할 수 있습니다.</GuideLi>
           <GuideLi isImpo={true}>
-            화면 가이드안내 문구를 입력하세요. (RED COLOR)
+            생성, 수정, 삭제시 사이트에 바로 적용되니 유의해주시기 바랍니다.
           </GuideLi>
         </GuideUl>
       </Wrapper>
