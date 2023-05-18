@@ -150,7 +150,11 @@ const Index = ({}) => {
                   bgImg={`url(${
                     roomTypeList.find(
                       (value) => String(value.id) === router.query.type
-                    ).imagePath
+                    )
+                      ? roomTypeList.find(
+                          (value) => String(value.id) === router.query.type
+                        ).imagePath
+                      : ""
                   })`}
                   height={`200px`}
                   radius={`10px`}
