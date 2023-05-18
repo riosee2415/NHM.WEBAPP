@@ -2,6 +2,7 @@ import produce from "../util/produce";
 
 export const initailState = {
   roomList: [],
+  roomAdminList: [],
   roomTypeList: [],
   roomLastPage: 1,
   roomOptionList: [],
@@ -24,6 +25,10 @@ export const initailState = {
   st_roomListLoading: false, // room 가져오기
   st_roomListDone: false,
   st_roomListError: null,
+  //
+  st_roomAdminListLoading: false, // room admin 가져오기
+  st_roomAdminListDone: false,
+  st_roomAdminListError: null,
   //
   st_roomCreateLoading: false, // room 생성하기
   st_roomCreateDone: false,
@@ -141,6 +146,10 @@ export const initailState = {
 export const ROOM_LIST_REQUEST = "ROOM_LIST_REQUEST";
 export const ROOM_LIST_SUCCESS = "ROOM_LIST_SUCCESS";
 export const ROOM_LIST_FAILURE = "ROOM_LIST_FAILURE";
+
+export const ROOM_ADMIN_LIST_REQUEST = "ROOM_ADMIN_LIST_REQUEST";
+export const ROOM_ADMIN_LIST_SUCCESS = "ROOM_ADMIN_LIST_SUCCESS";
+export const ROOM_ADMIN_LIST_FAILURE = "ROOM_ADMIN_LIST_FAILURE";
 
 export const ROOM_CREATE_REQUEST = "ROOM_CREATE_REQUEST";
 export const ROOM_CREATE_SUCCESS = "ROOM_CREATE_SUCCESS";
@@ -260,6 +269,27 @@ export const ROOM_TYPE_IMAGE_RESET = "ROOM_TYPE_IMAGE_RESET";
 const reducer = (state = initailState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
+      case ROOM_ADMIN_LIST_REQUEST: {
+        draft.st_roomAdminListLoading = true;
+        draft.st_roomAdminListDone = false;
+        draft.st_roomAdminListError = null;
+        break;
+      }
+      case ROOM_ADMIN_LIST_SUCCESS: {
+        draft.st_roomAdminListLoading = false;
+        draft.st_roomAdminListDone = true;
+        draft.st_roomAdminListError = null;
+        draft.roomAdminList = action.data;
+        break;
+      }
+      case ROOM_ADMIN_LIST_FAILURE: {
+        draft.st_roomAdminListLoading = false;
+        draft.st_roomAdminListDone = false;
+        draft.st_roomAdminListError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
       case ROOM_LIST_REQUEST: {
         draft.st_roomListLoading = true;
         draft.st_roomListDone = false;
@@ -849,7 +879,7 @@ const reducer = (state = initailState, action) =>
       //////////////////////////////////////////////
 
       case ROOM_IMAGE_RESET: {
-        draft.roomPath = null;
+        draft.roomPath = action.data.roomPath;
         break;
       }
 
