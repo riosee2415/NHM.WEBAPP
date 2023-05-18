@@ -22,6 +22,9 @@ import Head from "next/head";
 import SubBanner from "../../components/SubBanner";
 import { Modal } from "antd";
 import RoomsSlider from "../../components/slide/RoomsSlider";
+import { useDispatch, useSelector } from "react-redux";
+import { ROOM_DETAIL_REQUEST } from "../../reducers/room";
+import { useRouter } from "next/router";
 
 const LocalWrapper = styled(Wrapper)`
   width: 110px;
@@ -46,12 +49,12 @@ const Tab = styled(Wrapper)`
   color: ${Theme.darkGrey2_C};
   font-size: 18px;
   background: ${Theme.lightGrey2_C};
-  /* cursor: pointer;
+  cursor: pointer;
 
   &:hover {
     background: ${Theme.basicTheme_C};
     color: ${Theme.white_C};
-  } */
+  }
 
   ${(props) =>
     props.isActive &&
@@ -97,13 +100,20 @@ const IndexBox = styled(Wrapper)`
 
 const Id = ({}) => {
   ////// GLOBAL STATE //////
+  const { roomDetail, bannerData, infraData, optionData, maintenanceData } =
+    useSelector((state) => state.room);
+
+  console.log(roomDetail, bannerData, infraData, optionData, maintenanceData);
 
   ////// HOOKS //////
   const width = useWidth();
 
   const [bookModal, setBookModal] = useState(false); // 모바일 Book Now
+  const [monthData, setMonthData] = useState(0); // 0:6month , 1:1year, 2:2yaer
 
   ////// REDUX //////
+  const router = useRouter();
+  const dispatch = useDispatch();
   ////// USEEFFECT //////
   ////// TOGGLE //////
   ////// HANDLER //////
@@ -133,7 +143,7 @@ const Id = ({}) => {
               />
 
               <Text fontSize={`20px`} fontWeight={`700`} margin={`0 0 0 10px`}>
-                Dongdaemun-gu
+                {roomDetail && roomDetail.roomTypeTitle}
               </Text>
             </BackWrapper>
 
@@ -143,7 +153,7 @@ const Id = ({}) => {
               margin={width < 900 ? `0 0 16px` : `0 0 28px`}
             >
               <Text fontSize={width < 900 ? `26px` : `34px`} fontWeight={`700`}>
-                NO.123456
+                NO.{roomDetail && roomDetail.roomNum}
               </Text>
               <Image
                 src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/icon_share.png"
@@ -154,7 +164,7 @@ const Id = ({}) => {
             </Wrapper>
 
             <Wrapper margin={width < 900 ? `0 0 20px` : `0 0 30px`}>
-              <RoomsSlider datum={["1", "", ""]} />
+              <RoomsSlider datum={bannerData} />
             </Wrapper>
 
             <Wrapper
@@ -166,7 +176,9 @@ const Id = ({}) => {
               <IndexBox>
                 <Text fontSize={`18px`}>
                   KI index&nbsp;
-                  <SpanText color={Theme.basicTheme_C}>5.0</SpanText>
+                  <SpanText color={Theme.basicTheme_C}>
+                    {roomDetail && roomDetail.kiIndex}
+                  </SpanText>
                 </Text>
               </IndexBox>
 
@@ -175,10 +187,10 @@ const Id = ({}) => {
                 fontWeight={`600`}
                 margin={width < 900 ? `0` : `0 0 5px`}
               >
-                Month 1.3m/20m
+                {roomDetail && roomDetail.title}
               </Text>
               <Text fontSize={`18px`} color={Theme.darkGrey_C}>
-                Dondaemun Station One room
+                {roomDetail && roomDetail.subTitle}
               </Text>
             </Wrapper>
 
@@ -203,9 +215,25 @@ const Id = ({}) => {
                   padding={`0 0 20px`}
                   borderBottom={`2px solid ${Theme.basicTheme_C}`}
                 >
-                  <Tab isActive={true}>6Months</Tab>
-                  <Tab margin={width < 900 ? `0 10px` : `0 16px`}>1year</Tab>
-                  <Tab>2year</Tab>
+                  <Tab
+                    onClick={() => setMonthData(0)}
+                    isActive={monthData === 0}
+                  >
+                    6Months
+                  </Tab>
+                  <Tab
+                    onClick={() => setMonthData(1)}
+                    isActive={monthData === 1}
+                    margin={width < 900 ? `0 10px` : `0 16px`}
+                  >
+                    1year
+                  </Tab>
+                  <Tab
+                    onClick={() => setMonthData(2)}
+                    isActive={monthData === 2}
+                  >
+                    2year
+                  </Tab>
                 </Wrapper>
 
                 <Wrapper
@@ -221,7 +249,22 @@ const Id = ({}) => {
                     Deposit
                   </Text>
 
-                  <Text fontSize={`16px`}>10,000,000</Text>
+                  <Text fontSize={`16px`}>
+                    {monthData === 0
+                      ? String(roomDetail && roomDetail.deposit1).replace(
+                          /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                          ","
+                        )
+                      : monthData === 1
+                      ? String(roomDetail && roomDetail.deposit2).replace(
+                          /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                          ","
+                        )
+                      : String(roomDetail && roomDetail.deposit3).replace(
+                          /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                          ","
+                        )}
+                  </Text>
                 </Wrapper>
 
                 <Wrapper
@@ -237,23 +280,22 @@ const Id = ({}) => {
                     Monthly Payment
                   </Text>
 
-                  <Text fontSize={`16px`}>10,000,000</Text>
-                </Wrapper>
-
-                <Wrapper
-                  padding={`12px 14px`}
-                  dr={`row`}
-                  ju={`space-between`}
-                  borderBottom={`1px solid ${Theme.lightGrey2_C}`}
-                >
-                  <Text
-                    fontSize={width < 900 ? `14px` : `16px`}
-                    fontWeight={`600`}
-                  >
-                    Management expense
+                  <Text fontSize={`16px`}>
+                    {monthData === 0
+                      ? String(roomDetail && roomDetail.rentFee1).replace(
+                          /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                          ","
+                        )
+                      : monthData === 1
+                      ? String(roomDetail && roomDetail.rentFee2).replace(
+                          /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                          ","
+                        )
+                      : String(roomDetail && roomDetail.rentFee3).replace(
+                          /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                          ","
+                        )}
                   </Text>
-
-                  <Text fontSize={`16px`}>10,000,000</Text>
                 </Wrapper>
 
                 <Wrapper
@@ -267,10 +309,25 @@ const Id = ({}) => {
                     fontSize={width < 900 ? `14px` : `16px`}
                     fontWeight={`600`}
                   >
-                    Real Estate Fee
+                    Management expense
                   </Text>
 
-                  <Text fontSize={`16px`}>10,000,000</Text>
+                  <Text fontSize={`16px`}>
+                    {monthData === 0
+                      ? String(roomDetail && roomDetail.expense1).replace(
+                          /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                          ","
+                        )
+                      : monthData === 1
+                      ? String(roomDetail && roomDetail.expense2).replace(
+                          /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                          ","
+                        )
+                      : String(roomDetail && roomDetail.expense3).replace(
+                          /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                          ","
+                        )}
+                  </Text>
                 </Wrapper>
 
                 <Wrapper
@@ -279,42 +336,6 @@ const Id = ({}) => {
                   radius={`20px`}
                   margin={`0 0 40px`}
                 >
-                  <Wrapper dr={`row`} ju={`space-between`}>
-                    <Text
-                      fontSize={width < 900 ? `10px` : `14px`}
-                      color={Theme.darkGrey_C}
-                    >
-                      Including management expense
-                    </Text>
-
-                    <Wrapper
-                      width={`auto`}
-                      padding={`5px 10px`}
-                      radius={`20px`}
-                      color={Theme.white_C}
-                      bgColor={Theme.basicTheme_C}
-                    >
-                      <Text fontSize={width < 900 ? `12px` : `14px`}>
-                        <SpanText
-                          fontSize={width < 900 ? `16px` : `18px`}
-                          fontWeight={`700`}
-                        >
-                          83%&nbsp;
-                        </SpanText>
-                        off
-                      </Text>
-                    </Wrapper>
-                  </Wrapper>
-
-                  <Wrapper
-                    al={`flex-end`}
-                    fontSize={width < 900 ? `13px` : `14px`}
-                    color={Theme.darkGrey2_C}
-                    margin={`10px 0 5px`}
-                  >
-                    Real estate commission 100,000₩
-                  </Wrapper>
-
                   <Wrapper
                     dr={`row`}
                     ju={width < 900 ? `flex-end` : `space-between`}
@@ -329,8 +350,21 @@ const Id = ({}) => {
                     </Text>
 
                     <Text fontSize={`24px`} fontWeight={`600`}>
-                      500,000₩/1,000,000₩
+                      500,000₩/{" "}
+                      {monthData === 0
+                        ? roomDetail && roomDetail.monthConcatTotalPrice
+                        : monthData === 1
+                        ? roomDetail && roomDetail.oneYearConcatTotalPrice
+                        : roomDetail && roomDetail.twoYearConcatTotalPrice}
                     </Text>
+                  </Wrapper>
+                  <Wrapper
+                    al={`flex-end`}
+                    fontSize={width < 900 ? `13px` : `14px`}
+                    color={Theme.darkGrey_C}
+                    margin={`10px 0 5px`}
+                  >
+                    Service fee will be charged depending on service package
                   </Wrapper>
                 </Wrapper>
 
@@ -1664,6 +1698,13 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: ROOM_DETAIL_REQUEST,
+      data: {
+        id: context.query.id,
+      },
     });
 
     // 구현부 종료

@@ -144,7 +144,7 @@ const RoomsSlider = ({ datum }) => {
                 <Image
                   height={width < 900 ? `177px` : `680px`}
                   radius={`20px`}
-                  src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/img_detail.png"
+                  src={data.imagePath}
                   alt="image"
                 />
               </Wrapper>
