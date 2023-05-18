@@ -26,6 +26,8 @@ import UpdateSlider from "../../components/slide/UpdateSlider";
 import SubBanner from "../../components/SubBanner";
 import { Button, Dropdown, Menu, Popover, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
+import { ROOM_LIST_REQUEST, ROOM_TYPE_LIST_REQUEST } from "../../reducers/room";
+import { useRouter } from "next/router";
 
 const IndexBox = styled(Wrapper)`
   width: auto;
@@ -115,6 +117,10 @@ const RommsBox = styled(Wrapper)`
 
 const Index = ({}) => {
   ////// GLOBAL STATE //////
+  const { roomList, roomTypeList, roomLastPage } = useSelector(
+    (state) => state.room
+  );
+  console.log(roomList, roomTypeList);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -122,6 +128,8 @@ const Index = ({}) => {
   const [isArrow, setIsArrow] = useState(false); // 타이틀
   const [isIndex, setIsIndex] = useState(false); // index Modal
   ////// REDUX //////
+  const router = useRouter();
+  const dispatch = useDispatch();
   ////// USEEFFECT //////
   ////// TOGGLE //////
   ////// HANDLER //////
@@ -139,7 +147,11 @@ const Index = ({}) => {
             <>
               <RsWrapper margin={`0 0 30px`}>
                 <Wrapper
-                  bgImg={`url("https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/img_GU_m.png")`}
+                  bgImg={`url(${
+                    roomTypeList.find(
+                      (value) => String(value.id) === router.query.type
+                    ).imagePath
+                  })`}
                   height={`200px`}
                   radius={`10px`}
                 >
@@ -150,7 +162,13 @@ const Index = ({}) => {
                       isHover={true}
                       onClick={() => setIsArrow(!isArrow)}
                     >
-                      Dongdaemun-gu
+                      {roomTypeList.find(
+                        (value) => String(value.id) === router.query.type
+                      )
+                        ? roomTypeList.find(
+                            (value) => String(value.id) === router.query.type
+                          ).title
+                        : ""}
                     </Text>
 
                     <Image
@@ -170,6 +188,7 @@ const Index = ({}) => {
                         padding={`35px`}
                         bgColor={Theme.white_C}
                         width={`auto`}
+                        minWidth={`150px`}
                         radius={`10px`}
                         shadow={`0px 0px 10px rgba(0,0,0,0.1)`}
                         position={`absolute`}
@@ -177,46 +196,31 @@ const Index = ({}) => {
                         top={`50px`}
                         zIndex={`3`}
                       >
-                        <Text
-                          fontSize={`20px`}
-                          isHover={true}
-                          color={Theme.darkGrey_C}
-                          margin={`0 0 14px`}
-                        >
-                          Dongdaemun-gu
-                        </Text>
-                        <Text
-                          fontSize={`20px`}
-                          isHover={true}
-                          color={Theme.darkGrey_C}
-                          margin={`0 0 14px`}
-                        >
-                          Dongdaemun-gu
-                        </Text>
-                        <Text
-                          fontSize={`20px`}
-                          isHover={true}
-                          color={Theme.darkGrey_C}
-                          margin={`0 0 14px`}
-                        >
-                          Dongdaemun-gu
-                        </Text>
-                        <Text
-                          fontSize={`20px`}
-                          isHover={true}
-                          color={Theme.darkGrey_C}
-                          margin={`0 0 14px`}
-                        >
-                          Dongdaemun-gu
-                        </Text>
-                        <Text
-                          fontSize={`20px`}
-                          isHover={true}
-                          color={Theme.darkGrey_C}
-                          margin={`0 0 14px`}
-                        >
-                          Dongdaemun-gu
-                        </Text>
+                        {roomTypeList.map((data, idx) => {
+                          return (
+                            <Text
+                              fontSize={`20px`}
+                              isHover={true}
+                              color={Theme.darkGrey_C}
+                              margin={
+                                idx + 1 === roomTypeList.length
+                                  ? `0`
+                                  : `0 0 14px`
+                              }
+                              key={data.id}
+                              onClick={() => {
+                                router.push(`/rooms?type=${data.id}`);
+                              }}
+                              isActive={
+                                router.query.type === String(data.id)
+                                  ? true
+                                  : false
+                              }
+                            >
+                              {data.title}
+                            </Text>
+                          );
+                        })}
                       </Wrapper>
                     )}
                   </TitleBox>
@@ -238,7 +242,13 @@ const Index = ({}) => {
                       isHover={true}
                       onClick={() => setIsArrow(!isArrow)}
                     >
-                      Dongdaemun-gu
+                      {roomTypeList.find(
+                        (value) => String(value.id) === router.query.type
+                      )
+                        ? roomTypeList.find(
+                            (value) => String(value.id) === router.query.type
+                          ).title
+                        : ""}
                     </Text>
 
                     <Image
@@ -265,52 +275,41 @@ const Index = ({}) => {
                         top={`88px`}
                         zIndex={`2`}
                       >
-                        <Text
-                          fontSize={`20px`}
-                          isHover={true}
-                          color={Theme.darkGrey_C}
-                          margin={`0 0 14px`}
-                        >
-                          Dongdaemun-gu
-                        </Text>
-                        <Text
-                          fontSize={`20px`}
-                          isHover={true}
-                          color={Theme.darkGrey_C}
-                          margin={`0 0 14px`}
-                        >
-                          Dongdaemun-gu
-                        </Text>
-                        <Text
-                          fontSize={`20px`}
-                          isHover={true}
-                          color={Theme.darkGrey_C}
-                          margin={`0 0 14px`}
-                        >
-                          Dongdaemun-gu
-                        </Text>
-                        <Text
-                          fontSize={`20px`}
-                          isHover={true}
-                          color={Theme.darkGrey_C}
-                          margin={`0 0 14px`}
-                        >
-                          Dongdaemun-gu
-                        </Text>
-                        <Text
-                          fontSize={`20px`}
-                          isHover={true}
-                          color={Theme.darkGrey_C}
-                          margin={`0 0 14px`}
-                        >
-                          Dongdaemun-gu
-                        </Text>
+                        {roomTypeList.map((data, idx) => {
+                          return (
+                            <Text
+                              fontSize={`20px`}
+                              isHover={true}
+                              color={Theme.darkGrey_C}
+                              margin={
+                                idx + 1 === roomTypeList.length
+                                  ? `0`
+                                  : `0 0 14px`
+                              }
+                              key={data.id}
+                              onClick={() => {
+                                router.push(`/rooms?type=${data.id}`);
+                              }}
+                              isActive={
+                                router.query.type === String(data.id)
+                                  ? true
+                                  : false
+                              }
+                            >
+                              {data.title}
+                            </Text>
+                          );
+                        })}
                       </Wrapper>
                     )}
                   </TitleBox>
 
                   <Image
-                    src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/img_GU.png"
+                    src={
+                      roomTypeList.find(
+                        (value) => String(value.id) === router.query.type
+                      ).imagePath
+                    }
                     alt="banner"
                     height={`320px`}
                     margin={`0 0 50px`}
@@ -323,103 +322,119 @@ const Index = ({}) => {
 
           <RsWrapper>
             <Wrapper dr={`row`} ju={`flex-start`}>
-              <RommsBox>
-                <SquareBox>
-                  <Wrapper
-                    position={`absolute`}
-                    top={width < 900 ? `10px` : `20px`}
-                    left={`20px`}
-                    bgColor={`rgba(0,0,0,0.4)`}
-                    color={Theme.white_C}
-                    fontSize={width < 900 ? `10px` : `16px`}
-                    radius={`5px`}
-                    zIndex={`2`}
-                    width={`auto`}
-                    padding={`3px 10px`}
+              {roomList.map((data) => {
+                return (
+                  <RommsBox
+                    key={data.id}
+                    onClick={() => router.push(`/rooms/${data.id}`)}
                   >
-                    NO.123456
-                  </Wrapper>
-                  <Image
-                    className="thumbnail"
-                    position={`absolute`}
-                    top={`0`}
-                    left={`0`}
-                    src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/img_rooms_gangbukgu.png"
-                    alt="thumbnail"
-                    width={`100%`}
-                  />
-                </SquareBox>
-                <Wrapper
-                  al={`flex-start`}
-                  width={width < 900 ? `calc(100% - 110px)` : `100%`}
-                  padding={width < 900 ? `0 0 0 10px` : `0`}
-                >
-                  <IndexBox onClick={() => setIsIndex(true)}>
-                    <Text fontSize={width < 900 ? `12px` : `15px`}>
-                      KI index&nbsp;
-                      <SpanText color={Theme.basicTheme_C}>5.0</SpanText>
-                    </Text>
-                  </IndexBox>
-                  {isIndex && (
-                    <Wrapper
-                      position={width < 900 ? `fixed` : `absolute`}
-                      bottom={width < 900 ? `50%` : `-210px`}
-                      left={`0`}
-                      width={width < 900 ? `100%` : `404px`}
-                      padding={width < 900 ? `0 20px` : `0`}
-                      zIndex={`10`}
-                    >
+                    <SquareBox>
                       <Wrapper
-                        padding={width < 900 ? `40px 30px` : `40px`}
-                        bgColor={Theme.white_C}
-                        shadow={`0px 0px 10px rgba(0,0,0,0.1)`}
+                        position={`absolute`}
+                        top={width < 900 ? `10px` : `20px`}
+                        left={`20px`}
+                        bgColor={`rgba(0,0,0,0.4)`}
+                        color={Theme.white_C}
+                        fontSize={width < 900 ? `10px` : `16px`}
                         radius={`5px`}
+                        zIndex={`2`}
+                        width={`auto`}
+                        padding={`3px 10px`}
                       >
-                        <Wrapper
-                          al={`flex-end`}
-                          margin={
-                            width < 900 ? `-20px -20px 0 0` : `0 -20px 0 0`
-                          }
-                        >
-                          <Image
-                            src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/icon_close.png"
-                            alt="icon"
-                            onClick={() => setIsIndex(false)}
-                            width={`14px`}
-                          />
-                        </Wrapper>
-
-                        <Wrapper
-                          fontSize={width < 900 ? `13px` : `16px`}
-                          color={Theme.black_C}
-                        >
-                          <Text>The Koreais develop KI index.</Text>
-                          <Text>KI index is a foreigner-friendly score</Text>
-                          <Text>considering the infrastructure and</Text>
-                          <Text>characteristics of the area where the</Text>
-                          <Text>property are located, and the higher the</Text>
-                          <Text>score, the better the neighborhood for</Text>
-                          <Text>foreigners to live in</Text>
-                        </Wrapper>
+                        NO.{data.roomNum}
                       </Wrapper>
-                    </Wrapper>
-                  )}
+                      <Image
+                        className="thumbnail"
+                        position={`absolute`}
+                        top={`0`}
+                        left={`0`}
+                        src={data.thumbnail}
+                        alt="thumbnail"
+                        width={`100%`}
+                        height={`100%`}
+                      />
+                    </SquareBox>
+                    <Wrapper
+                      al={`flex-start`}
+                      width={width < 900 ? `calc(100% - 110px)` : `100%`}
+                      padding={width < 900 ? `0 0 0 10px` : `0`}
+                    >
+                      <IndexBox onClick={() => setIsIndex(true)}>
+                        <Text fontSize={width < 900 ? `12px` : `15px`}>
+                          KI index&nbsp;
+                          <SpanText color={Theme.basicTheme_C}>
+                            {data.kiIndex}
+                          </SpanText>
+                        </Text>
+                      </IndexBox>
+                      {isIndex && (
+                        <Wrapper
+                          position={width < 900 ? `fixed` : `absolute`}
+                          bottom={width < 900 ? `50%` : `-210px`}
+                          left={`0`}
+                          width={width < 900 ? `100%` : `404px`}
+                          padding={width < 900 ? `0 20px` : `0`}
+                          zIndex={`10`}
+                        >
+                          <Wrapper
+                            padding={width < 900 ? `40px 30px` : `40px`}
+                            bgColor={Theme.white_C}
+                            shadow={`0px 0px 10px rgba(0,0,0,0.1)`}
+                            radius={`5px`}
+                          >
+                            <Wrapper
+                              al={`flex-end`}
+                              margin={
+                                width < 900 ? `-20px -20px 0 0` : `0 -20px 0 0`
+                              }
+                            >
+                              <Image
+                                src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/icon_close.png"
+                                alt="icon"
+                                onClick={() => setIsIndex(false)}
+                                width={`14px`}
+                              />
+                            </Wrapper>
 
-                  <Text
-                    fontSize={width < 900 ? `16px` : `20px`}
-                    fontWeight={`600`}
-                    margin={width < 900 ? `0` : `0 0 5px`}
-                  >
-                    Month 1.3m/20m
-                  </Text>
-                  <Text
-                    fontSize={width < 900 ? `14px` : `16px`}
-                    color={Theme.darkGrey_C}
-                  >
-                    Dondaemun Station One room
-                  </Text>
-                </Wrapper>
-              </RommsBox>
+                            <Wrapper
+                              fontSize={width < 900 ? `13px` : `16px`}
+                              color={Theme.black_C}
+                            >
+                              <Text>The Koreais develop KI index.</Text>
+                              <Text>
+                                KI index is a foreigner-friendly score
+                              </Text>
+                              <Text>considering the infrastructure and</Text>
+                              <Text>characteristics of the area where the</Text>
+                              <Text>
+                                property are located, and the higher the
+                              </Text>
+                              <Text>
+                                score, the better the neighborhood for
+                              </Text>
+                              <Text>foreigners to live in</Text>
+                            </Wrapper>
+                          </Wrapper>
+                        </Wrapper>
+                      )}
+
+                      <Text
+                        fontSize={width < 900 ? `16px` : `20px`}
+                        fontWeight={`600`}
+                        margin={width < 900 ? `0` : `0 0 5px`}
+                      >
+                        {data.title}
+                      </Text>
+                      <Text
+                        fontSize={width < 900 ? `14px` : `16px`}
+                        color={Theme.darkGrey_C}
+                      >
+                        {data.subTitle}
+                      </Text>
+                    </Wrapper>
+                  </RommsBox>
+                );
+              })}
             </Wrapper>
 
             <CustomPage />
@@ -443,6 +458,17 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: ROOM_LIST_REQUEST,
+      data: {
+        RoomTypeId: context.query.type,
+      },
+    });
+
+    context.store.dispatch({
+      type: ROOM_TYPE_LIST_REQUEST,
     });
 
     // 구현부 종료

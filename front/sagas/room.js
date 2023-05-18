@@ -88,6 +88,11 @@ import {
   ROOM_MAINT_DELETE_REQUEST,
   ROOM_MAINT_DELETE_SUCCESS,
   ROOM_MAINT_DELETE_FAILURE,
+  //
+  //
+  ROOM_DETAIL_REQUEST,
+  ROOM_DETAIL_SUCCESS,
+  ROOM_DETAIL_FAILURE,
 } from "../reducers/room";
 
 // ******************************************************************************************************************
@@ -658,6 +663,33 @@ function* roomMaintDelete(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomDetailAPI(data) {
+  return await axios.post(`/api/room/detail`, data);
+}
+
+function* roomDetail(action) {
+  try {
+    const result = yield call(roomDetailAPI, action.data);
+
+    yield put({
+      type: ROOM_DETAIL_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_DETAIL_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
 function* watchRoomList() {
   yield takeLatest(ROOM_LIST_REQUEST, roomList);
@@ -727,6 +759,10 @@ function* watchRoomMaintDelete() {
   yield takeLatest(ROOM_MAINT_DELETE_REQUEST, roomMaintDelete);
 }
 
+function* watchRoomDetail() {
+  yield takeLatest(ROOM_DETAIL_REQUEST, roomDetail);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* roomSaga() {
   yield all([
@@ -755,6 +791,8 @@ export default function* roomSaga() {
     fork(watchRoomMaintCreate),
     fork(watchRoomMaintUpdate),
     fork(watchRoomMaintDelete),
+
+    fork(watchRoomDetail),
     //
   ]);
 }

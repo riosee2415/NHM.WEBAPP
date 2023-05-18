@@ -3,10 +3,18 @@ import produce from "../util/produce";
 export const initailState = {
   roomList: [],
   roomTypeList: [],
+  roomLastPage: 1,
   roomOptionList: [],
   roomInfraList: [],
   roomMaintList: [],
   roomPath: null,
+
+  // 디테일
+  roomDetail: null,
+  bannerData: [],
+  infraData: [],
+  optionData: [],
+  maintenanceData: [],
 
   //
   st_roomListLoading: false, // room 가져오기
@@ -96,6 +104,11 @@ export const initailState = {
   st_roomMaintDeleteLoading: false, // roomMaint 삭제하기
   st_roomMaintDeleteDone: false,
   st_roomMaintDeleteError: null,
+  //
+  //
+  st_roomDetailLoading: false, // room detail 가져오기
+  st_roomDetailDone: false,
+  st_roomDetailError: null,
 };
 
 export const ROOM_LIST_REQUEST = "ROOM_LIST_REQUEST";
@@ -185,6 +198,11 @@ export const ROOM_MAINT_UPDATE_FAILURE = "ROOM_MAINT_UPDATE_FAILURE";
 export const ROOM_MAINT_DELETE_REQUEST = "ROOM_MAINT_DELETE_REQUEST";
 export const ROOM_MAINT_DELETE_SUCCESS = "ROOM_MAINT_DELETE_SUCCESS";
 export const ROOM_MAINT_DELETE_FAILURE = "ROOM_MAINT_DELETE_FAILURE";
+//
+//
+export const ROOM_DETAIL_REQUEST = "ROOM_DETAIL_REQUEST";
+export const ROOM_DETAIL_SUCCESS = "ROOM_DETAIL_SUCCESS";
+export const ROOM_DETAIL_FAILURE = "ROOM_DETAIL_FAILURE";
 
 export const ROOM_IMAGE_RESET = "ROOM_IMAGE_RESET";
 
@@ -201,7 +219,8 @@ const reducer = (state = initailState, action) =>
         draft.st_roomListLoading = false;
         draft.st_roomListDone = true;
         draft.st_roomListError = null;
-        draft.roomList = action.data;
+        draft.roomList = action.data.rooms;
+        draft.roomLastPage = action.data.lastPage;
         break;
       }
       case ROOM_LIST_FAILURE: {
@@ -641,6 +660,32 @@ const reducer = (state = initailState, action) =>
         draft.st_roomMaintDeleteLoading = false;
         draft.st_roomMaintDeleteDone = false;
         draft.st_roomMaintDeleteError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case ROOM_DETAIL_REQUEST: {
+        draft.st_roomDetailLoading = true;
+        draft.st_roomDetailDone = false;
+        draft.st_roomDetailError = null;
+        break;
+      }
+      case ROOM_DETAIL_SUCCESS: {
+        draft.st_roomDetailLoading = false;
+        draft.st_roomDetailDone = true;
+        draft.st_roomDetailError = null;
+        draft.roomDetail = action.data.room;
+        draft.bannerData = action.data.bannerData;
+        draft.infraData = action.data.infraData;
+        draft.optionData = action.data.optionData;
+        draft.maintenanceData = action.data.maintenanceData;
+        break;
+      }
+      case ROOM_DETAIL_FAILURE: {
+        draft.st_roomDetailLoading = false;
+        draft.st_roomDetailDone = false;
+        draft.st_roomDetailError = action.error;
         break;
       }
 
