@@ -49,6 +49,12 @@ module.exports = class RoomNow extends Model {
           type: DataTypes.STRING(900), // 다른요청사항
           allowNull: false,
         },
+
+        isComplete: {
+          type: DataTypes.BOOLEAN, // 확인, 미확인
+          defaultValue: false,
+          allowNull: false,
+        },
       },
       {
         modelName: "RoomNow",

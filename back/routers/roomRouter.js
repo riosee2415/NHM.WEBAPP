@@ -1330,4 +1330,125 @@ router.post("/maintenance/delete", isAdminCheck, async (req, res, next) => {
   }
 });
 
+////////////////////////////////////////////////////
+// ROOM NOW ////////////////////////////////////////
+////////////////////////////////////////////////////
+/**
+ * SUBJECT : 매물구매 리스트
+ * PARAMETERS : isComplete
+ * ORDER BY : createdAt DESC
+ * STATEMENT : -
+ * DEVELOPMENT : 홍민기
+ * DEV DATE : 2023/05/18
+ */
+router.post("/roomNow/list", async (req, res, next) => {
+  const { isComplete } = req.body;
+
+  const _isComplete = isComplete ? parseInt(isComplete) : 3;
+
+  const selectQuery = `
+  SELECT  ROW_NUMBER()  OVER(ORDER  BY A.createdAt)                       AS num,
+          A.id,
+          A.name,
+          A.mobile,
+          A.deposit,
+          A.rentfee,
+          A.region,
+          A.movingdate
+          A.contractPeriod,
+          A.messengerTypeOrId,
+          A.email,
+          A.otherPreferences,
+          A.isComplete,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt
+    FROM  roomNow				A
+   WHERE  1 = 1
+          ${
+            _isComplete === 1
+              ? `AND  A.isComplete = 1`
+              : _isComplete === 2
+              ? `AND  A.isComplete = 0`
+              : ``
+          }
+   ORDER  BY  A.createdAt DESC
+  `;
+  try {
+    const result = await models.sequelize.query(selectQuery);
+
+    return res.status(200).json(result[0]);
+  } catch (e) {
+    console.error(e);
+    return res.status(401).send("매물 구매 리스트를 불러올 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 매물구매 리스트
+ * PARAMETERS : isComplete
+ * ORDER BY : createdAt DESC
+ * STATEMENT : -
+ * DEVELOPMENT : 홍민기
+ * DEV DATE : 2023/05/18
+ */
+router.post("/roomNow/create", async (req, res, next) => {
+  const {
+    name,
+    mobile,
+    deposit,
+    rentfee,
+    region,
+    movingdate,
+    contractPeriod,
+    messengerTypeOrId,
+    email,
+    otherPreferences,
+    RooomId,
+  } = req.body;
+
+  const isnertQuery = `
+  INSERT INTO roomNow (
+    name,
+    mobile,
+    deposit,
+    rentfee,
+    region,
+    movingdate,
+    contractPeriod,
+    messengerTypeOrId,
+    email,
+    otherPreferences,
+    RooomId,
+    createdAt,
+    updatedAt
+  )
+  VALUES
+  (
+    ${name},
+    ${mobile},
+    ${deposit},
+    ${rentfee},
+    ${region},
+    ${movingdate},
+    ${contractPeriod},
+    ${messengerTypeOrId},
+    ${email},
+    ${otherPreferences},
+    ${RooomId},
+    NOW(),
+    NOW()
+  )
+  `;
+  try {
+    await models.sequelize.query(isnertQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(401).send("매물 구매를 할 수 없습니다.");
+  }
+});
+
 module.exports = router;
