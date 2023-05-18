@@ -273,9 +273,9 @@ const RoomNow = ({}) => {
       {/* GUIDE */}
       <Wrapper margin={`10px 0px 0px 0px`}>
         <GuideUl>
-          <GuideLi>화면 가이드안내 문구를 입력하세요.</GuideLi>
+          <GuideLi>매물구매요청을 관리할 수 있습니다.</GuideLi>
           <GuideLi isImpo={true}>
-            화면 가이드안내 문구를 입력하세요. (RED COLOR)
+            매물구매요청 확인시 되돌릴 수 없으니 유의하여주시기 바랍니다.
           </GuideLi>
         </GuideUl>
       </Wrapper>
