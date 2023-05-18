@@ -26,7 +26,11 @@ import {
   CheckOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
-import { ROOM_TYPE_LIST_REQUEST } from "../../../reducers/room";
+import {
+  ROOM_TYPE_IMAGE_REQUEST,
+  ROOM_TYPE_LIST_REQUEST,
+  ROOM_TYPE_THUMBNAIL_REQUEST,
+} from "../../../reducers/room";
 
 const InfoTitle = styled.div`
   font-size: 19px;
@@ -88,6 +92,9 @@ const Type = ({}) => {
 
   const [infoForm] = Form.useForm();
 
+  const thumbnailRef = useRef();
+  const imageRef = useRef();
+
   ////// USEEFFECT //////
 
   useEffect(() => {
@@ -131,6 +138,23 @@ const Type = ({}) => {
     },
     [currentData]
   );
+
+  const thumbnailRefClickHandler = useCallback((data) => {
+    thumbnailRef.current.onClick();
+  });
+  const thumbnailUploadHandler = useCallback((data) => {
+    dispatch({
+      type: ROOM_TYPE_THUMBNAIL_REQUEST,
+    });
+  }, []);
+  const imageRefClickHandler = useCallback((data) => {
+    imageRef.current.onClick();
+  });
+  const imageUploadHandler = useCallback((data) => {
+    dispatch({
+      type: ROOM_TYPE_IMAGE_REQUEST,
+    });
+  }, []);
 
   ////// DATAVIEW //////
 
@@ -246,6 +270,13 @@ const Type = ({}) => {
                   썸네일 수정
                 </InfoTitle>
                 <Image />
+                <input
+                  ref={thumbnailRef}
+                  type="file"
+                  hidden
+                  accept=".jpg, .png"
+                />
+                <Button></Button>
               </Wrapper>
 
               <Wrapper margin={`0px 0px 5px 0px`}>
@@ -254,6 +285,8 @@ const Type = ({}) => {
                   이미지 수정
                 </InfoTitle>
                 <Image />
+                <input ref={imageRef} type="file" hidden accept=".jpg, .png" />
+                <Button></Button>
               </Wrapper>
 
               <Wrapper margin={`0px 0px 5px 0px`}>

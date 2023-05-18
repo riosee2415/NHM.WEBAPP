@@ -224,6 +224,8 @@ export const ROOM_TYPE_IMAGE_FAILURE = "ROOM_TYPE_IMAGE_FAILURE";
 
 export const ROOM_IMAGE_RESET = "ROOM_IMAGE_RESET";
 
+export const ROOM_TYPE_IMAGE_RESET = "ROOM_TYPE_IMAGE_RESET";
+
 const reducer = (state = initailState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
@@ -755,6 +757,14 @@ const reducer = (state = initailState, action) =>
 
       case ROOM_IMAGE_RESET: {
         draft.roomPath = null;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case ROOM_TYPE_IMAGE_RESET: {
+        draft.roomTypeThumbnail = action.data.roomTypeThumbnail;
+        draft.roomTypeImage = action.data.roomTypeImage;
         break;
       }
 
