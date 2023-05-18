@@ -8,6 +8,8 @@ export const initailState = {
   roomInfraList: [],
   roomMaintList: [],
   roomPath: null,
+  roomTypeThumbnail: null,
+  roomTypeImage: null,
 
   // 디테일
   roomDetail: null,
@@ -109,6 +111,14 @@ export const initailState = {
   st_roomDetailLoading: false, // room detail 가져오기
   st_roomDetailDone: false,
   st_roomDetailError: null,
+  //
+  st_roomTypeThumbnailLoading: false,
+  st_roomTypeThumbnailDone: false,
+  st_roomTypeThumbnailError: null,
+  //
+  st_roomTypeImageLoading: false,
+  st_roomTypeImageDone: false,
+  st_roomTypeImageError: null,
 };
 
 export const ROOM_LIST_REQUEST = "ROOM_LIST_REQUEST";
@@ -204,7 +214,17 @@ export const ROOM_DETAIL_REQUEST = "ROOM_DETAIL_REQUEST";
 export const ROOM_DETAIL_SUCCESS = "ROOM_DETAIL_SUCCESS";
 export const ROOM_DETAIL_FAILURE = "ROOM_DETAIL_FAILURE";
 
+export const ROOM_TYPE_THUMBNAIL_REQUEST = "ROOM_TYPE_THUMBNAIL_REQUEST";
+export const ROOM_TYPE_THUMBNAIL_SUCCESS = "ROOM_TYPE_THUMBNAIL_SUCCESS";
+export const ROOM_TYPE_THUMBNAIL_FAILURE = "ROOM_TYPE_THUMBNAIL_FAILURE";
+
+export const ROOM_TYPE_IMAGE_REQUEST = "ROOM_TYPE_IMAGE_REQUEST";
+export const ROOM_TYPE_IMAGE_SUCCESS = "ROOM_TYPE_IMAGE_SUCCESS";
+export const ROOM_TYPE_IMAGE_FAILURE = "ROOM_TYPE_IMAGE_FAILURE";
+
 export const ROOM_IMAGE_RESET = "ROOM_IMAGE_RESET";
+
+export const ROOM_TYPE_IMAGE_RESET = "ROOM_TYPE_IMAGE_RESET";
 
 const reducer = (state = initailState, action) =>
   produce(state, (draft) => {
@@ -691,8 +711,60 @@ const reducer = (state = initailState, action) =>
 
       //////////////////////////////////////////////
 
+      case ROOM_TYPE_THUMBNAIL_REQUEST: {
+        draft.st_roomTypeThumbnailLoading = true;
+        draft.st_roomTypeThumbnailDone = false;
+        draft.st_roomTypeThumbnailError = null;
+        break;
+      }
+      case ROOM_TYPE_THUMBNAIL_SUCCESS: {
+        draft.st_roomTypeThumbnailLoading = false;
+        draft.st_roomTypeThumbnailDone = true;
+        draft.st_roomTypeThumbnailError = null;
+        draft.roomTypeThumbnail = action.data.path;
+        break;
+      }
+      case ROOM_TYPE_THUMBNAIL_FAILURE: {
+        draft.st_roomTypeThumbnailLoading = false;
+        draft.st_roomTypeThumbnailDone = false;
+        draft.st_roomTypeThumbnailError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case ROOM_TYPE_IMAGE_REQUEST: {
+        draft.st_roomTypeImageLoading = true;
+        draft.st_roomTypeImageDone = false;
+        draft.st_roomTypeImageError = null;
+        break;
+      }
+      case ROOM_TYPE_IMAGE_SUCCESS: {
+        draft.st_roomTypeImageLoading = false;
+        draft.st_roomTypeImageDone = true;
+        draft.st_roomTypeImageError = null;
+        draft.roomTypeImage = action.data.path;
+        break;
+      }
+      case ROOM_TYPE_IMAGE_FAILURE: {
+        draft.st_roomTypeImageLoading = false;
+        draft.st_roomTypeImageDone = false;
+        draft.st_roomTypeImageError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
       case ROOM_IMAGE_RESET: {
         draft.roomPath = null;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case ROOM_TYPE_IMAGE_RESET: {
+        draft.roomTypeThumbnail = action.data.roomTypeThumbnail;
+        draft.roomTypeImage = action.data.roomTypeImage;
         break;
       }
 
