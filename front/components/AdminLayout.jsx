@@ -168,6 +168,11 @@ export const items = {
       link: "/admin/sale/maintenance",
       useYn: true,
     },
+    {
+      name: "매물구매요청관리",
+      link: "/admin/sale/roomNow",
+      useYn: true,
+    },
   ],
 };
 

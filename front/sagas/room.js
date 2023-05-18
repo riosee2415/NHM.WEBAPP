@@ -855,7 +855,7 @@ function* roomNowCreate(action) {
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
 async function roomNowUpdateAPI(data) {
-  return await axios.post(`/api/room/roomNow/update`, data);
+  return await axios.post(`/api/room/roomNow/isComplete`, data);
 }
 
 function* roomNowUpdate(action) {

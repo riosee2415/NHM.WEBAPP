@@ -1358,8 +1358,10 @@ router.post("/roomNow/list", isAdminCheck, async (req, res, next) => {
           A.deposit,
           A.rentfee,
           A.region,
-          A.movingdate
+          A.movingdate,
           A.contractPeriod,
+          DATE_FORMAT(A.movingdate, "%Y년 %m월 %d일")    AS viewMovingdate,
+          DATE_FORMAT(A.contractPeriod, "%Y년 %m월 %d일")    AS viewContractPeriod,
           A.messengerTypeOrId,
           A.email,
           A.otherPreferences,
@@ -1367,8 +1369,12 @@ router.post("/roomNow/list", isAdminCheck, async (req, res, next) => {
           A.createdAt,
           A.updatedAt,
           DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
-          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt,
+          B.title
     FROM  roomNow				A
+   INNER
+    JOIN  rooms         B
+      ON  A.RoomId = B.id
    WHERE  1 = 1
           ${
             _isComplete === 1
@@ -1468,7 +1474,7 @@ router.post("/roomNow/create", async (req, res, next) => {
 
 /**
  * SUBJECT : 매물구매 확인
- * PARAMETERS : id, isComplete
+ * PARAMETERS : id
  * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 홍민기
@@ -1476,7 +1482,7 @@ router.post("/roomNow/create", async (req, res, next) => {
  */
 
 router.post("/roomNow/isComplete", isAdminCheck, async (req, res, next) => {
-  const { id, isComplete } = req.body;
+  const { id } = req.body;
 
   const findQuery = `
   SELECT  id,
@@ -1487,7 +1493,7 @@ router.post("/roomNow/isComplete", isAdminCheck, async (req, res, next) => {
 
   const updateQuery = `
   UPDATE  roomNow
-     SET  isComplete = ${isComplete}
+     SET  isComplete = 1
    WHERE  id = ${id}
 
   `;
