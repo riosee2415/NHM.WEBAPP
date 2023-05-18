@@ -154,7 +154,7 @@ export const items = {
       useYn: true,
     },
     {
-      name: "매물유형관리",
+      name: "매물지역관리",
       link: "/admin/sale/type",
       useYn: true,
     },

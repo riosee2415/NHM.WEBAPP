@@ -20,6 +20,7 @@ import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import Theme from "../../../components/Theme";
 import { items } from "../../../components/AdminLayout";
 import { HomeOutlined, RightOutlined } from "@ant-design/icons";
+import { ROOM_TYPE_LIST_REQUEST } from "../../../reducers/room";
 
 const Type = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
@@ -143,6 +144,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: ROOM_TYPE_LIST_REQUEST,
     });
 
     // 구현부 종료
