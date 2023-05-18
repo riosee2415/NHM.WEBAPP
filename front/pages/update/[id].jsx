@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
-import useInput from "../../hooks/useInput";
 import ClientLayout from "../../components/ClientLayout";
 import axios from "axios";
 import wrapper from "../../store/configureStore";
 import { END } from "redux-saga";
 import {
   CommonButton,
-  CustomPage,
   Image,
   RsWrapper,
-  SpanText,
   Text,
-  Title,
   WholeWrapper,
   Wrapper,
 } from "../../components/commonComponents";
@@ -21,11 +16,8 @@ import useWidth from "../../hooks/useWidth";
 import Theme from "../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
-import Popup from "../../components/popup/popup";
-import UpdateSlider from "../../components/slide/UpdateSlider";
+
 import SubBanner from "../../components/SubBanner";
-import { Button, Dropdown, Menu, Popover, Space } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 
 const BackWrapper = styled(Wrapper)`
   flex-direction: row;

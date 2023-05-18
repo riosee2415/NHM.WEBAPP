@@ -3,6 +3,7 @@ import produce from "../util/produce";
 export const initailState = {
   notices: [],
   maxPage: 1,
+  noticeDetail: 1,
 
   uploadFilePath: null,
   noticeHistory: [],
@@ -39,6 +40,9 @@ export const initailState = {
   st_noticeHistoryDone: false,
   st_noticeHistoryError: null,
   //
+  st_noticeDetailListLoading: false, // 공지사항디테일 가져오기
+  st_noticeDetailListDone: false,
+  st_noticeDetailListError: null,
 };
 
 export const NOTICE_LIST_REQUEST = "NOTICE_LIST_REQUEST";
@@ -72,6 +76,10 @@ export const NOTICE_FILE_INFO_FAILURE = "NOTICE_FILE_INFO_FAILURE";
 export const NOTICE_HISTORY_REQUEST = "NOTICE_HISTORY_REQUEST";
 export const NOTICE_HISTORY_SUCCESS = "NOTICE_HISTORY_SUCCESS";
 export const NOTICE_HISTORY_FAILURE = "NOTICE_HISTORY_FAILURE";
+//
+export const NOTICE_DETAIL_LIST_REQUEST = "NOTICE_DETAIL_LIST_REQUEST";
+export const NOTICE_DETAIL_LIST_SUCCESS = "NOTICE_DETAIL_LIST_SUCCESS";
+export const NOTICE_DETAIL_LIST_FAILURE = "NOTICE_DETAIL_LIST_FAILURE";
 
 export const UPLOAD_PATH_INIT = "UPLOAD_PATH_INIT";
 
@@ -245,6 +253,25 @@ const reducer = (state = initailState, action) =>
       }
       ///////////////////////////////////////////////////////
       ///////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////
+      case NOTICE_DETAIL_LIST_REQUEST: {
+        draft.st_noticeDetailListLoading = true;
+        draft.st_noticeDetailListDone = false;
+        draft.st_noticeDetailListError = null;
+        break;
+      }
+      case NOTICE_DETAIL_LIST_SUCCESS: {
+        draft.st_noticeDetailListLoading = false;
+        draft.st_noticeDetailListDone = true;
+        draft.noticeDetail = action.data;
+        break;
+      }
+      case NOTICE_DETAIL_LIST_FAILURE: {
+        draft.st_noticeDetailListLoading = false;
+        draft.st_noticeDetailListDone = false;
+        draft.st_noticeDetailListError = action.error;
+        break;
+      }
       ///////////////////////////////////////////////////////
 
       case UPLOAD_PATH_INIT:
