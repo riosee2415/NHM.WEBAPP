@@ -351,7 +351,8 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
           DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt,
           B.thumbnail                                 AS roomTypeThumbnail,
           B.title                                     AS roomTypeTitle,
-          B.imagePath                                 AS roomTypeImagePath
+          B.imagePath                                 AS roomTypeImagePath,
+          A.RoomTypeId
     FROM  rooms       A
    INNER
     JOIN  roomType    B
@@ -422,7 +423,8 @@ router.post("/detail", async (req, res, next) => {
           DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt,
           B.thumbnail                                 AS roomTypeThumbnail,
           B.title                                     AS roomTypeTitle,
-          B.imagePath                                 AS roomTypeImagePath
+          B.imagePath                                 AS roomTypeImagePath,
+          A.RoomTypeId
     FROM  rooms       A
    INNER
     JOIN  roomType    B
@@ -570,7 +572,7 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
   VALUES
   (
     "00000000",
-    "https://via.placeholder.com/1000x300",
+    "https://via.placeholder.com/350x350",
     "5.0",
     "임시 타이틀",
     "임시 서브 타이틀",

@@ -45,6 +45,7 @@ import {
 import {
   ROOM_ADMIN_LIST_REQUEST,
   ROOM_CREATE_REQUEST,
+  ROOM_DELETE_REQUEST,
   ROOM_DETAIL_REQUEST,
   ROOM_IMAGE_RESET,
   ROOM_INFRA_LIST_REQUEST,
@@ -335,8 +336,6 @@ const Index = ({}) => {
   // 수정하기
   const roomUpdateHandler = useCallback(
     (data) => {
-      console.log("data", data);
-
       if (!roomPath) {
         return message.error("썸네일을 등록해주세요.");
       }
@@ -394,6 +393,16 @@ const Index = ({}) => {
     },
     [currentData, roomPath]
   );
+
+  // 매물 삭제
+  const rooomDeleteHandler = useCallback((data) => {
+    dispatch({
+      type: ROOM_DELETE_REQUEST,
+      data: {
+        id: data.id,
+      },
+    });
+  }, []);
   ////// DATAVIEW //////
 
   ////// DATA COLUMNS //////
@@ -434,7 +443,7 @@ const Index = ({}) => {
       render: (data) => (
         <Popconfirm
           title="정말 삭제하시겠습니까?"
-          onConfirm={() => {}}
+          onConfirm={() => rooomDeleteHandler(data)}
           okText="삭제"
           cancelText="취소"
         >
