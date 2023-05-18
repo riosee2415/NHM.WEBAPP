@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import ClientLayout from "../../components/ClientLayout";
 import axios from "axios";
@@ -18,6 +18,9 @@ import Theme from "../../components/Theme";
 import styled from "styled-components";
 import Head from "next/head";
 import SubBanner from "../../components/SubBanner";
+import { useSelector } from "react-redux";
+import { NOTICE_LIST_REQUEST } from "../../reducers/notice";
+import { useRouter } from "next/router";
 
 const Box = styled(Wrapper)`
   padding: 25px;
@@ -36,14 +39,30 @@ const Box = styled(Wrapper)`
 
 const Index = ({}) => {
   ////// GLOBAL STATE //////
+  const { notices, maxPage } = useSelector((state) => state.notice);
 
+  const [currentTap, setCurrentTab] = useState(1);
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
 
   ////// REDUX //////
   ////// USEEFFECT //////
   ////// TOGGLE //////
   ////// HANDLER //////
+  const moveLinkHandler = useCallback((link) => {
+    router.push(link);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  //페이지네이션
+  const nextPageCall = useCallback(
+    (changePage) => {
+      setCurrentTab(changePage);
+    },
+    [currentTap]
+  );
+
   ////// DATAVIEW //////
 
   return (
@@ -93,35 +112,54 @@ const Index = ({}) => {
               </Wrapper>
             </Wrapper>
 
-            <Box>
-              <Wrapper
-                dr={`row`}
-                width={width < 900 ? `100%` : `90%`}
-                ju={`flex-start`}
-              >
-                <Wrapper width={`60px`} display={width < 900 ? `none` : `flex`}>
-                  10
-                </Wrapper>
-                <Wrapper
-                  width={`auto`}
-                  maxWidth={width < 900 ? `100%` : `calc(100% - 60px)`}
-                  isEllipsis={true}
-                >
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                  diam nonumy eirmod
-                </Wrapper>
-              </Wrapper>
-              <Wrapper
-                width={`10%`}
-                al={`flex-end`}
-                display={width < 900 ? `none` : `flex`}
-              >
-                2023.03.25
-              </Wrapper>
-            </Box>
+            {notices && notices.length === 0 ? (
+              <Wrapper></Wrapper>
+            ) : (
+              notices.map((data) => {
+                return (
+                  <Box
+                    key={data.id}
+                    onClick={() => moveLinkHandler(`/update/${data.id}`)}
+                  >
+                    <Wrapper
+                      dr={`row`}
+                      width={width < 900 ? `100%` : `90%`}
+                      ju={`flex-start`}
+                    >
+                      <Wrapper
+                        width={`60px`}
+                        display={width < 900 ? `none` : `flex`}
+                      >
+                        {data.num}
+                      </Wrapper>
+                      <Wrapper
+                        width={`auto`}
+                        maxWidth={width < 900 ? `100%` : `calc(100% - 60px)`}
+                        isEllipsis={true}
+                      >
+                        {data.title}
+                      </Wrapper>
+                    </Wrapper>
+                    <Wrapper
+                      width={`10%`}
+                      al={`flex-end`}
+                      display={width < 900 ? `none` : `flex`}
+                    >
+                      {data.viewCreatedAt}
+                    </Wrapper>
+                  </Box>
+                );
+              })
+            )}
 
             <Wrapper margin={`50px 0 0`}>
-              <CustomPage />
+              <CustomPage
+                defaultCurrent={1}
+                current={parseInt(currentTap)}
+                total={maxPage * 10}
+                pageSize={10}
+                onChange={(page) => nextPageCall(page)}
+              />
             </Wrapper>
           </RsWrapper>
         </WholeWrapper>
@@ -143,6 +181,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: NOTICE_LIST_REQUEST,
     });
 
     // 구현부 종료
