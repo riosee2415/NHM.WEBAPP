@@ -2,7 +2,16 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import AdminLayout from "../../../components/AdminLayout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Form, Image, Input, Popover, Table, message } from "antd";
+import {
+  Button,
+  Form,
+  Image,
+  Input,
+  Popconfirm,
+  Popover,
+  Table,
+  message,
+} from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
 import { END } from "redux-saga";
@@ -15,6 +24,7 @@ import {
   OtherMenu,
   GuideUl,
   GuideLi,
+  ModalBtn,
 } from "../../../components/commonComponents";
 import { LOAD_MY_INFO_REQUEST } from "../../../reducers/user";
 import Theme from "../../../components/Theme";
@@ -27,9 +37,13 @@ import {
   EyeOutlined,
 } from "@ant-design/icons";
 import {
+  ROOM_TYPE_CREATE_REQUEST,
+  ROOM_TYPE_DELETE_REQUEST,
   ROOM_TYPE_IMAGE_REQUEST,
+  ROOM_TYPE_IMAGE_RESET,
   ROOM_TYPE_LIST_REQUEST,
   ROOM_TYPE_THUMBNAIL_REQUEST,
+  ROOM_TYPE_UPDATE_REQUEST,
 } from "../../../reducers/room";
 
 const InfoTitle = styled.div`
@@ -54,9 +68,31 @@ const ViewStatusIcon = styled(EyeOutlined)`
 
 const Type = ({}) => {
   const { st_loadMyInfoDone, me } = useSelector((state) => state.user);
-  const { roomTypeList } = useSelector((state) => state.room);
-
-  console.log(roomTypeList);
+  const {
+    roomTypeList,
+    roomTypeThumbnail,
+    roomTypeImage,
+    //
+    st_roomTypeThumbnailLoading,
+    st_roomTypeThumbnailDone,
+    st_roomTypeThumbnailError,
+    //
+    st_roomTypeImageLoading,
+    st_roomTypeImageDone,
+    st_roomTypeImageError,
+    //
+    st_roomTypeCreateLoading,
+    st_roomTypeCreateDone,
+    st_roomTypeCreateError,
+    //
+    st_roomTypeUpdateLoading,
+    st_roomTypeUpdateDone,
+    st_roomTypeUpdateError,
+    //
+    st_roomTypeDeleteLoading,
+    st_roomTypeDeleteDone,
+    st_roomTypeDeleteError,
+  } = useSelector((state) => state.room);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -122,6 +158,72 @@ const Type = ({}) => {
     });
   }, []);
 
+  // 썸네일 수정 후처리
+  useEffect(() => {
+    if (st_roomTypeThumbnailDone) {
+      return message.success("썸네일이 업로드 되었습니다.");
+    }
+
+    if (st_roomTypeThumbnailError) {
+      return message.error(st_roomTypeThumbnailError);
+    }
+  }, [st_roomTypeThumbnailDone, st_roomTypeThumbnailError]);
+
+  // 이미지 수정 후처리
+  useEffect(() => {
+    if (st_roomTypeImageDone) {
+      return message.success("이미지가 업로드 되었습니다.");
+    }
+
+    if (st_roomTypeImageError) {
+      return message.error(st_roomTypeImageError);
+    }
+  }, [st_roomTypeImageDone, st_roomTypeImageError]);
+
+  // 매물지역 생성
+  useEffect(() => {
+    if (st_roomTypeCreateDone) {
+      dispatch({
+        type: ROOM_TYPE_LIST_REQUEST,
+      });
+      return message.success("매물지역이 생성되었습니다.");
+    }
+
+    if (st_roomTypeCreateError) {
+      return message.error(st_roomTypeCreateError);
+    }
+  }, [st_roomTypeCreateDone, st_roomTypeCreateError]);
+
+  // 매물지역 수정
+  useEffect(() => {
+    if (st_roomTypeUpdateDone) {
+      dispatch({
+        type: ROOM_TYPE_LIST_REQUEST,
+      });
+      return message.success("매물지역이 수정되었습니다.");
+    }
+
+    if (st_roomTypeUpdateError) {
+      return message.error(st_roomTypeUpdateError);
+    }
+  }, [st_roomTypeUpdateDone, st_roomTypeUpdateError]);
+
+  // 매물지역 삭제
+  useEffect(() => {
+    if (st_roomTypeDeleteDone) {
+      setCurrentData(null);
+
+      dispatch({
+        type: ROOM_TYPE_LIST_REQUEST,
+      });
+      return message.success("매물지역이 삭제되었습니다.");
+    }
+
+    if (st_roomTypeDeleteError) {
+      return message.error(st_roomTypeDeleteError);
+    }
+  }, [st_roomTypeDeleteDone, st_roomTypeDeleteError]);
+
   ////// HANDLER //////
 
   const beforeSetDataHandler = useCallback(
@@ -136,29 +238,98 @@ const Type = ({}) => {
         });
 
         dispatch({
-          type: ROOM,
+          type: ROOM_TYPE_IMAGE_RESET,
+          data: {
+            roomTypeThumbnail: data.thumbnail,
+            roomTypeImage: data.imagePath,
+          },
         });
       }
     },
     [currentData]
   );
 
+  // 썸네일 수정
   const thumbnailRefClickHandler = useCallback((data) => {
-    thumbnailRef.current.onClick();
-  });
-  const thumbnailUploadHandler = useCallback((data) => {
+    thumbnailRef.current.click();
+  }, []);
+  const thumbnailUploadHandler = useCallback((e) => {
+    const formData = new FormData();
+
+    [].forEach.call(e.target.files, (file) => {
+      formData.append("image", file);
+    });
+
+    if (e.target.files.length < 1) {
+      return;
+    }
+
     dispatch({
       type: ROOM_TYPE_THUMBNAIL_REQUEST,
+      data: formData,
     });
   }, []);
+
+  // 이미지 수정
   const imageRefClickHandler = useCallback((data) => {
-    imageRef.current.onClick();
-  });
-  const imageUploadHandler = useCallback((data) => {
+    imageRef.current.click();
+  }, []);
+  const imageUploadHandler = useCallback((e) => {
+    const formData = new FormData();
+
+    [].forEach.call(e.target.files, (file) => {
+      formData.append("image", file);
+    });
+
+    if (e.target.files.length < 1) {
+      return;
+    }
+
     dispatch({
       type: ROOM_TYPE_IMAGE_REQUEST,
+      data: formData,
     });
   }, []);
+
+  // 데이터 생성
+  const roomTypeCreateHandler = useCallback(() => {
+    dispatch({
+      type: ROOM_TYPE_CREATE_REQUEST,
+    });
+  }, []);
+
+  // 데이터 수정
+  const roomTypeUpdateHandler = useCallback(
+    (data) => {
+      if (!currentData) {
+        return message.error("잠시 후 다시 시도해주세요.");
+      }
+
+      dispatch({
+        type: ROOM_TYPE_UPDATE_REQUEST,
+        data: {
+          title: data.title,
+          thumbnail: roomTypeThumbnail,
+          imagePath: roomTypeImage,
+          typeId: currentData.id,
+        },
+      });
+    },
+    [roomTypeThumbnail, roomTypeImage, currentData]
+  );
+
+  const roomTypeDeleteHandler = useCallback(() => {
+    if (!currentData) {
+      return message.error("잠시 후 다시 시도해주세요.");
+    }
+
+    dispatch({
+      type: ROOM_TYPE_DELETE_REQUEST,
+      data: {
+        typeId: currentData.id,
+      },
+    });
+  }, [currentData]);
 
   ////// DATAVIEW //////
 
@@ -243,7 +414,12 @@ const Type = ({}) => {
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
           <Wrapper al="flex-end" margin={`0px 0px 5px 0px`}>
-            <Button size="small" type="primary">
+            <Button
+              size="small"
+              type="primary"
+              loading={st_roomTypeCreateLoading}
+              onClick={roomTypeCreateHandler}
+            >
               매물지역 생성
             </Button>
           </Wrapper>
@@ -273,7 +449,11 @@ const Type = ({}) => {
                   <CheckOutlined />
                   썸네일 수정
                 </InfoTitle>
-                <Image width={`350px`} />
+                <Image
+                  width={`350px`}
+                  src={roomTypeThumbnail}
+                  alt="thumbnail"
+                />
                 <input
                   ref={thumbnailRef}
                   type="file"
@@ -281,7 +461,15 @@ const Type = ({}) => {
                   accept=".jpg, .png"
                   onChange={thumbnailUploadHandler}
                 />
-                <Button onClick={thumbnailRefClickHandler}></Button>
+                <Button
+                  style={{ width: `350px` }}
+                  type="primary"
+                  size="small"
+                  onClick={thumbnailRefClickHandler}
+                  loading={st_roomTypeThumbnailLoading}
+                >
+                  썸네일 업로드
+                </Button>
               </Wrapper>
 
               <Wrapper margin={`0px 0px 5px 0px`}>
@@ -289,7 +477,7 @@ const Type = ({}) => {
                   <CheckOutlined />
                   이미지 수정
                 </InfoTitle>
-                <Image width={`350px`} />
+                <Image width={`350px`} src={roomTypeImage} alt="image" />
                 <input
                   ref={imageRef}
                   type="file"
@@ -297,7 +485,15 @@ const Type = ({}) => {
                   accept=".jpg, .png"
                   onChange={imageUploadHandler}
                 />
-                <Button onClick={imageRefClickHandler}></Button>
+                <Button
+                  style={{ width: `350px` }}
+                  type="primary"
+                  size="small"
+                  onClick={imageRefClickHandler}
+                  loading={st_roomTypeImageLoading}
+                >
+                  이미지 업로드
+                </Button>
               </Wrapper>
 
               <Wrapper margin={`0px 0px 5px 0px`}>
@@ -309,6 +505,7 @@ const Type = ({}) => {
 
               <Form
                 form={infoForm}
+                onFinish={roomTypeUpdateHandler}
                 style={{ width: `100%` }}
                 labelCol={{ span: 2 }}
                 wrapperCol={{ span: 22 }}
@@ -339,10 +536,30 @@ const Type = ({}) => {
                   />
                 </Form.Item>
 
-                <Wrapper al="flex-end">
-                  <Button type="primary" size="small" htmlType="submit">
+                <Wrapper dr={`row`} ju="flex-end">
+                  <Popconfirm
+                    title="정말 삭제하시겠습니까?"
+                    okText="삭제"
+                    cancelText="취소"
+                    onConfirm={roomTypeDeleteHandler}
+                  >
+                    <Button
+                      type="danger"
+                      size="small"
+                      loading={st_roomTypeDeleteLoading}
+                    >
+                      삭제하기
+                    </Button>
+                  </Popconfirm>
+
+                  <ModalBtn
+                    type="primary"
+                    size="small"
+                    htmlType="submit"
+                    loading={st_roomTypeUpdateLoading}
+                  >
                     정보 업데이트
-                  </Button>
+                  </ModalBtn>
                 </Wrapper>
               </Form>
 
