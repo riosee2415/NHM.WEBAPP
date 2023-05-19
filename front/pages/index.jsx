@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
 import ClientLayout from "../components/ClientLayout";
 import axios from "axios";
@@ -18,6 +18,11 @@ import styled from "styled-components";
 import Head from "next/head";
 import Popup from "../components/popup/popup";
 import UpdateSlider from "../components/slide/UpdateSlider";
+import Link from "next/dist/client/link";
+import { useSelector } from "react-redux";
+import { ROOM_TYPE_LIST_REQUEST } from "../reducers/room";
+import { Empty } from "antd";
+import { useRouter } from "next/router";
 
 const SquareBox = styled(Wrapper)`
   width: 100%;
@@ -72,13 +77,20 @@ const RommsBox = styled(Wrapper)`
 
 const Home = ({}) => {
   ////// GLOBAL STATE //////
+  const { roomTypeList } = useSelector((state) => state.room);
 
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
   ////// REDUX //////
   ////// USEEFFECT //////
   ////// TOGGLE //////
   ////// HANDLER //////
+  const moveHandler = useCallback((target) => {
+    router.push(`/rooms?type=${target}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   ////// DATAVIEW //////
 
   return (
@@ -183,17 +195,21 @@ const Home = ({}) => {
                   budget, contract period, and other options.
                 </Text>
 
-                <Text
-                  fontSize={width < 900 ? `16px` : `18px`}
-                  color={Theme.basicTheme_C}
-                  borderBottom={`1px solid ${Theme.basicTheme_C}`}
-                  fontWeight={`600`}
-                  isHover={true}
-                  hoverColor={Theme.black_C}
-                  lineHeight={`1.1`}
-                >
-                  Check Noew
-                </Text>
+                <Link href={`/rooms`}>
+                  <a>
+                    <Text
+                      fontSize={width < 900 ? `16px` : `18px`}
+                      color={Theme.basicTheme_C}
+                      borderBottom={`1px solid ${Theme.basicTheme_C}`}
+                      fontWeight={`600`}
+                      isHover={true}
+                      hoverColor={Theme.black_C}
+                      lineHeight={`1.1`}
+                    >
+                      Check Noew
+                    </Text>
+                  </a>
+                </Link>
               </Wrapper>
               <Wrapper width={width < 900 ? `100%` : `auto`}>
                 <Image
@@ -226,17 +242,21 @@ const Home = ({}) => {
                   other international friends and local people.
                 </Text>
 
-                <Text
-                  fontSize={width < 900 ? `16px` : `18px`}
-                  color={Theme.basicTheme_C}
-                  borderBottom={`1px solid ${Theme.basicTheme_C}`}
-                  fontWeight={`600`}
-                  isHover={true}
-                  hoverColor={Theme.black_C}
-                  lineHeight={`1.1`}
-                >
-                  Check Noew
-                </Text>
+                <Link href={`/update`}>
+                  <a>
+                    <Text
+                      fontSize={width < 900 ? `16px` : `18px`}
+                      color={Theme.basicTheme_C}
+                      borderBottom={`1px solid ${Theme.basicTheme_C}`}
+                      fontWeight={`600`}
+                      isHover={true}
+                      hoverColor={Theme.black_C}
+                      lineHeight={`1.1`}
+                    >
+                      Check Noew
+                    </Text>
+                  </a>
+                </Link>
               </Wrapper>
             </Wrapper>
 
@@ -247,262 +267,77 @@ const Home = ({}) => {
               <Title margin={`0 0 25px`}>Rooms</Title>
 
               <Wrapper dr={`row`}>
-                <RommsBox>
-                  <SquareBox>
-                    <Image
-                      className="thumbnail"
-                      position={`absolute`}
-                      top={`0`}
-                      left={`0`}
-                      src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/img_rooms_gangbukgu.png"
-                      alt="thumbnail"
-                      width={`100%`}
-                    />
-                  </SquareBox>
-                  <Wrapper
-                    dr={`row`}
-                    ju={width < 900 ? `center` : `flex-start`}
-                  >
-                    <Text
-                      fontSize={
-                        width < 1100 ? (width < 900 ? `16px` : `18px`) : `22px`
-                      }
-                      fontWeight={`600`}
-                      margin={`0 5px 0 0`}
-                      color={Theme.darkGrey2_C}
-                    >
-                      Dongdaemun-gu
-                    </Text>
-
-                    <Wrapper dr={`row`} width={width < 900 ? `100%` : `auto`}>
-                      <Text
-                        display={width < 900 ? `flex` : `none`}
-                        fontSize={`14px`}
-                        color={Theme.basicTheme_C}
-                        margin={`0 5px 0 0`}
-                        fontWeight={`600`}
-                      >
-                        Check Now
-                      </Text>
-                      <Image
-                        src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/icon_arrow.png"
-                        alt="icon"
-                        width={
-                          width < 1100
-                            ? width < 900
-                              ? `14px`
-                              : `16px`
-                            : `20px`
-                        }
-                      />
-                    </Wrapper>
+                {roomTypeList && roomTypeList.length === 0 ? (
+                  <Wrapper padding={`30px 0`}>
+                    <Empty />
                   </Wrapper>
-                </RommsBox>
-
-                <RommsBox>
-                  <SquareBox>
-                    <Image
-                      className="thumbnail"
-                      position={`absolute`}
-                      top={`0`}
-                      left={`0`}
-                      src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/img_rooms_gangbukgu.png"
-                      alt="thumbnail"
-                      width={`100%`}
-                    />
-                  </SquareBox>
-                  <Wrapper
-                    dr={`row`}
-                    ju={width < 900 ? `center` : `flex-start`}
-                  >
-                    <Text
-                      fontSize={
-                        width < 1100 ? (width < 900 ? `16px` : `18px`) : `22px`
-                      }
-                      fontWeight={`600`}
-                      margin={`0 5px 0 0`}
-                      color={Theme.darkGrey2_C}
-                    >
-                      Dongdaemun-gu
-                    </Text>
-                    <Wrapper dr={`row`} width={width < 900 ? `100%` : `auto`}>
-                      <Text
-                        display={width < 900 ? `flex` : `none`}
-                        fontSize={`14px`}
-                        color={Theme.basicTheme_C}
-                        margin={`0 5px 0 0`}
-                        fontWeight={`600`}
+                ) : (
+                  roomTypeList.map((data) => {
+                    return (
+                      <RommsBox
+                        key={data.id}
+                        onClick={() => moveHandler(data.id)}
                       >
-                        Check Now
-                      </Text>
-                      <Image
-                        src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/icon_arrow.png"
-                        alt="icon"
-                        width={
-                          width < 1100
-                            ? width < 900
-                              ? `14px`
-                              : `16px`
-                            : `20px`
-                        }
-                      />
-                    </Wrapper>
-                  </Wrapper>
-                </RommsBox>
+                        <SquareBox>
+                          <Image
+                            className="thumbnail"
+                            position={`absolute`}
+                            top={`0`}
+                            left={`0`}
+                            src={data.thumbnail}
+                            alt="thumbnail"
+                            width={`100%`}
+                          />
+                        </SquareBox>
+                        <Wrapper
+                          dr={`row`}
+                          ju={width < 900 ? `center` : `flex-start`}
+                        >
+                          <Text
+                            fontSize={
+                              width < 1100
+                                ? width < 900
+                                  ? `16px`
+                                  : `18px`
+                                : `22px`
+                            }
+                            fontWeight={`600`}
+                            margin={`0 5px 0 0`}
+                            color={Theme.darkGrey2_C}
+                          >
+                            {data.title}
+                          </Text>
 
-                <RommsBox>
-                  <SquareBox>
-                    <Image
-                      className="thumbnail"
-                      position={`absolute`}
-                      top={`0`}
-                      left={`0`}
-                      src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/img_rooms_gangbukgu.png"
-                      alt="thumbnail"
-                      width={`100%`}
-                    />
-                  </SquareBox>
-                  <Wrapper
-                    dr={`row`}
-                    ju={width < 900 ? `center` : `flex-start`}
-                  >
-                    <Text
-                      fontSize={
-                        width < 1100 ? (width < 900 ? `16px` : `18px`) : `22px`
-                      }
-                      fontWeight={`600`}
-                      margin={`0 5px 0 0`}
-                      color={Theme.darkGrey2_C}
-                    >
-                      Dongdaemun-gu
-                    </Text>
-                    <Wrapper dr={`row`} width={width < 900 ? `100%` : `auto`}>
-                      <Text
-                        display={width < 900 ? `flex` : `none`}
-                        fontSize={`14px`}
-                        color={Theme.basicTheme_C}
-                        margin={`0 5px 0 0`}
-                        fontWeight={`600`}
-                      >
-                        Check Now
-                      </Text>
-                      <Image
-                        src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/icon_arrow.png"
-                        alt="icon"
-                        width={
-                          width < 1100
-                            ? width < 900
-                              ? `14px`
-                              : `16px`
-                            : `20px`
-                        }
-                      />
-                    </Wrapper>
-                  </Wrapper>
-                </RommsBox>
-
-                <RommsBox>
-                  <SquareBox>
-                    <Image
-                      className="thumbnail"
-                      position={`absolute`}
-                      top={`0`}
-                      left={`0`}
-                      src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/img_rooms_gangbukgu.png"
-                      alt="thumbnail"
-                      width={`100%`}
-                    />
-                  </SquareBox>
-                  <Wrapper
-                    dr={`row`}
-                    ju={width < 900 ? `center` : `flex-start`}
-                  >
-                    <Text
-                      fontSize={
-                        width < 1100 ? (width < 900 ? `16px` : `18px`) : `22px`
-                      }
-                      fontWeight={`600`}
-                      margin={`0 5px 0 0`}
-                      color={Theme.darkGrey2_C}
-                    >
-                      Dongdaemun-gu
-                    </Text>
-                    <Wrapper dr={`row`} width={width < 900 ? `100%` : `auto`}>
-                      <Text
-                        display={width < 900 ? `flex` : `none`}
-                        fontSize={`14px`}
-                        color={Theme.basicTheme_C}
-                        margin={`0 5px 0 0`}
-                        fontWeight={`600`}
-                      >
-                        Check Now
-                      </Text>
-                      <Image
-                        src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/icon_arrow.png"
-                        alt="icon"
-                        width={
-                          width < 1100
-                            ? width < 900
-                              ? `14px`
-                              : `16px`
-                            : `20px`
-                        }
-                      />
-                    </Wrapper>
-                  </Wrapper>
-                </RommsBox>
-
-                <RommsBox>
-                  <SquareBox>
-                    <Image
-                      className="thumbnail"
-                      position={`absolute`}
-                      top={`0`}
-                      left={`0`}
-                      src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/img_rooms_gangbukgu.png"
-                      alt="thumbnail"
-                      width={`100%`}
-                    />
-                  </SquareBox>
-
-                  <Wrapper
-                    dr={`row`}
-                    ju={width < 900 ? `center` : `flex-start`}
-                  >
-                    <Text
-                      fontSize={
-                        width < 1100 ? (width < 900 ? `16px` : `18px`) : `22px`
-                      }
-                      fontWeight={`600`}
-                      margin={`0 5px 0 0`}
-                      color={Theme.darkGrey2_C}
-                    >
-                      Dongdaemun-gu
-                    </Text>
-                    <Wrapper dr={`row`} width={width < 900 ? `100%` : `auto`}>
-                      <Text
-                        display={width < 900 ? `flex` : `none`}
-                        fontSize={`14px`}
-                        color={Theme.basicTheme_C}
-                        margin={`0 5px 0 0`}
-                        fontWeight={`600`}
-                      >
-                        Check Now
-                      </Text>
-                      <Image
-                        src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/icon_arrow.png"
-                        alt="icon"
-                        width={
-                          width < 1100
-                            ? width < 900
-                              ? `14px`
-                              : `16px`
-                            : `20px`
-                        }
-                      />
-                    </Wrapper>
-                  </Wrapper>
-                </RommsBox>
+                          <Wrapper
+                            dr={`row`}
+                            width={width < 900 ? `100%` : `auto`}
+                          >
+                            <Text
+                              display={width < 900 ? `flex` : `none`}
+                              fontSize={`14px`}
+                              color={Theme.basicTheme_C}
+                              margin={`0 5px 0 0`}
+                              fontWeight={`600`}
+                            >
+                              Check Now
+                            </Text>
+                            <Image
+                              src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/icon_arrow.png"
+                              alt="icon"
+                              width={
+                                width < 1100
+                                  ? width < 900
+                                    ? `14px`
+                                    : `16px`
+                                  : `20px`
+                              }
+                            />
+                          </Wrapper>
+                        </Wrapper>
+                      </RommsBox>
+                    );
+                  })
+                )}
               </Wrapper>
             </Wrapper>
 
@@ -532,6 +367,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: ROOM_TYPE_LIST_REQUEST,
     });
 
     // 구현부 종료

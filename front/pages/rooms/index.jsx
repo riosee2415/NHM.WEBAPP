@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import useInput from "../../hooks/useInput";
@@ -465,7 +465,7 @@ const Index = ({}) => {
               defaultCurrent={1}
               current={parseInt(currentPage)}
               onChange={(page) => otherPageCall(page)}
-              total={lastPage * 10}
+              total={roomLastPage * 10}
             />
           </RsWrapper>
         </WholeWrapper>
