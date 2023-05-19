@@ -12,6 +12,7 @@ import {
   message,
   Switch,
   Modal,
+  Popconfirm,
 } from "antd";
 import { useRouter, withRouter } from "next/router";
 import wrapper from "../../../store/configureStore";
@@ -35,6 +36,7 @@ import {
   NOTICE_FILE_INFO_REQUEST,
   UPLOAD_PATH_INIT,
   NOTICE_CREATE_REQUEST,
+  NOTICE_DELETE_REQUEST,
 } from "../../../reducers/notice";
 import Theme from "../../../components/Theme";
 import { items } from "../../../components/AdminLayout";
@@ -82,6 +84,9 @@ const Notice = ({}) => {
     st_noticeFileInfoError,
     st_noticeCreateDone,
     st_noticeCreateError,
+    //
+    st_noticeDeleteDone,
+    st_noticeDeleteError,
   } = useSelector((state) => state.notice);
 
   const router = useRouter();
@@ -125,6 +130,22 @@ const Notice = ({}) => {
   ////// HOOKS //////
 
   ////// USEEFFECT //////
+
+  // 공지사항 삭제 후 처리
+  useEffect(() => {
+    if (st_noticeDeleteDone) {
+      dispatch({
+        type: NOTICE_LIST_REQUEST,
+      });
+      setCurrentData(null);
+
+      return message.success("공지사항을 삭제했습니다.");
+    }
+
+    if (st_noticeDeleteError) {
+      return message.error(st_noticeDeleteError);
+    }
+  }, [st_noticeDeleteDone, st_noticeDeleteError]);
 
   useEffect(() => {
     if (st_noticeFileDone) {
@@ -327,15 +348,23 @@ const Notice = ({}) => {
 
   ////// HANDLER //////
 
-  const createWithTypeHandler = useCallback((typeValue) => {
+  // 공지사항 삭제하기
+  const noticeDeleteHandler = useCallback((data) => {
+    dispatch({
+      type: NOTICE_DELETE_REQUEST,
+      data: {
+        noticeId: data.id,
+      },
+    });
+  }, []);
+
+  const createWithTypeHandler = useCallback(() => {
     dispatch({
       type: NOTICE_CREATE_REQUEST,
       data: {
-        type: typeValue,
+        type: "-",
       },
     });
-
-    createModalToggle();
   }, []);
 
   const createModalToggle = useCallback(() => {
@@ -373,15 +402,6 @@ const Notice = ({}) => {
 
     saveAs(file, finalFilename);
   }, []);
-
-  const onTypeChange = useCallback(
-    (value) => {
-      infoForm.setFieldsValue({
-        type: value,
-      });
-    },
-    [infoForm]
-  );
 
   const beforeSetDataHandler = useCallback(
     (record) => {
@@ -457,10 +477,6 @@ const Notice = ({}) => {
       dataIndex: "num",
     },
     {
-      title: "유형",
-      dataIndex: "type",
-    },
-    {
       title: "공지사항 제목",
       dataIndex: "title",
       width: "50%",
@@ -477,6 +493,21 @@ const Notice = ({}) => {
             parseInt(data.id) === (currentData && parseInt(currentData.id))
           }
         />
+      ),
+    },
+    {
+      title: "삭제",
+      render: (data) => (
+        <Popconfirm
+          title="삭제하시겠습니까?"
+          okText="삭제"
+          cancelText="취소"
+          onConfirm={() => noticeDeleteHandler(data)}
+        >
+          <Button size="small" type="danger">
+            삭제
+          </Button>
+        </Popconfirm>
       ),
     },
   ];
@@ -523,34 +554,6 @@ const Notice = ({}) => {
         </GuideUl>
       </Wrapper>
 
-      {/* TAB */}
-      <Wrapper padding={`10px`} dr={`row`} ju="flex-start">
-        <Button
-          type={tab === 0 ? "primary" : "default"}
-          size="small"
-          style={{ marginRight: "5px" }}
-          onClick={() => setTab(0)}
-        >
-          전체
-        </Button>
-        <Button
-          type={tab === 1 ? "primary" : "default"}
-          size="small"
-          style={{ marginRight: "5px" }}
-          onClick={() => setTab(1)}
-        >
-          공지사항
-        </Button>
-        <Button
-          type={tab === 2 ? "primary" : "default"}
-          size="small"
-          style={{ marginRight: "5px" }}
-          onClick={() => setTab(2)}
-        >
-          새소식
-        </Button>
-      </Wrapper>
-
       {/* CONTENT */}
 
       <Wrapper dr="row" padding="0px 20px" al="flex-start">
@@ -560,7 +563,7 @@ const Notice = ({}) => {
           shadow={`3px 3px 6px ${Theme.lightGrey_C}`}
         >
           <Wrapper al="flex-end">
-            <Button size="small" type="primary" onClick={createModalToggle}>
+            <Button size="small" type="primary" onClick={createWithTypeHandler}>
               공지사항 생성
             </Button>
           </Wrapper>
@@ -584,7 +587,7 @@ const Notice = ({}) => {
         >
           {currentData ? (
             <>
-              <Wrapper margin={`0px 0px 5px 0px`}>
+              {/* <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
                   상단고정 제어
@@ -600,7 +603,7 @@ const Notice = ({}) => {
                 height="1px"
                 bgColor={Theme.lightGrey_C}
                 margin={`30px 0px`}
-              ></Wrapper>
+              ></Wrapper> */}
 
               <Wrapper margin={`0px 0px 5px 0px`}>
                 <InfoTitle>
@@ -626,7 +629,7 @@ const Notice = ({}) => {
                   <Input size="small" />
                 </Form.Item>
 
-                <Form.Item
+                {/* <Form.Item
                   label="유형"
                   name="type"
                   rules={[
@@ -637,7 +640,7 @@ const Notice = ({}) => {
                     <Option value="새소식">새소식</Option>
                     <Option value="공지사항">공지사항</Option>
                   </Select>
-                </Form.Item>
+                </Form.Item> */}
 
                 <Form.Item
                   label="내용"
