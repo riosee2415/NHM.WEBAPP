@@ -181,10 +181,12 @@ const AppHeader = ({}) => {
                   </TextHover>
                 </a>
               </Link>
-              <Link href="/rooms">
+              <Link href="/rooms?type=1">
                 <a>
                   <TextHover
-                    active={router.pathname.includes(`/rooms`) ? true : false}
+                    active={
+                      router.pathname.includes(`/rooms?type=1`) ? true : false
+                    }
                     margin={`0 54px`}
                   >
                     Rooms

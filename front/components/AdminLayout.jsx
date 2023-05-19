@@ -24,11 +24,6 @@ export const items = {
       link: "/admin/logs/acceptLogs",
       useYn: true,
     },
-    {
-      name: "페이지접속통계",
-      link: "/",
-      useYn: true,
-    },
   ],
   기초정보관리: [
     {
@@ -44,19 +39,19 @@ export const items = {
     {
       name: "SNS정보관리",
       link: "/admin/info/snsInfo",
-      useYn: true,
+      useYn: false,
     },
     {
       name: "카카오톡채널관리",
       link: "/admin/info/kakaoch",
-      useYn: true,
+      useYn: false,
     },
   ],
   배너관리: [
     {
       name: "메인배너관리",
       link: "/admin/banner/mainbanner",
-      useYn: true,
+      useYn: false,
     },
     {
       name: "팝업관리",
@@ -73,31 +68,31 @@ export const items = {
     {
       name: "겔러리관리",
       link: "/admin/boards/gallery",
-      useYn: true,
+      useYn: false,
     },
   ],
   회원관리: [
     {
       name: "전체회원관리",
       link: "/admin/user/userList",
-      useYn: true,
+      useYn: false,
     },
     {
       name: "관리자관리[최고관리자전용]",
       link: "/admin/user/userRight",
-      useYn: true,
+      useYn: false,
     },
     {
       name: "탈퇴회원관리",
       link: "/admin/user/userExitList",
-      useYn: true,
+      useYn: false,
     },
   ],
   고객지원관리: [
     {
       name: "자주묻는질문관리",
       link: "/admin/supports/faq",
-      useYn: true,
+      useYn: false,
     },
     {
       name: "문의관리",
@@ -105,43 +100,43 @@ export const items = {
       useYn: true,
     },
   ],
-  기록관리: [
-    {
-      name: "사업자정보이력관리",
-      link: "/admin/history/companyInfo",
-      useYn: true,
-    },
-    {
-      name: "로고변경이력관리",
-      link: "/admin/history/logo",
-      useYn: true,
-    },
-    {
-      name: "SNS정보이력관리",
-      link: "/admin/history/sns",
-      useYn: true,
-    },
-    {
-      name: "카카오톡채널이력관리",
-      link: "/admin/history/kakaoch",
-      useYn: true,
-    },
-    {
-      name: "메인배너이력관리",
-      link: "/admin/history/mainbanner",
-      useYn: true,
-    },
-    {
-      name: "팝업이력관리",
-      link: "/admin/history/popup",
-      useYn: true,
-    },
-    {
-      name: "공지사항이력관리",
-      link: "/admin/history/notice",
-      useYn: true,
-    },
-  ],
+  // 기록관리: [
+  //   {
+  //     name: "사업자정보이력관리",
+  //     link: "/admin/history/companyInfo",
+  //     useYn: true,
+  //   },
+  //   {
+  //     name: "로고변경이력관리",
+  //     link: "/admin/history/logo",
+  //     useYn: true,
+  //   },
+  //   {
+  //     name: "SNS정보이력관리",
+  //     link: "/admin/history/sns",
+  //     useYn: true,
+  //   },
+  //   {
+  //     name: "카카오톡채널이력관리",
+  //     link: "/admin/history/kakaoch",
+  //     useYn: true,
+  //   },
+  //   {
+  //     name: "메인배너이력관리",
+  //     link: "/admin/history/mainbanner",
+  //     useYn: true,
+  //   },
+  //   {
+  //     name: "팝업이력관리",
+  //     link: "/admin/history/popup",
+  //     useYn: true,
+  //   },
+  //   {
+  //     name: "공지사항이력관리",
+  //     link: "/admin/history/notice",
+  //     useYn: true,
+  //   },
+  // ],
   매물관리: [
     {
       name: "매물관리",
@@ -210,12 +205,12 @@ const AdminLayout = ({ children }) => {
               padding={`2px 15px`}
               radius={`6px`}
             >
-              ㅇㅇㅇ 최고관리자님, 환영합니다.
+              {me && me.nickname}님, 환영합니다.
             </Text>
           </Wrapper>
         </Wrapper>
         <Wrapper width={`calc(100% - 400px)`} height={`100%`}>
-          <Wrapper
+          {/* <Wrapper
             width={`70%`}
             height={`80%`}
             bgColor={Theme.adminTheme_2}
@@ -266,7 +261,7 @@ const AdminLayout = ({ children }) => {
               <Text>오늘 어쩌구 저쩌구 저쩌구 저쩌구</Text>
               <Text>1건</Text>
             </Wrapper>
-          </Wrapper>
+          </Wrapper> */}
         </Wrapper>
       </AdminHeader>
 
@@ -292,11 +287,11 @@ const AdminLayout = ({ children }) => {
             title={`게시판관리`}
             menus={items["게시판관리"]}
           />
-          <AdminMenuBox
+          {/* <AdminMenuBox
             right={me && me.menuRight5}
             title={`회원관리`}
             menus={items["회원관리"]}
-          />
+          /> */}
           <AdminMenuBox
             right={me && me.menuRight6}
             title={`고객지원관리`}
@@ -307,11 +302,11 @@ const AdminLayout = ({ children }) => {
             title={`매물관리`}
             menus={items["매물관리"]}
           />
-          <AdminMenuBox
+          {/* <AdminMenuBox
             right={me && me.menuRight7}
             title={`기록관리`}
             menus={items["기록관리"]}
-          />
+          /> */}
         </Wrapper>
       ) : (
         <Wrapper>{children}</Wrapper>

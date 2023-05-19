@@ -106,8 +106,16 @@ const IndexBox = styled(Wrapper)`
 
 const Id = ({}) => {
   ////// GLOBAL STATE //////
-  const { roomDetail, bannerData, infraData, optionData, maintenanceData } =
-    useSelector((state) => state.room);
+  const {
+    roomDetail,
+    bannerData,
+    infraData,
+    optionData,
+    maintenanceData,
+    //
+    st_roomNowCreateDone,
+    st_roomNowCreateError,
+  } = useSelector((state) => state.room);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -131,6 +139,23 @@ const Id = ({}) => {
   const dispatch = useDispatch();
   ////// USEEFFECT //////
 
+  useEffect(() => {
+    if (st_roomNowCreateDone) {
+      messangerInput.setValue("");
+      emailInput.setValue("");
+      otherInput.setValue("");
+      nameInput.setValue("");
+      mobileInput.setValue("");
+      setMovingDate("");
+      setContactPeriod("");
+      return message.success("your inquiry has been received.");
+    }
+
+    if (st_roomNowCreateError) {
+      return message.error(st_roomNowCreateError);
+    }
+  }, [st_roomNowCreateDone, st_roomNowCreateError]);
+
   // 데이터 세팅
   useEffect(() => {
     if (roomDetail) {
@@ -139,15 +164,6 @@ const Id = ({}) => {
     }
   }, [roomDetail]);
 
-  useEffect(() => {
-    messangerInput.setValue("");
-    emailInput.setValue("");
-    otherInput.setValue("");
-    nameInput.setValue("");
-    mobileInput.setValue("");
-    setMovingDate("");
-    setContactPeriod("");
-  }, []);
   ////// TOGGLE //////
   ////// HANDLER //////
 
@@ -194,7 +210,7 @@ const Id = ({}) => {
         messengerTypeOrId: messangerInput.value,
         email: emailInput.value,
         otherPreferences: otherInput.value,
-        RooomId: router.query.id,
+        RoomId: router.query.id,
       },
     });
   }, [
