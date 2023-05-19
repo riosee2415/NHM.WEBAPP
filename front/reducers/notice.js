@@ -2,6 +2,7 @@ import produce from "../util/produce";
 
 export const initailState = {
   notices: [],
+  frontNotices: [],
   maxPage: 1,
   noticeDetail: 1,
 
@@ -11,6 +12,10 @@ export const initailState = {
   st_noticeListLoading: false, // 공지사항 가져오기
   st_noticeListDone: false,
   st_noticeListError: null,
+  //
+  st_frontNoticeListLoading: false, // 프론트공지사항 가져오기
+  st_frontNoticeListDone: false,
+  st_frontNoticeListError: null,
   //
   st_noticeCreateLoading: false, // 공지사항 생성하기
   st_noticeCreateDone: false,
@@ -48,6 +53,10 @@ export const initailState = {
 export const NOTICE_LIST_REQUEST = "NOTICE_LIST_REQUEST";
 export const NOTICE_LIST_SUCCESS = "NOTICE_LIST_SUCCESS";
 export const NOTICE_LIST_FAILURE = "NOTICE_LIST_FAILURE";
+//
+export const FRONT_NOTICE_LIST_REQUEST = "FRONT_NOTICE_LIST_REQUEST";
+export const FRONT_NOTICE_LIST_SUCCESS = "FRONT_NOTICE_LIST_SUCCESS";
+export const FRONT_NOTICE_LIST_FAILURE = "FRONT_NOTICE_LIST_FAILURE";
 //
 export const NOTICE_CREATE_REQUEST = "NOTICE_CREATE_REQUEST";
 export const NOTICE_CREATE_SUCCESS = "NOTICE_CREATE_SUCCESS";
@@ -102,6 +111,26 @@ const reducer = (state = initailState, action) =>
         draft.st_noticeListLoading = false;
         draft.st_noticeListDone = false;
         draft.st_noticeListError = action.error;
+        break;
+      }
+      ///////////////////////////////////////////////////////
+      case FRONT_NOTICE_LIST_REQUEST: {
+        draft.st_frontNoticeListLoading = true;
+        draft.st_frontNoticeListDone = false;
+        draft.st_frontNoticeListError = null;
+        break;
+      }
+      case FRONT_NOTICE_LIST_SUCCESS: {
+        draft.st_frontNoticeListLoading = false;
+        draft.st_frontNoticeListDone = true;
+        draft.frontNotices = action.data.notices;
+        draft.maxPage = action.data.lastPage;
+        break;
+      }
+      case FRONT_NOTICE_LIST_FAILURE: {
+        draft.st_frontNoticeListLoading = false;
+        draft.st_frontNoticeListDone = false;
+        draft.st_frontNoticeListError = action.error;
         break;
       }
       ///////////////////////////////////////////////////////

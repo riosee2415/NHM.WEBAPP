@@ -19,7 +19,7 @@ import styled from "styled-components";
 import Head from "next/head";
 import SubBanner from "../../components/SubBanner";
 import { useSelector } from "react-redux";
-import { NOTICE_LIST_REQUEST } from "../../reducers/notice";
+import { FRONT_NOTICE_LIST_REQUEST } from "../../reducers/notice";
 import { useRouter } from "next/router";
 
 const Box = styled(Wrapper)`
@@ -39,7 +39,7 @@ const Box = styled(Wrapper)`
 
 const Index = ({}) => {
   ////// GLOBAL STATE //////
-  const { notices, maxPage } = useSelector((state) => state.notice);
+  const { frontNotices, maxPage } = useSelector((state) => state.notice);
 
   const [currentTap, setCurrentTab] = useState(1);
   ////// HOOKS //////
@@ -112,10 +112,10 @@ const Index = ({}) => {
               </Wrapper>
             </Wrapper>
 
-            {notices && notices.length === 0 ? (
+            {frontNotices && frontNotices.length === 0 ? (
               <Wrapper></Wrapper>
             ) : (
-              notices.map((data) => {
+              frontNotices.map((data) => {
                 return (
                   <Box
                     key={data.id}
@@ -145,7 +145,7 @@ const Index = ({}) => {
                       al={`flex-end`}
                       display={width < 900 ? `none` : `flex`}
                     >
-                      {data.viewCreatedAt}
+                      {data.viewFrontCreatedAt}
                     </Wrapper>
                   </Box>
                 );
@@ -184,7 +184,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     });
 
     context.store.dispatch({
-      type: NOTICE_LIST_REQUEST,
+      type: FRONT_NOTICE_LIST_REQUEST,
     });
 
     // 구현부 종료

@@ -23,6 +23,7 @@ import { useSelector } from "react-redux";
 import { ROOM_TYPE_LIST_REQUEST } from "../reducers/room";
 import { Empty } from "antd";
 import { useRouter } from "next/router";
+import { NOTICE_LIST_REQUEST } from "../reducers/notice";
 
 const SquareBox = styled(Wrapper)`
   width: 100%;
@@ -78,6 +79,7 @@ const RommsBox = styled(Wrapper)`
 const Home = ({}) => {
   ////// GLOBAL STATE //////
   const { roomTypeList } = useSelector((state) => state.room);
+  const { notices } = useSelector((state) => state.notice);
 
   ////// HOOKS //////
   const width = useWidth();
@@ -344,7 +346,7 @@ const Home = ({}) => {
             <Wrapper margin={width < 900 ? `0 0 80px` : `0 0 120px`}>
               <Title margin={`0 0 50px`}>Update</Title>
 
-              <UpdateSlider datum={["1", "2", "3", "4", "5"]} />
+              <UpdateSlider datum={notices} />
             </Wrapper>
           </RsWrapper>
           <Popup />
@@ -371,6 +373,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: ROOM_TYPE_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: NOTICE_LIST_REQUEST,
     });
 
     // 구현부 종료
