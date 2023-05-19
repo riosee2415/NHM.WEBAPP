@@ -102,6 +102,99 @@ router.post(
   }
 );
 
+/**
+ * SUBJECT : 페이지네이션 리스트
+ * PARAMETERS : -
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/19
+ */
+router.post("/pagenation/list", async (req, res, next) => {
+  const { title, type, page } = req.body;
+
+  const LIMIT = 10;
+
+  const _page = page ? page : 1;
+
+  const __page = _page - 1;
+  const OFFSET = __page * 10;
+
+  const _title = title ? title : "";
+  const _type = type ? type : "";
+
+  const lengthQuery = `
+  SELECT	ROW_NUMBER() OVER(ORDER BY A.createdAt ASC)		AS num, 
+          A.id,
+          A.title,
+          A.type,
+          A.content,
+          A.author,
+          A.hit,
+          A.isTop,
+          A.file,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일") 		AS viewCreatedAt,
+          DATE_FORMAT(A.createdAt, "%Y.%m.%d") 		    AS viewFrontCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일") 		AS viewUpdatedAt,
+          B.username 										AS updator 
+    FROM	notices		A
+   INNER
+    JOIN	users		B
+      ON	A.updator = B.id
+   WHERE	A.isDelete = 0
+     AND	A.title LIKE "%${_title}%"
+     ${_type ? `AND	A.type = "${_type}"` : ""}
+  `;
+
+  const selectQuery = `
+  SELECT	ROW_NUMBER() OVER(ORDER BY A.createdAt ASC)		AS num, 
+          A.id,
+          A.title,
+          A.type,
+          A.content,
+          A.author,
+          A.hit,
+          A.isTop,
+          A.file,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일") 		AS viewCreatedAt,
+          DATE_FORMAT(A.createdAt, "%Y.%m.%d") 		    AS viewFrontCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일") 		AS viewUpdatedAt,
+          B.username 										AS updator 
+    FROM	notices		A
+   INNER
+    JOIN	users		B
+      ON	A.updator = B.id
+   WHERE	A.isDelete = 0
+     AND	A.title LIKE "%${_title}%"
+     ${_type ? `AND	A.type = "${_type}"` : ""}
+   ORDER	BY	A.createdAt DESC
+   LIMIT  ${LIMIT}
+  OFFSET  ${OFFSET}
+  `;
+
+  try {
+    const lengths = await models.sequelize.query(lengthQuery);
+    const notice = await models.sequelize.query(selectQuery);
+
+    const noticeLen = lengths[0].length;
+
+    const lastPage =
+      noticeLen % LIMIT > 0 ? noticeLen / LIMIT + 1 : noticeLen / LIMIT;
+
+    return res.status(200).json({
+      notices: notice[0],
+      lastPage: parseInt(lastPage),
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send("공지사항 데이터를 불러올 수 없습니다.");
+  }
+});
+
 router.post("/list", async (req, res, next) => {
   const { title, type } = req.body;
 
@@ -283,57 +376,51 @@ router.delete("/delete/:noticeId", isAdminCheck, async (req, res, next) => {
   }
 });
 
-router.get("/list/:noticeId", async (req, res, next) => {
-  const { noticeId } = req.params;
+/**
+ * SUBJECT : 상세 정보
+ * PARAMETERS : id
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 신태섭
+ * DEV DATE : 2023/05/19
+ */
+router.post("/detail", async (req, res, next) => {
+  const { id } = req.body;
+
+  const selectQ = `
+  SELECT	A.id,
+          A.title,
+          A.type,
+          A.content,
+          A.author,
+          A.hit,
+          A.isTop,
+          A.file,
+          A.createdAt,
+          A.updatedAt,
+          DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일") 		AS viewCreatedAt,
+          DATE_FORMAT(A.createdAt, "%Y.%m.%d") 		    AS viewFrontCreatedAt,
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일") 		AS viewUpdatedAt,
+          B.username 										AS updator 
+    FROM	notices		A
+   INNER
+    JOIN	users		  B
+      ON	A.updator = B.id
+   WHERE	A.isDelete = 0
+     AND  A.id = ${id}
+  `;
 
   try {
-    const exNotice = await Notice.findOne({
-      where: { id: parseInt(noticeId) },
-    });
+    const detailData = await models.sequelize.query(selectQ);
 
-    const nextHit = exNotice.dataValues.hit + 1;
-
-    const commentQuery = `
-    SELECT	A.id,
-            A.content,
-            A.isDelete,
-            A.deletedAt,
-            A.parent,
-            A.parentId,
-            DATE_FORMAT(A.createdAt, '%Y-%m-%d')  AS createdAt,
-            DATE_FORMAT(A.updatedAt, '%Y-%m-%d')  AS updatedAt,
-            A.NoticeId,
-            A.UserId,
-            B.email,
-            B.username
-      FROM	noticeComments		A
-     INNER
-      JOIN	users 					  B
-        ON	A.UserId = B.id
-     WHERE	A.isDelete = FALSE
-       AND	A.parentId  IS NULL
-       AND  A.NoticeId = ${noticeId}
-    `;
-
-    const comments = await models.sequelize.query(commentQuery);
-
-    await Notice.update(
-      {
-        hit: nextHit,
-      },
-      {
-        where: { id: parseInt(noticeId) },
-      }
-    );
-
-    if (!exNotice) {
-      return res.status(401).send("존재하지 않는 게시글 입니다.");
+    if (detailData[0].length === 0) {
+      return res.status(401).send("존재하지 않는 게시글 정보입니다.");
     }
 
-    return res.status(200).json({ exNotice, comments: comments[0] });
+    return res.status(200).json(detailData[0][0]);
   } catch (error) {
     console.error(error);
-    return res.status(401).send("게시글 정보를 불러올 수 없습니다. [CODE 107]");
+    return res.status(401).send("게시글 정보를 불러올 수 없습니다.");
   }
 });
 
