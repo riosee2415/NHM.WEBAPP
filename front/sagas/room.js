@@ -5,6 +5,10 @@ import {
   ROOM_LIST_SUCCESS,
   ROOM_LIST_FAILURE,
   //
+  ROOM_ADMIN_LIST_REQUEST,
+  ROOM_ADMIN_LIST_SUCCESS,
+  ROOM_ADMIN_LIST_FAILURE,
+  //
   ROOM_CREATE_REQUEST,
   ROOM_CREATE_SUCCESS,
   ROOM_CREATE_FAILURE,
@@ -139,6 +143,34 @@ function* roomList(action) {
     });
   }
 }
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function roomAdminListAPI(data) {
+  return await axios.post(`/api/room/admin/list`, data);
+}
+
+function* roomAdminList(action) {
+  try {
+    const result = yield call(roomAdminListAPI, action.data);
+
+    yield put({
+      type: ROOM_ADMIN_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_ADMIN_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 // ******************************************************************************************************************
@@ -823,7 +855,7 @@ function* roomNowCreate(action) {
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
 async function roomNowUpdateAPI(data) {
-  return await axios.post(`/api/room/roomNow/update`, data);
+  return await axios.post(`/api/room/roomNow/isComplete`, data);
 }
 
 function* roomNowUpdate(action) {
@@ -849,6 +881,9 @@ function* roomNowUpdate(action) {
 //////////////////////////////////////////////////////////////
 function* watchRoomList() {
   yield takeLatest(ROOM_LIST_REQUEST, roomList);
+}
+function* watchRoomAdminList() {
+  yield takeLatest(ROOM_ADMIN_LIST_REQUEST, roomAdminList);
 }
 function* watchRoomCreate() {
   yield takeLatest(ROOM_CREATE_REQUEST, roomCreate);
@@ -941,6 +976,7 @@ function* watchRoomNowUpdate() {
 export default function* roomSaga() {
   yield all([
     fork(watchRoomList),
+    fork(watchRoomAdminList),
     fork(watchRoomCreate),
     fork(watchRoomUpdate),
     fork(watchRoomDelete),

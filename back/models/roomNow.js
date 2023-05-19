@@ -55,6 +55,11 @@ module.exports = class RoomNow extends Model {
           defaultValue: false,
           allowNull: false,
         },
+
+        completedAt: {
+          type: DataTypes.DATE, // 처리 날짜
+          allowNull: true,
+        },
       },
       {
         modelName: "RoomNow",

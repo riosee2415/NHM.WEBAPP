@@ -212,6 +212,9 @@ const Option = ({}) => {
 
       dispatch({
         type: ROOM_IMAGE_RESET,
+        data: {
+          roomPath: null,
+        },
       });
 
       infoForm.setFieldsValue({

@@ -351,7 +351,8 @@ router.post("/admin/list", isAdminCheck, async (req, res, next) => {
           DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt,
           B.thumbnail                                 AS roomTypeThumbnail,
           B.title                                     AS roomTypeTitle,
-          B.imagePath                                 AS roomTypeImagePath
+          B.imagePath                                 AS roomTypeImagePath,
+          A.RoomTypeId
     FROM  rooms       A
    INNER
     JOIN  roomType    B
@@ -422,7 +423,8 @@ router.post("/detail", async (req, res, next) => {
           DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt,
           B.thumbnail                                 AS roomTypeThumbnail,
           B.title                                     AS roomTypeTitle,
-          B.imagePath                                 AS roomTypeImagePath
+          B.imagePath                                 AS roomTypeImagePath,
+          A.RoomTypeId
     FROM  rooms       A
    INNER
     JOIN  roomType    B
@@ -570,7 +572,7 @@ router.post("/create", isAdminCheck, async (req, res, next) => {
   VALUES
   (
     "00000000",
-    "https://via.placeholder.com/1000x300",
+    "https://via.placeholder.com/350x350",
     "5.0",
     "임시 타이틀",
     "임시 서브 타이틀",
@@ -1333,6 +1335,7 @@ router.post("/maintenance/delete", isAdminCheck, async (req, res, next) => {
 ////////////////////////////////////////////////////
 // ROOM NOW ////////////////////////////////////////
 ////////////////////////////////////////////////////
+
 /**
  * SUBJECT : 매물구매 리스트
  * PARAMETERS : isComplete
@@ -1341,7 +1344,8 @@ router.post("/maintenance/delete", isAdminCheck, async (req, res, next) => {
  * DEVELOPMENT : 홍민기
  * DEV DATE : 2023/05/18
  */
-router.post("/roomNow/list", async (req, res, next) => {
+
+router.post("/roomNow/list", isAdminCheck, async (req, res, next) => {
   const { isComplete } = req.body;
 
   const _isComplete = isComplete ? parseInt(isComplete) : 3;
@@ -1354,8 +1358,10 @@ router.post("/roomNow/list", async (req, res, next) => {
           A.deposit,
           A.rentfee,
           A.region,
-          A.movingdate
+          A.movingdate,
           A.contractPeriod,
+          DATE_FORMAT(A.movingdate, "%Y년 %m월 %d일")    AS viewMovingdate,
+          DATE_FORMAT(A.contractPeriod, "%Y년 %m월 %d일")    AS viewContractPeriod,
           A.messengerTypeOrId,
           A.email,
           A.otherPreferences,
@@ -1363,8 +1369,12 @@ router.post("/roomNow/list", async (req, res, next) => {
           A.createdAt,
           A.updatedAt,
           DATE_FORMAT(A.createdAt, "%Y년 %m월 %d일")    AS viewCreatedAt,
-          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt
+          DATE_FORMAT(A.updatedAt, "%Y년 %m월 %d일")    AS viewUpdatedAt,
+          B.title
     FROM  roomNow				A
+   INNER
+    JOIN  rooms         B
+      ON  A.RoomId = B.id
    WHERE  1 = 1
           ${
             _isComplete === 1
@@ -1386,13 +1396,24 @@ router.post("/roomNow/list", async (req, res, next) => {
 });
 
 /**
- * SUBJECT : 매물구매 리스트
- * PARAMETERS : isComplete
- * ORDER BY : createdAt DESC
+ * SUBJECT : 매물구매 생성
+ * PARAMETERS : name
+                mobile
+                deposit
+                rentfee
+                region
+                movingdate
+                contractPeriod
+                messengerTypeOrId
+                email
+                otherPreferences
+                RooomId
+ * ORDER BY : -
  * STATEMENT : -
  * DEVELOPMENT : 홍민기
  * DEV DATE : 2023/05/18
  */
+
 router.post("/roomNow/create", async (req, res, next) => {
   const {
     name,
@@ -1405,7 +1426,7 @@ router.post("/roomNow/create", async (req, res, next) => {
     messengerTypeOrId,
     email,
     otherPreferences,
-    RooomId,
+    RoomId,
   } = req.body;
 
   const isnertQuery = `
@@ -1420,7 +1441,7 @@ router.post("/roomNow/create", async (req, res, next) => {
     messengerTypeOrId,
     email,
     otherPreferences,
-    RooomId,
+    RoomId,
     createdAt,
     updatedAt
   )
@@ -1436,7 +1457,7 @@ router.post("/roomNow/create", async (req, res, next) => {
     ${messengerTypeOrId},
     ${email},
     ${otherPreferences},
-    ${RooomId},
+    ${RoomId},
     NOW(),
     NOW()
   )
@@ -1447,7 +1468,52 @@ router.post("/roomNow/create", async (req, res, next) => {
     return res.status(200).json({ result: true });
   } catch (e) {
     console.error(e);
-    return res.status(401).send("매물 구매를 할 수 없습니다.");
+    return res.status(400).send("매물 구매를 할 수 없습니다.");
+  }
+});
+
+/**
+ * SUBJECT : 매물구매 확인
+ * PARAMETERS : id
+ * ORDER BY : -
+ * STATEMENT : -
+ * DEVELOPMENT : 홍민기
+ * DEV DATE : 2023/05/18
+ */
+
+router.post("/roomNow/isComplete", isAdminCheck, async (req, res, next) => {
+  const { id } = req.body;
+
+  const findQuery = `
+  SELECT  id,
+          isComplete
+    FROM  roomNow
+   WHERE  id = ${id}
+  `;
+
+  const updateQuery = `
+  UPDATE  roomNow
+     SET  isComplete = 1
+   WHERE  id = ${id}
+
+  `;
+  try {
+    const find = await models.sequelize.query(findQuery);
+
+    if (find[0].length === 0) {
+      return res.status(401).send("확인처리할 매물이 없습니다.");
+    }
+
+    if (find[0][0].isComplete) {
+      return res.status(401).send("이미 확인된 매물입니다.");
+    }
+
+    await models.sequelize.query(updateQuery);
+
+    return res.status(200).json({ result: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(401).send("매물을 확인처리할 수 없습니다.");
   }
 });
 
