@@ -757,7 +757,7 @@ const Notice = ({}) => {
                       <input
                         type="file"
                         name="file"
-                        // accept=".png, .jpg"
+                        accept=".png, .jpg"
                         // multiple
                         hidden
                         ref={fileRef}

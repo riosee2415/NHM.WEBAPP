@@ -152,6 +152,8 @@ const AppHeader = ({}) => {
                       width={`54px`}
                       src={logos.find((data) => data.typeOf === "F").imageURL}
                       alt="logo"
+                      cursor={`pointer`}
+                      onClick={() => router.push(`/`)}
                     />
                   )}
               </>
