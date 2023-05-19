@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import useInput from "../../hooks/useInput";
@@ -120,19 +120,33 @@ const Index = ({}) => {
   const { roomList, roomTypeList, roomLastPage } = useSelector(
     (state) => state.room
   );
-  console.log(roomList, roomTypeList);
 
   ////// HOOKS //////
   const width = useWidth();
 
   const [isArrow, setIsArrow] = useState(false); // 타이틀
   const [isIndex, setIsIndex] = useState(false); // index Modal
+  const [currentPage, setCurrentPage] = useState(1); // 페이지네이션
   ////// REDUX //////
   const router = useRouter();
   const dispatch = useDispatch();
   ////// USEEFFECT //////
   ////// TOGGLE //////
   ////// HANDLER //////
+
+  const otherPageCall = useCallback(
+    (changePage) => {
+      setCurrentPage(changePage);
+
+      dispatch({
+        type: ROOM_LIST_REQUEST,
+        data: {
+          page: changePage,
+        },
+      });
+    },
+    [currentPage]
+  );
   ////// DATAVIEW //////
 
   return (
@@ -200,31 +214,32 @@ const Index = ({}) => {
                         top={`50px`}
                         zIndex={`3`}
                       >
-                        {roomTypeList.map((data, idx) => {
-                          return (
-                            <Text
-                              fontSize={`20px`}
-                              isHover={true}
-                              color={Theme.darkGrey_C}
-                              margin={
-                                idx + 1 === roomTypeList.length
-                                  ? `0`
-                                  : `0 0 14px`
-                              }
-                              key={data.id}
-                              onClick={() => {
-                                router.push(`/rooms?type=${data.id}`);
-                              }}
-                              isActive={
-                                router.query.type === String(data.id)
-                                  ? true
-                                  : false
-                              }
-                            >
-                              {data.title}
-                            </Text>
-                          );
-                        })}
+                        {roomTypeList &&
+                          roomTypeList.map((data, idx) => {
+                            return (
+                              <Text
+                                fontSize={`20px`}
+                                isHover={true}
+                                color={Theme.darkGrey_C}
+                                margin={
+                                  idx + 1 === roomTypeList.length
+                                    ? `0`
+                                    : `0 0 14px`
+                                }
+                                key={data.id}
+                                onClick={() => {
+                                  router.push(`/rooms?type=${data.id}`);
+                                }}
+                                isActive={
+                                  router.query.type === String(data.id)
+                                    ? true
+                                    : false
+                                }
+                              >
+                                {data.title}
+                              </Text>
+                            );
+                          })}
                       </Wrapper>
                     )}
                   </TitleBox>
@@ -279,31 +294,32 @@ const Index = ({}) => {
                         top={`88px`}
                         zIndex={`2`}
                       >
-                        {roomTypeList.map((data, idx) => {
-                          return (
-                            <Text
-                              fontSize={`20px`}
-                              isHover={true}
-                              color={Theme.darkGrey_C}
-                              margin={
-                                idx + 1 === roomTypeList.length
-                                  ? `0`
-                                  : `0 0 14px`
-                              }
-                              key={data.id}
-                              onClick={() => {
-                                router.push(`/rooms?type=${data.id}`);
-                              }}
-                              isActive={
-                                router.query.type === String(data.id)
-                                  ? true
-                                  : false
-                              }
-                            >
-                              {data.title}
-                            </Text>
-                          );
-                        })}
+                        {roomTypeList &&
+                          roomTypeList.map((data, idx) => {
+                            return (
+                              <Text
+                                fontSize={`20px`}
+                                isHover={true}
+                                color={Theme.darkGrey_C}
+                                margin={
+                                  idx + 1 === roomTypeList.length
+                                    ? `0`
+                                    : `0 0 14px`
+                                }
+                                key={data.id}
+                                onClick={() => {
+                                  router.push(`/rooms?type=${data.id}`);
+                                }}
+                                isActive={
+                                  router.query.type === String(data.id)
+                                    ? true
+                                    : false
+                                }
+                              >
+                                {data.title}
+                              </Text>
+                            );
+                          })}
                       </Wrapper>
                     )}
                   </TitleBox>
@@ -312,7 +328,11 @@ const Index = ({}) => {
                     src={
                       roomTypeList.find(
                         (value) => String(value.id) === router.query.type
-                      ).imagePath
+                      )
+                        ? roomTypeList.find(
+                            (value) => String(value.id) === router.query.type
+                          ).imagePath
+                        : ""
                     }
                     alt="banner"
                     height={`320px`}
@@ -441,7 +461,12 @@ const Index = ({}) => {
               })}
             </Wrapper>
 
-            <CustomPage />
+            <CustomPage
+              defaultCurrent={1}
+              current={parseInt(currentPage)}
+              onChange={(page) => otherPageCall(page)}
+              total={roomLastPage * 10}
+            />
           </RsWrapper>
         </WholeWrapper>
       </ClientLayout>
