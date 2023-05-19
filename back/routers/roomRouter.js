@@ -1447,16 +1447,16 @@ router.post("/roomNow/create", async (req, res, next) => {
   )
   VALUES
   (
-    ${name},
-    ${mobile},
+    "${name}",
+    "${mobile}",
     ${deposit},
     ${rentfee},
-    ${region},
-    ${movingdate},
-    ${contractPeriod},
-    ${messengerTypeOrId},
-    ${email},
-    ${otherPreferences},
+    "${region}",
+    "${movingdate}",
+    "${contractPeriod}",
+    "${messengerTypeOrId}",
+    "${email}",
+    "${otherPreferences}",
     ${RoomId},
     NOW(),
     NOW()
