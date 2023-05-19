@@ -75,7 +75,7 @@ router.post("/type/list", async (req, res, next) => {
     return res.status(200).json(list[0]);
   } catch (error) {
     console.error(error);
-    return res.status(400).send("데이터를 조회할 수 없습니다.");
+    return res.status(400).send("Data could not be retrieved.");
   }
 });
 
@@ -294,7 +294,7 @@ router.post("/list", async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return res.status(401).send("룸 목록을 조회할 수 없습니다.");
+    return res.status(401).send("Data could not be retrieved.");
   }
 });
 
@@ -511,7 +511,7 @@ router.post("/detail", async (req, res, next) => {
     const room = await models.sequelize.query(selectQuery);
 
     if (room[0].length === 0) {
-      return res.status(401).send("존재하지 않는 데이터입니다.");
+      return res.status(401).send("This data does not exist.");
     }
 
     const bannerData = await models.sequelize.query(bannerQuery);
@@ -528,7 +528,7 @@ router.post("/detail", async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return res.status(401).send("룸 목록을 조회할 수 없습니다.");
+    return res.status(401).send("Data could not be retrieved.");
   }
 });
 
@@ -908,7 +908,7 @@ router.post("/banner/list", async (req, res, next) => {
     return res.status(200).json(list[0]);
   } catch (error) {
     console.error(error);
-    return res.status(401).send("배너 목록을 조회할 수 없습니다.");
+    return res.status(401).send("Data could not be retrieved.");
   }
 });
 
@@ -1038,7 +1038,7 @@ router.post("/option/list", async (req, res, next) => {
     return res.status(200).json(list[0]);
   } catch (error) {
     console.error(error);
-    return res.status(400).send("옵션을 조회할 수 없습니다.");
+    return res.status(400).send("Data could not be retrieved.");
   }
 });
 
@@ -1147,7 +1147,7 @@ router.post("/infra/list", async (req, res, next) => {
     return res.status(200).json(list[0]);
   } catch (error) {
     console.error(error);
-    return res.status(400).send("인프라를 조회할 수 없습니다.");
+    return res.status(400).send("Data could not be retrieved.");
   }
 });
 
@@ -1256,7 +1256,7 @@ router.post("/maintenance/list", async (req, res, next) => {
     return res.status(200).json(list[0]);
   } catch (error) {
     console.error(error);
-    return res.status(400).send("데이터를 조회할 수 없습니다.");
+    return res.status(400).send("Data could not be retrieved.");
   }
 });
 
@@ -1468,7 +1468,7 @@ router.post("/roomNow/create", async (req, res, next) => {
     return res.status(200).json({ result: true });
   } catch (e) {
     console.error(e);
-    return res.status(400).send("매물 구매를 할 수 없습니다.");
+    return res.status(400).send("You cannot make purchases for sale.");
   }
 });
 
