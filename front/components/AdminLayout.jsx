@@ -27,6 +27,16 @@ export const items = {
   ],
   기초정보관리: [
     {
+      name: "접속자통계",
+      link: "/admin/logs/acceptLogs",
+      useYn: true,
+    },
+    {
+      name: "팝업관리",
+      link: "/admin/banner/popup",
+      useYn: true,
+    },
+    {
       name: "사업자정보관리",
       link: "/admin/info/businessInformation",
       useYn: true,
@@ -88,18 +98,18 @@ export const items = {
       useYn: false,
     },
   ],
-  고객지원관리: [
-    {
-      name: "자주묻는질문관리",
-      link: "/admin/supports/faq",
-      useYn: false,
-    },
-    {
-      name: "문의관리",
-      link: "/admin/supports/question",
-      useYn: true,
-    },
-  ],
+  // 고객지원관리: [
+  //   {
+  //     name: "자주묻는질문관리",
+  //     link: "/admin/supports/faq",
+  //     useYn: false,
+  //   },
+  //   {
+  //     name: "문의관리",
+  //     link: "/admin/supports/question",
+  //     useYn: true,
+  //   },
+  // ],
   // 기록관리: [
   //   {
   //     name: "사업자정보이력관리",
@@ -267,21 +277,21 @@ const AdminLayout = ({ children }) => {
 
       {router.pathname === "/admin" ? (
         <Wrapper dr={`row`}>
-          <AdminMenuBox
+          {/* <AdminMenuBox
             right={me && me.menuRight1}
             title={`통계관리`}
             menus={items["통계관리"]}
-          />
+          /> */}
           <AdminMenuBox
             right={me && me.menuRight2}
             title={`기초정보관리`}
             menus={items["기초정보관리"]}
           />
-          <AdminMenuBox
+          {/* <AdminMenuBox
             right={me && me.menuRight3}
             title={`배너관리`}
             menus={items["배너관리"]}
-          />
+          /> */}
           <AdminMenuBox
             right={me && me.menuRight4}
             title={`게시판관리`}
@@ -292,11 +302,11 @@ const AdminLayout = ({ children }) => {
             title={`회원관리`}
             menus={items["회원관리"]}
           /> */}
-          <AdminMenuBox
+          {/* <AdminMenuBox
             right={me && me.menuRight6}
             title={`고객지원관리`}
             menus={items["고객지원관리"]}
-          />
+          /> */}
           <AdminMenuBox
             right={me && me.menuRight8}
             title={`매물관리`}
