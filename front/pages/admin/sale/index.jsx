@@ -503,6 +503,10 @@ const Index = ({}) => {
         <GuideUl>
           <GuideLi>지점지역을 추가 / 삭제 등 관리를 할 수 있습니다.</GuideLi>
           <GuideLi isImpo={true}>
+            매물 지역관리, option, infra, maintenance을 먼저 등록시 매물을
+            생성할 수 있습니다.
+          </GuideLi>
+          <GuideLi isImpo={true}>
             삭제처리 된 지점지역은 복구가 불가능합니다.
           </GuideLi>
         </GuideUl>
