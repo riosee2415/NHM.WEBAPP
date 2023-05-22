@@ -54,18 +54,30 @@ const Fourleaf = ({ Component }) => {
         <meta name="author" content="4LEAF SOFTWARE <4leaf.ysh@gmail.com>" />
         {/* <!-- OG tag  --> */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.sample.com/" />
+        <meta property="og:url" content="https://koreais.info" />
         <meta property="og:image:width" content="800" />
         <meta property="og:image:height" content="400" />
         <meta property="og:image" content="./og_img.png" />
         <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="canonical" href="https://www.sample.com" />
+        <link rel="canonical" href="https://koreais.info" />
 
-        <meta name="keywords" content="KOREAIS" />
-        <meta property="og:keywords" content="KOREAIS" />
+        <meta
+          name="keywords"
+          content="seoul holiday rentals, seoul apartments rent, accommodation in  Seoul, Seoul student accommodation, seoul student housing, seoul off-campus housing, lofts rent in seoul, short-term lease, seoul studio rent, study in Korea, life in seoul, university in korea, travel in seoul, job in seoul"
+        />
+        <meta
+          property="og:keywords"
+          content="seoul holiday rentals, seoul apartments rent, accommodation in  Seoul, Seoul student accommodation, seoul student housing, seoul off-campus housing, lofts rent in seoul, short-term lease, seoul studio rent, study in Korea, life in seoul, university in korea, travel in seoul, job in seoul"
+        />
 
-        <meta property="og:description" content="KOREAIS" />
-        <meta name="description" content="KOREAIS" />
+        <meta
+          property="og:description"
+          content="Koreais aims to provide all inclusive services for your life in Korea. Our first step is realtor service and short-term rent."
+        />
+        <meta
+          name="description"
+          content="Koreais aims to provide all inclusive services for your life in Korea. Our first step is realtor service and short-term rent."
+        />
 
         {/* 프리텐다드 폰트 */}
         <link
