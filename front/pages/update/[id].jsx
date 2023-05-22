@@ -18,6 +18,11 @@ import styled from "styled-components";
 import Head from "next/head";
 
 import SubBanner from "../../components/SubBanner";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { NOTICE_DETAIL_LIST_REQUEST } from "../../reducers/notice";
+import Link from "next/dist/client/link";
+import { useCallback } from "react";
 
 const BackWrapper = styled(Wrapper)`
   flex-direction: row;
@@ -36,14 +41,31 @@ const BackWrapper = styled(Wrapper)`
 `;
 const Id = ({}) => {
   ////// GLOBAL STATE //////
+  const { noticeDetail } = useSelector((state) => state.notice);
 
   ////// HOOKS //////
   const width = useWidth();
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   ////// REDUX //////
   ////// USEEFFECT //////
+  useEffect(() => {
+    if (router.query) {
+      dispatch({
+        type: NOTICE_DETAIL_LIST_REQUEST,
+        data: {
+          id: router.query.id,
+        },
+      });
+    }
+  }, [router.query]);
+
   ////// TOGGLE //////
   ////// HANDLER //////
+  const goBack = useCallback(() => {
+    window.history.back();
+  }, []);
   ////// DATAVIEW //////
 
   return (
@@ -73,24 +95,28 @@ const Id = ({}) => {
               borderBottom={`4px solid ${Theme.lightGrey_C}`}
               margin={width < 900 ? `0 0 25px` : `0 0 40px`}
             >
-              <BackWrapper>
-                <Image
-                  src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/icon_back.png"
-                  alt="icon"
-                  width={`8px`}
-                />
+              <Link href={`/update`}>
+                <a>
+                  <BackWrapper>
+                    <Image
+                      src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/icon_back.png"
+                      alt="icon"
+                      width={`8px`}
+                    />
 
-                <Text
-                  fontSize={`20px`}
-                  fontWeight={`700`}
-                  margin={`0 0 0 10px`}
-                >
-                  Notice and Update
-                </Text>
-              </BackWrapper>
+                    <Text
+                      fontSize={`20px`}
+                      fontWeight={`700`}
+                      margin={`0 0 0 10px`}
+                    >
+                      Notice and Update
+                    </Text>
+                  </BackWrapper>
+                </a>
+              </Link>
 
               <Text display={width < 900 ? `none` : `flex`} fontSize={`16px`}>
-                2023.03.24
+                {noticeDetail && noticeDetail.viewFrontCreatedAt}
               </Text>
             </Wrapper>
 
@@ -105,7 +131,7 @@ const Id = ({}) => {
                 fontWeight={`700`}
                 margin={width < 900 ? `0 0 25px` : `0 0 34px`}
               >
-                Lorem ipsum dolor sit amet, consetetur
+                {noticeDetail && noticeDetail.title}
               </Text>
 
               <Text
@@ -113,15 +139,12 @@ const Id = ({}) => {
                 color={Theme.darkGrey2_C}
                 margin={width < 900 ? `0 0 30px` : `0 0 34px`}
               >
-                292, Jayang-ro, Gwangjin-gu, Seoul 292, Jayang-ro, Gwangjin-gu,
-                Seoul
+                {noticeDetail && noticeDetail.content}
               </Text>
 
-              <Image
-                src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/img_detail.png"
-                alt="image"
-                width={`100%`}
-              />
+              {noticeDetail && noticeDetail.file && (
+                <Image src={noticeDetail.file} alt="image" width={`100%`} />
+              )}
             </Wrapper>
 
             <Wrapper margin={`0 0 100px`}>
@@ -131,6 +154,7 @@ const Id = ({}) => {
                 radius={`20px`}
                 padding={`6px 22px`}
                 height={`auto`}
+                onClick={goBack}
               >
                 Go to privous
               </CommonButton>

@@ -1,6 +1,10 @@
 import { all, call, delay, fork, put, takeLatest } from "redux-saga/effects";
 import axios from "axios";
 import {
+  FRONT_NOTICE_LIST_REQUEST,
+  FRONT_NOTICE_LIST_SUCCESS,
+  FRONT_NOTICE_LIST_FAILURE,
+  //
   NOTICE_LIST_REQUEST,
   NOTICE_LIST_SUCCESS,
   NOTICE_LIST_FAILURE,
@@ -32,6 +36,10 @@ import {
   NOTICE_HISTORY_REQUEST,
   NOTICE_HISTORY_SUCCESS,
   NOTICE_HISTORY_FAILURE,
+  //
+  NOTICE_DETAIL_LIST_REQUEST,
+  NOTICE_DETAIL_LIST_SUCCESS,
+  NOTICE_DETAIL_LIST_FAILURE,
 } from "../reducers/notice";
 
 // SAGA AREA ********************************************************************************************************
@@ -52,6 +60,33 @@ function* noticeList(action) {
     console.error(err);
     yield put({
       type: NOTICE_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function frontNoticeListAPI(data) {
+  return await axios.post(`/api/notice/pagenation/list`, data);
+}
+
+function* frontNoticeList(action) {
+  try {
+    const result = yield call(frontNoticeListAPI, action.data);
+
+    yield put({
+      type: FRONT_NOTICE_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: FRONT_NOTICE_LIST_FAILURE,
       error: err.response.data,
     });
   }
@@ -250,7 +285,38 @@ function* noticeHistory(action) {
 // ******************************************************************************************************************
 // ******************************************************************************************************************
 
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
+async function noticeDetailAPI(data) {
+  return await axios.post(`/api/notice/detail`, data);
+}
+
+function* noticeDetail(action) {
+  try {
+    const result = yield call(noticeDetailAPI, action.data);
+
+    yield put({
+      type: NOTICE_DETAIL_LIST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: NOTICE_DETAIL_LIST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
 //////////////////////////////////////////////////////////////
+function* watchFrontNoticeList() {
+  yield takeLatest(FRONT_NOTICE_LIST_REQUEST, frontNoticeList);
+}
+
 function* watchNoticeList() {
   yield takeLatest(NOTICE_LIST_REQUEST, noticeList);
 }
@@ -283,9 +349,14 @@ function* watchNoticeHistory() {
   yield takeLatest(NOTICE_HISTORY_REQUEST, noticeHistory);
 }
 
+function* watchNoticeDetail() {
+  yield takeLatest(NOTICE_DETAIL_LIST_REQUEST, noticeDetail);
+}
+
 //////////////////////////////////////////////////////////////
 export default function* noticeSaga() {
   yield all([
+    fork(watchFrontNoticeList),
     fork(watchNoticeList),
     fork(watchNoticeCreate),
     fork(watchNoticeUpdate),
@@ -294,6 +365,7 @@ export default function* noticeSaga() {
     fork(watchNoticeFile),
     fork(watchNoticeFileInfo),
     fork(watchNoticeHistory),
+    fork(watchNoticeDetail),
     //
   ]);
 }

@@ -143,33 +143,39 @@ const AppHeader = ({}) => {
             ju={`space-between`}
             margin={width < 900 ? `10px 0 20px` : `0`}
           >
-            {width < 900 ? (
-              <>
-                {logos &&
-                  logos.length !== 0 &&
-                  logos.find((data) => data.typeOf === "F") && (
-                    <Image
-                      width={`54px`}
-                      src={logos.find((data) => data.typeOf === "F").imageURL}
-                      alt="logo"
-                      cursor={`pointer`}
-                      onClick={() => router.push(`/`)}
-                    />
-                  )}
-              </>
-            ) : (
-              <>
-                {logos &&
-                  logos.length !== 0 &&
-                  logos.find((data) => data.typeOf === "H") && (
-                    <Image
-                      width={`54px`}
-                      src={logos.find((data) => data.typeOf === "H").imageURL}
-                      alt="logo"
-                    />
-                  )}
-              </>
-            )}
+            <Link href={`/`}>
+              <a>
+                {width < 900 ? (
+                  <>
+                    {logos &&
+                      logos.length !== 0 &&
+                      logos.find((data) => data.typeOf === "F") && (
+                        <Image
+                          width={`54px`}
+                          src={
+                            logos.find((data) => data.typeOf === "F").imageURL
+                          }
+                          alt="logo"
+                        />
+                      )}
+                  </>
+                ) : (
+                  <>
+                    {logos &&
+                      logos.length !== 0 &&
+                      logos.find((data) => data.typeOf === "H") && (
+                        <Image
+                          width={`54px`}
+                          src={
+                            logos.find((data) => data.typeOf === "H").imageURL
+                          }
+                          alt="logo"
+                        />
+                      )}
+                  </>
+                )}
+              </a>
+            </Link>
 
             <Wrapper
               dr={`row`}

@@ -2,9 +2,10 @@ import React, { useEffect, useCallback, useRef } from "react";
 import { RowWrapper, Wrapper, Image } from "../commonComponents";
 import styled from "styled-components";
 import Theme from "../Theme";
-import { Carousel } from "antd";
+import { Carousel, Empty } from "antd";
 import useWidth from "../../hooks/useWidth";
 import { useRouter } from "next/router";
+import { CloseCircleOutlined } from "@ant-design/icons";
 
 const ArrowBox = styled(Wrapper)`
   width: 46px;
@@ -71,6 +72,11 @@ const UpdateSlider = ({ datum }) => {
 
   const slideRef = useRef();
 
+  const movelinkHandler = useCallback((link) => {
+    router.push(link);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <MainSliderWrapper>
       <Carousel
@@ -78,10 +84,17 @@ const UpdateSlider = ({ datum }) => {
         slidesToShow={width < 900 ? 1 : 4}
         ref={slideRef}
       >
-        {datum &&
-          datum.map((data, idx) => {
+        {datum && datum.length === 0 ? (
+          <Wrapper fontSize={`20px`} padding={`30px 0`}>
+            <CloseCircleOutlined /> No data.
+          </Wrapper>
+        ) : (
+          datum.map((data) => {
             return (
-              <Box>
+              <Box
+                key={data.id}
+                onClick={() => movelinkHandler(`/update/${data.id}`)}
+              >
                 <Wrapper
                   className="line"
                   height={`2px`}
@@ -95,48 +108,54 @@ const UpdateSlider = ({ datum }) => {
                   fontSize={`20px`}
                   fontWeight={`600`}
                 >
-                  Lorem ipsum dolor sit amet,Lorem ipsum dolor sit amet,
+                  {data.title}
                 </Wrapper>
               </Box>
             );
-          })}
+          })
+        )}
       </Carousel>
 
-      <Wrapper dr={`row`} ju={`flex-end`} margin={`40px 0 0`}>
-        <ArrowBox margin={`0 10px 0 0`} onClick={() => slideRef.current.prev()}>
-          <Image
-            className="noHoverImage"
-            src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/icon_prev.png"
-            alt="btnImage"
-            width={`100%`}
-            height={`100%`}
-          />
-          <Image
-            className="hoverImage"
-            src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/icon_prev_h.png"
-            alt="btnImage"
-            width={`100%`}
-            height={`100%`}
-          />
-        </ArrowBox>
+      {datum && (
+        <Wrapper dr={`row`} ju={`flex-end`} margin={`40px 0 0`}>
+          <ArrowBox
+            margin={`0 10px 0 0`}
+            onClick={() => slideRef.current.prev()}
+          >
+            <Image
+              className="noHoverImage"
+              src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/icon_prev.png"
+              alt="btnImage"
+              width={`100%`}
+              height={`100%`}
+            />
+            <Image
+              className="hoverImage"
+              src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/icon_prev_h.png"
+              alt="btnImage"
+              width={`100%`}
+              height={`100%`}
+            />
+          </ArrowBox>
 
-        <ArrowBox onClick={() => slideRef.current.next()}>
-          <Image
-            className="noHoverImage"
-            src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/icon_next.png"
-            alt="btnImage"
-            width={`100%`}
-            height={`100%`}
-          />
-          <Image
-            className="hoverImage"
-            src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/icon_next_h.png"
-            alt="btnImage"
-            width={`100%`}
-            height={`100%`}
-          />
-        </ArrowBox>
-      </Wrapper>
+          <ArrowBox onClick={() => slideRef.current.next()}>
+            <Image
+              className="noHoverImage"
+              src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/icon_next.png"
+              alt="btnImage"
+              width={`100%`}
+              height={`100%`}
+            />
+            <Image
+              className="hoverImage"
+              src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/main/icon_next_h.png"
+              alt="btnImage"
+              width={`100%`}
+              height={`100%`}
+            />
+          </ArrowBox>
+        </Wrapper>
+      )}
     </MainSliderWrapper>
   );
 };
