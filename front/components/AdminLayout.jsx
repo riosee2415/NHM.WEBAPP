@@ -154,22 +154,22 @@ export const items = {
       useYn: true,
     },
     {
-      name: "매물옵션관리",
-      link: "/admin/sale/option",
-      useYn: true,
-    },
-    {
       name: "매물지역관리",
       link: "/admin/sale/type",
       useYn: true,
     },
     {
-      name: "매물인프라관리",
+      name: "매물옵션관리(option Icon)",
+      link: "/admin/sale/option",
+      useYn: true,
+    },
+    {
+      name: "매물인프라관리(infra Icon)",
       link: "/admin/sale/infra",
       useYn: true,
     },
     {
-      name: "매물유지보수관리",
+      name: "매물유지보수관리(maintenance Icon)",
       link: "/admin/sale/maintenance",
       useYn: true,
     },
