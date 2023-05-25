@@ -11,6 +11,7 @@ export const initailState = {
   roomPath: null,
   roomTypeThumbnail: null,
   roomTypeImage: null,
+  roomBannerList: [], // room banner List
 
   // 디테일
   roomDetail: null,
@@ -113,6 +114,23 @@ export const initailState = {
   st_roomMaintDeleteLoading: false, // roomMaint 삭제하기
   st_roomMaintDeleteDone: false,
   st_roomMaintDeleteError: null,
+  //
+  //
+  st_roomBannerListLoading: false, // roomBanner 가져오기
+  st_roomBannerListDone: false,
+  st_roomBannerListError: null,
+  //
+  st_roomBannerCreateLoading: false, // roomBanner 생성하기
+  st_roomBannerCreateDone: false,
+  st_roomBannerCreateError: null,
+  //
+  st_roomBannerUpdateLoading: false, // roomBanner 수정하기
+  st_roomBannerUpdateDone: false,
+  st_roomBannerUpdateError: null,
+  //
+  st_roomBannerDeleteLoading: false, // roomBanner 삭제하기
+  st_roomBannerDeleteDone: false,
+  st_roomBannerDeleteError: null,
   //
   //
   st_roomDetailLoading: false, // room detail 가져오기
@@ -480,6 +498,96 @@ const reducer = (state = initailState, action) =>
         draft.st_roomTypeDeleteLoading = false;
         draft.st_roomTypeDeleteDone = false;
         draft.st_roomTypeDeleteError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+      //////////////////////////////////////////////
+      //////////////////////////////////////////////
+      //////////////////////////////////////////////
+      //////////////////////////////////////////////
+      //////////////////////////////////////////////
+
+      case ROOM_BANNER_LIST_REQUEST: {
+        draft.st_roomBannerListLoading = true;
+        draft.st_roomBannerListDone = false;
+        draft.st_roomBannerListError = null;
+        break;
+      }
+      case ROOM_BANNER_LIST_SUCCESS: {
+        draft.st_roomBannerListLoading = false;
+        draft.st_roomBannerListDone = true;
+        draft.st_roomBannerListError = null;
+        draft.roomBannerList = action.data;
+        break;
+      }
+      case ROOM_BANNER_LIST_FAILURE: {
+        draft.st_roomBannerListLoading = false;
+        draft.st_roomBannerListDone = false;
+        draft.st_roomBannerListError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case ROOM_BANNER_CREATE_REQUEST: {
+        draft.st_roomBannerCreateLoading = true;
+        draft.st_roomBannerCreateDone = false;
+        draft.st_roomBannerCreateError = null;
+        break;
+      }
+      case ROOM_BANNER_CREATE_SUCCESS: {
+        draft.st_roomBannerCreateLoading = false;
+        draft.st_roomBannerCreateDone = true;
+        draft.st_roomBannerCreateError = null;
+        break;
+      }
+      case ROOM_BANNER_CREATE_FAILURE: {
+        draft.st_roomBannerCreateLoading = false;
+        draft.st_roomBannerCreateDone = false;
+        draft.st_roomBannerCreateError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case ROOM_BANNER_UPDATE_REQUEST: {
+        draft.st_roomBannerUpdateLoading = true;
+        draft.st_roomBannerUpdateDone = false;
+        draft.st_roomBannerUpdateError = null;
+        break;
+      }
+      case ROOM_BANNER_UPDATE_SUCCESS: {
+        draft.st_roomBannerUpdateLoading = false;
+        draft.st_roomBannerUpdateDone = true;
+        draft.st_roomBannerUpdateError = null;
+        break;
+      }
+      case ROOM_BANNER_UPDATE_FAILURE: {
+        draft.st_roomBannerUpdateLoading = false;
+        draft.st_roomBannerUpdateDone = false;
+        draft.st_roomBannerUpdateError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
+      case ROOM_BANNER_DELETE_REQUEST: {
+        draft.st_roomBannerDeleteLoading = true;
+        draft.st_roomBannerDeleteDone = false;
+        draft.st_roomBannerDeleteError = null;
+        break;
+      }
+      case ROOM_BANNER_DELETE_SUCCESS: {
+        draft.st_roomBannerDeleteLoading = false;
+        draft.st_roomBannerDeleteDone = true;
+        draft.st_roomBannerDeleteError = null;
+        break;
+      }
+      case ROOM_BANNER_DELETE_FAILURE: {
+        draft.st_roomBannerDeleteLoading = false;
+        draft.st_roomBannerDeleteDone = false;
+        draft.st_roomBannerDeleteError = action.error;
         break;
       }
 

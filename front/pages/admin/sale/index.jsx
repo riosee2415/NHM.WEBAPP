@@ -567,6 +567,31 @@ const Index = ({}) => {
                   썸네일 업로드
                 </Button>
               </Wrapper>
+
+              <Wrapper margin={`0px 0px 5px 0px`}>
+                <InfoTitle>
+                  <CheckOutlined />
+                  배너 정보
+                </InfoTitle>
+                <Image width={`350px`} src={roomPath} alt="thumbnail" />
+                <input
+                  ref={roomPathRef}
+                  type="file"
+                  hidden
+                  accept=".jpg, .png"
+                  onChange={roomPathUploadHandler}
+                />
+                <Button
+                  style={{ width: `350px` }}
+                  type="primary"
+                  size="small"
+                  onClick={roomPathRefClickHandler}
+                  loading={st_roomUploadLoading}
+                >
+                  썸네일 업로드
+                </Button>
+              </Wrapper>
+
               <Wrapper margin={`0px 0px 30px 0px`}>
                 <InfoTitle>
                   <CheckOutlined />
