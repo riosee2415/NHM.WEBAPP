@@ -44,6 +44,11 @@ import {
 } from "@ant-design/icons";
 import {
   ROOM_ADMIN_LIST_REQUEST,
+  ROOM_BANNER_CREATE_REQUEST,
+  ROOM_BANNER_DELETE_REQUEST,
+  ROOM_BANNER_IMAGE_REQUEST,
+  ROOM_BANNER_LIST_REQUEST,
+  ROOM_BANNER_UPDATE_REQUEST,
   ROOM_CREATE_REQUEST,
   ROOM_DELETE_REQUEST,
   ROOM_DETAIL_REQUEST,
@@ -94,6 +99,8 @@ const Index = ({}) => {
     roomInfraList,
     roomOptionList,
     roomMaintList,
+    roomBannerPath,
+    roomBannerList,
 
     roomDetail,
     bannerData,
@@ -116,7 +123,19 @@ const Index = ({}) => {
     //
     st_roomDeleteDone,
     st_roomDeleteError,
+    //
+    st_roomBannerCreateDone,
+    st_roomBannerCreateError,
+    //
+    st_roomBannerImageLoading,
+    //
+    st_roomBannerUpdateDone,
+    st_roomBannerUpdateError,
+    //
+    st_roomBannerDeleteDone,
+    st_roomBannerDeleteError,
   } = useSelector((state) => state.room);
+  console.log(roomBannerPath);
 
   /////////////////////////////////////////////////////////////////////////
 
@@ -132,12 +151,60 @@ const Index = ({}) => {
   const [currentData, setCurrentData] = useState(null);
   const [cModal, setCModal] = useState(false);
 
-  const roomPathRef = useRef();
+  const roomPathRef = useRef(); // 썸네일
+  const roomBannerRef = useRef(); // 배너
+  const [roomBannerId, setRoomBannerId] = useState(null); // 배너 이미지 수정아이디값
 
   const [infoForm] = Form.useForm();
   const [cForm] = Form.useForm();
 
   ////// USEEFFECT //////
+
+  useEffect(() => {
+    if (st_roomBannerDeleteDone) {
+      dispatch({
+        type: ROOM_BANNER_LIST_REQUEST,
+        data: {
+          RoomId: currentData && currentData.id,
+        },
+      });
+      return message.success("배너가 삭제되었습니다.");
+    }
+
+    if (st_roomBannerDeleteError) {
+      return message.error(st_roomBannerDeleteError);
+    }
+  }, [st_roomBannerDeleteDone, st_roomBannerDeleteError]);
+
+  useEffect(() => {
+    if (st_roomBannerUpdateDone) {
+      dispatch({
+        type: ROOM_BANNER_LIST_REQUEST,
+        data: {
+          RoomId: currentData && currentData.id,
+        },
+      });
+      dispatch({
+        type: ROOM_IMAGE_RESET,
+      });
+      setRoomBannerId(null);
+
+      return message.success("매물 배너가 수정되었습니다.");
+    }
+  }, [st_roomBannerUpdateDone, st_roomBannerUpdateError]);
+
+  useEffect(() => {
+    if (st_roomBannerCreateDone) {
+      dispatch({
+        type: ROOM_BANNER_LIST_REQUEST,
+        data: {
+          RoomId: currentData && currentData.id,
+        },
+      });
+
+      return message.success("매물 배너가 생성되었습니다.");
+    }
+  }, [st_roomBannerCreateDone, st_roomBannerCreateError]);
 
   useEffect(() => {
     if (st_loadMyInfoDone) {
@@ -285,6 +352,28 @@ const Index = ({}) => {
 
   ////// HANDLER //////
 
+  const roomBannerDeleteHandler = useCallback((data) => {
+    dispatch({
+      type: ROOM_BANNER_DELETE_REQUEST,
+      data: {
+        bannerId: data.id,
+      },
+    });
+  }, []);
+
+  const roomBannerUpdateHandler = useCallback(
+    (data) => {
+      dispatch({
+        type: ROOM_BANNER_UPDATE_REQUEST,
+        data: {
+          bannerId: data.id,
+          imagePath: roomBannerPath,
+        },
+      });
+    },
+    [roomBannerPath]
+  );
+
   const moveLinkHandler = useCallback((link) => {
     router.push(link);
   }, []);
@@ -292,6 +381,13 @@ const Index = ({}) => {
   const beforeSetDataHandler = useCallback(
     (record) => {
       setCurrentData(record);
+
+      dispatch({
+        type: ROOM_BANNER_LIST_REQUEST,
+        data: {
+          RoomId: record.id,
+        },
+      });
 
       dispatch({
         type: ROOM_DETAIL_REQUEST,
@@ -303,8 +399,42 @@ const Index = ({}) => {
     [currentData, infoForm]
   );
 
+  const roomBannerCreateHandler = useCallback(() => {
+    dispatch({
+      type: ROOM_BANNER_CREATE_REQUEST,
+      data: {
+        RoomId: currentData && currentData.id,
+      },
+    });
+  }, [currentData]);
+
+  const roomBannerRefClickHandler = useCallback(
+    (data) => {
+      setRoomBannerId(data);
+      roomBannerRef.current.click();
+    },
+    [roomBannerRef]
+  );
+
   const roomPathRefClickHandler = useCallback((data) => {
     roomPathRef.current.click();
+  }, []);
+
+  const roomBannerUploadHandler = useCallback((e) => {
+    const formData = new FormData();
+
+    [].forEach.call(e.target.files, (file) => {
+      formData.append("image", file);
+    });
+
+    if (e.target.files.length < 1) {
+      return;
+    }
+
+    dispatch({
+      type: ROOM_BANNER_IMAGE_REQUEST,
+      data: formData,
+    });
   }, []);
 
   const roomPathUploadHandler = useCallback((e) => {
@@ -406,6 +536,70 @@ const Index = ({}) => {
   ////// DATAVIEW //////
 
   ////// DATA COLUMNS //////
+
+  const bannerCol = [
+    {
+      title: "번호",
+      dataIndex: "num",
+    },
+    {
+      title: "이미지",
+      render: (data) => (
+        <Image
+          src={
+            roomBannerId === data.id && roomBannerPath
+              ? roomBannerPath
+              : data.imagePath
+          }
+        />
+      ),
+      width: `70%`,
+    },
+    {
+      title: "수정",
+      render: (data) =>
+        roomBannerId === data.id && roomBannerPath ? (
+          <Button
+            size="small"
+            type="primary"
+            onClick={() => roomBannerUpdateHandler(data)}
+          >
+            업로드 적용
+          </Button>
+        ) : (
+          <>
+            <input
+              ref={roomBannerRef}
+              type="file"
+              hidden
+              accept=".jpg, .png"
+              onChange={roomBannerUploadHandler}
+            />
+            <Button
+              size="small"
+              onClick={() => roomBannerRefClickHandler(data.id)}
+            >
+              수정
+            </Button>
+          </>
+        ),
+    },
+    {
+      title: "삭제",
+      render: (data) => (
+        <Popconfirm
+          title="삭제하시겠습니까?"
+          okText="삭제"
+          cancelText="취소"
+          onConfirm={() => roomBannerDeleteHandler(data)}
+        >
+          <Button type="danger" size="small">
+            삭제
+          </Button>
+        </Popconfirm>
+      ),
+    },
+  ];
 
   const col = [
     {
@@ -569,27 +763,28 @@ const Index = ({}) => {
               </Wrapper>
 
               <Wrapper margin={`0px 0px 5px 0px`}>
-                <InfoTitle>
-                  <CheckOutlined />
-                  배너 정보
-                </InfoTitle>
-                <Image width={`350px`} src={roomPath} alt="thumbnail" />
-                <input
-                  ref={roomPathRef}
-                  type="file"
-                  hidden
-                  accept=".jpg, .png"
-                  onChange={roomPathUploadHandler}
-                />
-                <Button
-                  style={{ width: `350px` }}
-                  type="primary"
+                <Wrapper dr={`row`} ju={`space-between`} margin={`0 0 10px`}>
+                  <InfoTitle width={`auto`}>
+                    <CheckOutlined />
+                    배너 정보
+                  </InfoTitle>
+
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={roomBannerCreateHandler}
+                    loading={st_roomBannerImageLoading}
+                  >
+                    배너 업로드
+                  </Button>
+                </Wrapper>
+                <Table
+                  style={{ width: "100%" }}
+                  rowKey="num"
+                  columns={bannerCol}
+                  dataSource={roomBannerList}
                   size="small"
-                  onClick={roomPathRefClickHandler}
-                  loading={st_roomUploadLoading}
-                >
-                  썸네일 업로드
-                </Button>
+                />
               </Wrapper>
 
               <Wrapper margin={`0px 0px 30px 0px`}>

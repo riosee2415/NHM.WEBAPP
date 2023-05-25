@@ -12,6 +12,7 @@ export const initailState = {
   roomTypeThumbnail: null,
   roomTypeImage: null,
   roomBannerList: [], // room banner List
+  roomBannerPath: null, // room banner imagePath
 
   // 디테일
   roomDetail: null,
@@ -146,6 +147,11 @@ export const initailState = {
   st_roomTypeImageError: null,
   //
   //
+  st_roomBannerImageLoading: false,
+  st_roomBannerImageDone: false,
+  st_roomBannerImageError: null,
+  //
+  //
   st_roomNowListLoading: false, // roomNow 가져오기
   st_roomNowListDone: false,
   st_roomNowListError: null,
@@ -254,6 +260,23 @@ export const ROOM_MAINT_DELETE_SUCCESS = "ROOM_MAINT_DELETE_SUCCESS";
 export const ROOM_MAINT_DELETE_FAILURE = "ROOM_MAINT_DELETE_FAILURE";
 //
 //
+export const ROOM_BANNER_LIST_REQUEST = "ROOM_BANNER_LIST_REQUEST";
+export const ROOM_BANNER_LIST_SUCCESS = "ROOM_BANNER_LIST_SUCCESS";
+export const ROOM_BANNER_LIST_FAILURE = "ROOM_BANNER_LIST_FAILURE";
+
+export const ROOM_BANNER_CREATE_REQUEST = "ROOM_BANNER_CREATE_REQUEST";
+export const ROOM_BANNER_CREATE_SUCCESS = "ROOM_BANNER_CREATE_SUCCESS";
+export const ROOM_BANNER_CREATE_FAILURE = "ROOM_BANNER_CREATE_FAILURE";
+
+export const ROOM_BANNER_UPDATE_REQUEST = "ROOM_BANNER_UPDATE_REQUEST";
+export const ROOM_BANNER_UPDATE_SUCCESS = "ROOM_BANNER_UPDATE_SUCCESS";
+export const ROOM_BANNER_UPDATE_FAILURE = "ROOM_BANNER_UPDATE_FAILURE";
+
+export const ROOM_BANNER_DELETE_REQUEST = "ROOM_BANNER_DELETE_REQUEST";
+export const ROOM_BANNER_DELETE_SUCCESS = "ROOM_BANNER_DELETE_SUCCESS";
+export const ROOM_BANNER_DELETE_FAILURE = "ROOM_BANNER_DELETE_FAILURE";
+//
+//
 export const ROOM_DETAIL_REQUEST = "ROOM_DETAIL_REQUEST";
 export const ROOM_DETAIL_SUCCESS = "ROOM_DETAIL_SUCCESS";
 export const ROOM_DETAIL_FAILURE = "ROOM_DETAIL_FAILURE";
@@ -265,6 +288,10 @@ export const ROOM_TYPE_THUMBNAIL_FAILURE = "ROOM_TYPE_THUMBNAIL_FAILURE";
 export const ROOM_TYPE_IMAGE_REQUEST = "ROOM_TYPE_IMAGE_REQUEST";
 export const ROOM_TYPE_IMAGE_SUCCESS = "ROOM_TYPE_IMAGE_SUCCESS";
 export const ROOM_TYPE_IMAGE_FAILURE = "ROOM_TYPE_IMAGE_FAILURE";
+
+export const ROOM_BANNER_IMAGE_REQUEST = "ROOM_BANNER_IMAGE_REQUEST";
+export const ROOM_BANNER_IMAGE_SUCCESS = "ROOM_BANNER_IMAGE_SUCCESS";
+export const ROOM_BANNER_IMAGE_FAILURE = "ROOM_BANNER_IMAGE_FAILURE";
 //
 //
 export const ROOM_NOW_LIST_REQUEST = "ROOM_NOW_LIST_REQUEST";
@@ -924,6 +951,28 @@ const reducer = (state = initailState, action) =>
 
       //////////////////////////////////////////////
 
+      case ROOM_BANNER_IMAGE_REQUEST: {
+        draft.st_roomBannerImageLoading = true;
+        draft.st_roomBannerImageDone = false;
+        draft.st_roomBannerImageError = null;
+        break;
+      }
+      case ROOM_BANNER_IMAGE_SUCCESS: {
+        draft.st_roomBannerImageLoading = false;
+        draft.st_roomBannerImageDone = true;
+        draft.st_roomBannerImageError = null;
+        draft.roomBannerPath = action.data.path;
+        break;
+      }
+      case ROOM_BANNER_IMAGE_FAILURE: {
+        draft.st_roomBannerImageLoading = false;
+        draft.st_roomBannerImageDone = false;
+        draft.st_roomBannerImageError = action.error;
+        break;
+      }
+
+      //////////////////////////////////////////////
+
       case ROOM_NOW_LIST_REQUEST: {
         draft.st_roomNowListLoading = true;
         draft.st_roomNowListDone = false;
@@ -987,7 +1036,8 @@ const reducer = (state = initailState, action) =>
       //////////////////////////////////////////////
 
       case ROOM_IMAGE_RESET: {
-        draft.roomPath = action.data.roomPath;
+        draft.roomPath = null;
+        draft.roomBannerPath = null;
         break;
       }
 

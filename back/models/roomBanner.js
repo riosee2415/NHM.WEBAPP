@@ -7,7 +7,7 @@ module.exports = class RoomBanner extends Model {
     return super.init(
       {
         imagePath: {
-          type: DataTypes.STRING(50),
+          type: DataTypes.STRING(3000),
           allowNull: false,
         },
       },

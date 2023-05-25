@@ -122,6 +122,10 @@ import {
   ROOM_TYPE_IMAGE_REQUEST,
   ROOM_TYPE_IMAGE_SUCCESS,
   ROOM_TYPE_IMAGE_FAILURE,
+  //,
+  ROOM_BANNER_IMAGE_REQUEST,
+  ROOM_BANNER_IMAGE_SUCCESS,
+  ROOM_BANNER_IMAGE_FAILURE,
   //
   //
   ROOM_NOW_LIST_REQUEST,
@@ -656,7 +660,7 @@ function* roomBannerList(action) {
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
 async function roomBannerCreateAPI(data) {
-  return await axios.post(`/api/room/infra/create`, data);
+  return await axios.post(`/api/room/banner/create`, data);
 }
 
 function* roomBannerCreate(action) {
@@ -683,7 +687,7 @@ function* roomBannerCreate(action) {
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
 async function roomBannerUpdateAPI(data) {
-  return await axios.post(`/api/room/infra/update`, data);
+  return await axios.post(`/api/room/banner/update`, data);
 }
 
 function* roomBannerUpdate(action) {
@@ -710,7 +714,7 @@ function* roomBannerUpdate(action) {
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
 async function roomBannerDeleteAPI(data) {
-  return await axios.post(`/api/room/infra/delete`, data);
+  return await axios.post(`/api/room/banner/delete`, data);
 }
 
 function* roomBannerDelete(action) {
@@ -925,6 +929,33 @@ function* roomTypeImage(action) {
 // ******************************************************************************************************************
 // SAGA AREA ********************************************************************************************************
 // ******************************************************************************************************************
+async function roomBannerImageAPI(data) {
+  return await axios.post(`/api/room/image`, data);
+}
+
+function* roomBannerImage(action) {
+  try {
+    const result = yield call(roomBannerImageAPI, action.data);
+
+    yield put({
+      type: ROOM_BANNER_IMAGE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ROOM_BANNER_IMAGE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+// ******************************************************************************************************************
+
+// ******************************************************************************************************************
+// SAGA AREA ********************************************************************************************************
+// ******************************************************************************************************************
 async function roomNowListAPI(data) {
   return await axios.post(`/api/room/roomNow/list`, data);
 }
@@ -1100,6 +1131,10 @@ function* watchRoomTypeImage() {
   yield takeLatest(ROOM_TYPE_IMAGE_REQUEST, roomTypeImage);
 }
 
+function* watchRoomBannerImage() {
+  yield takeLatest(ROOM_BANNER_IMAGE_REQUEST, roomBannerImage);
+}
+
 function* watchRoomNowList() {
   yield takeLatest(ROOM_NOW_LIST_REQUEST, roomNowList);
 }
@@ -1149,6 +1184,7 @@ export default function* roomSaga() {
 
     fork(watchRoomTypeThumbnail),
     fork(watchRoomTypeImage),
+    fork(watchRoomBannerImage),
 
     fork(watchRoomNowList),
     fork(watchRoomNowCreate),
