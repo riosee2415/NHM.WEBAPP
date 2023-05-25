@@ -340,15 +340,15 @@ const Index = ({}) => {
         return message.error("썸네일을 등록해주세요.");
       }
 
-      if (!data.infraIds || data.infraIds.length === 0) {
-        return message.error("인프라를 하나 이상 등록해주세요.");
-      }
-      if (!data.optionIds || data.optionIds.length === 0) {
-        return message.error("옵션을 하나 이상 등록해주세요.");
-      }
-      if (!data.maintenanceIds || data.maintenanceIds.length === 0) {
-        return message.error("유지보수를 하나 이상 등록해주세요.");
-      }
+      // if (!data.infraIds || data.infraIds.length === 0) {
+      //   return message.error("인프라를 하나 이상 등록해주세요.");
+      // }
+      // if (!data.optionIds || data.optionIds.length === 0) {
+      //   return message.error("옵션을 하나 이상 등록해주세요.");
+      // }
+      // if (!data.maintenanceIds || data.maintenanceIds.length === 0) {
+      //   return message.error("유지보수를 하나 이상 등록해주세요.");
+      // }
 
       dispatch({
         type: ROOM_UPDATE_REQUEST,
