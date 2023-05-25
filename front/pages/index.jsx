@@ -208,7 +208,7 @@ const Home = ({}) => {
                       hoverColor={Theme.black_C}
                       lineHeight={`1.1`}
                     >
-                      Check Noew
+                      Check Now
                     </Text>
                   </a>
                 </Link>
@@ -255,7 +255,7 @@ const Home = ({}) => {
                       hoverColor={Theme.black_C}
                       lineHeight={`1.1`}
                     >
-                      Check Noew
+                      Check Now
                     </Text>
                   </a>
                 </Link>

@@ -28,6 +28,7 @@ import { Button, Dropdown, Menu, Popover, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { ROOM_LIST_REQUEST, ROOM_TYPE_LIST_REQUEST } from "../../reducers/room";
 import { useRouter } from "next/router";
+import { LOGO_GET_REQUEST } from "../../reducers/logo";
 
 const IndexBox = styled(Wrapper)`
   width: auto;
@@ -350,7 +351,10 @@ const Index = ({}) => {
                 return (
                   <RommsBox
                     key={data.id}
-                    onClick={() => router.push(`/rooms/${data.id}`)}
+                    onClick={() => [
+                      router.push(`/rooms/${data.id}`),
+                      window.scrollTo({ top: 0, behavior: "smooth" }),
+                    ]}
                   >
                     <SquareBox>
                       <Wrapper
@@ -498,6 +502,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     context.store.dispatch({
       type: ROOM_TYPE_LIST_REQUEST,
+    });
+
+    context.store.dispatch({
+      type: LOGO_GET_REQUEST,
     });
 
     // 구현부 종료

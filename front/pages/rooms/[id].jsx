@@ -255,6 +255,18 @@ const Id = ({}) => {
     },
     [monthData, roomDetail]
   );
+
+  const backHandler = useCallback(() => {
+    history.back();
+  }, []);
+
+  const copyHandler = useCallback(() => {
+    navigator.clipboard.writeText(window.location.href);
+
+    return message.success(
+      "링크가 복사되었습니다. 원하는 곳에 붙여넣어 사용하세요."
+    );
+  }, []);
   ////// DATAVIEW //////
 
   return (
@@ -273,7 +285,7 @@ const Id = ({}) => {
           )}
 
           <RsWrapper>
-            <BackWrapper>
+            <BackWrapper onClick={backHandler}>
               <Image
                 src="https://4leaf-s3.s3.ap-northeast-2.amazonaws.com/nhm/assets/images/rooms/icon_back.png"
                 alt="icon"
@@ -298,6 +310,8 @@ const Id = ({}) => {
                 alt="icon"
                 width={width < 900 ? `19px` : `24px`}
                 margin={`0 0 0 10px`}
+                cursor={`pointer`}
+                onClick={copyHandler}
               />
             </Wrapper>
 

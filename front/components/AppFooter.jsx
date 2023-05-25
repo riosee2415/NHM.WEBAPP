@@ -83,16 +83,20 @@ const AppFooter = () => {
             width={`auto`}
             display={width < 700 ? `none` : `flex`}
           >
-            <Text
-              isHover={true}
-              color={Theme.darkGrey2_C}
-              margin={`0 40px 0 0`}
-            >
-              Terms of User
-            </Text>
-            <Text isHover={true} color={Theme.darkGrey2_C}>
-              privacy policy
-            </Text>
+            <a href={`https://koreais.info/update/2`}>
+              <Text
+                isHover={true}
+                color={Theme.darkGrey2_C}
+                margin={`0 40px 0 0`}
+              >
+                Terms of User
+              </Text>
+            </a>
+            <a href={`https://koreais.info/update/3`}>
+              <Text isHover={true} color={Theme.darkGrey2_C}>
+                Privacy Policy
+              </Text>
+            </a>
           </Wrapper>
         </Wrapper>
 
