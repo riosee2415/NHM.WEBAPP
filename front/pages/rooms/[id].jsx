@@ -126,6 +126,9 @@ const Id = ({}) => {
   // bookNow
   const [deposit, setDeposit] = useState(""); // deposit
   const [rentFee, setRentFee] = useState(""); // rentFee
+  const depositInput = useInput(``);
+  const rentFeeInput = useInput(``);
+  const regionInput = useInput(``);
   const messangerInput = useInput(``);
   const emailInput = useInput(``);
   const otherInput = useInput(``);
@@ -178,7 +181,7 @@ const Id = ({}) => {
     }
 
     if (!movingDate) {
-      return message.error("Please select a moving date");
+      return message.error("Please select a move-in date");
     }
 
     if (!contactPeriod) {
@@ -806,7 +809,7 @@ const Id = ({}) => {
                       height={`40px`}
                       radius={`5px`}
                       placeholder="Deposit"
-                      value={deposit}
+                      {...depositInput}
                     />
 
                     <Wrapper
@@ -834,7 +837,7 @@ const Id = ({}) => {
                       height={`40px`}
                       radius={`5px`}
                       placeholder="Rent fee"
-                      value={rentFee}
+                      {...rentFeeInput}
                     />
 
                     <Wrapper
@@ -862,14 +865,14 @@ const Id = ({}) => {
                     radius={`5px`}
                     placeholder="Region"
                     margin={`0 0 16px`}
-                    value={roomDetail && roomDetail.region}
+                    {...regionInput}
                   />
                   <Text
                     fontSize={`16px`}
                     color={Theme.darkGrey_C}
                     margin={`0 0 5px`}
                   >
-                    Moving date
+                    Move-in date
                   </Text>
 
                   <Wrapper
@@ -883,7 +886,7 @@ const Id = ({}) => {
                         height: `40px`,
                         borderRadius: `5px`,
                       }}
-                      placeholder="Moving date"
+                      placeholder="Move-in date"
                       value={movingDate}
                       onChange={(data) => setMovingDate(data)}
                     />
@@ -1088,7 +1091,7 @@ const Id = ({}) => {
                         height={`40px`}
                         radius={`5px`}
                         placeholder="Deposit"
-                        value={deposit}
+                        {...depositInput}
                       />
 
                       <Wrapper
@@ -1116,7 +1119,7 @@ const Id = ({}) => {
                         height={`40px`}
                         radius={`5px`}
                         placeholder="Rent fee"
-                        value={rentFee}
+                        {...rentFeeInput}
                       />
 
                       <Wrapper
@@ -1144,14 +1147,14 @@ const Id = ({}) => {
                       radius={`5px`}
                       placeholder="Region"
                       margin={`0 0 16px`}
-                      value={roomDetail && roomDetail.region}
+                      {...regionInput}
                     />
                     <Text
                       fontSize={`16px`}
                       color={Theme.darkGrey_C}
                       margin={`0 0 5px`}
                     >
-                      Moving date
+                      Move-in date
                     </Text>
 
                     <Wrapper
@@ -1165,7 +1168,7 @@ const Id = ({}) => {
                           height: `40px`,
                           borderRadius: `5px`,
                         }}
-                        placeholder="Moving date"
+                        placeholder="Move-in date"
                         value={movingDate}
                         onChange={(data) => setMovingDate(data)}
                       />
