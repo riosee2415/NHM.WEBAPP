@@ -743,7 +743,11 @@ const Index = ({}) => {
                   <CheckOutlined />
                   썸네일 수정
                 </InfoTitle>
-                <Image width={`350px`} src={roomPath} alt="thumbnail" />
+                <Image
+                  width={`350px`}
+                  src={roomPath ? roomPath : currentData.thumbnail}
+                  alt="thumbnail"
+                />
                 <input
                   ref={roomPathRef}
                   type="file"
