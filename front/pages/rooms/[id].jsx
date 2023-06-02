@@ -671,10 +671,13 @@ const Id = ({}) => {
                     Local infrastructure
                   </Text>
 
-                  <Wrapper dr={`row`} ju={`flex-start`}>
+                  <Wrapper dr={`row`} ju={`flex-start`} al={`flex-start`}>
                     {infraData.map((data) => {
                       return (
-                        <LocalWrapper key={data.id}>
+                        <LocalWrapper
+                          key={data.id}
+                          padding={width < 900 ? `14px` : `30px`}
+                        >
                           <Wrapper
                             border={`1px solid ${Theme.grey2_C}`}
                             radius={`100%`}
